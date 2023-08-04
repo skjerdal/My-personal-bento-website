@@ -11,12 +11,16 @@ const { title } = Astro.props;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    <title>Your Name</title>
+    <title>{title}</title>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.8.1/mapbox-gl.css' rel='stylesheet' />
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.8.1/mapbox-gl.js'></script>
   </head>
+
   <body>
     <div>
-        <slot />
+    <slot />
   </body>
+
 </html>
 
 <style is:global>

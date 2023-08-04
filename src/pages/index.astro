@@ -1,6 +1,5 @@
 ---
 import Layout from '../layouts/Layout.astro';
-
 ---
 
 <Layout title="Home">
@@ -11,15 +10,15 @@ import Layout from '../layouts/Layout.astro';
 	
   
 	<section class="cards">
-		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-		  <div class="card">
-			<h2 class="card-title">About Me</h2>
-			<p class="card-content">...</p>
+		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1">
+
+		  <div class="card large">
+			<h2 class="card-title">Locaions</h2>
+			<button id="location1" class="btn">Location 1</button>
+			<button id="location2" class="btn">Location 2</button>
+			<div id='map' style='width: 100%; height: 500px;'></div>
 		  </div>
-		  <div class="card">
-			<h2 class="card-title">My Projects</h2>
-			<p class="card-content">...</p>
-		  </div>
+		  
 		  <!-- Add more cards as needed -->
 		</div>
 	  </section>
@@ -27,56 +26,98 @@ import Layout from '../layouts/Layout.astro';
 
 </Layout>
 
-  <style>
-	@import 'tailwindcss/base';
-	@import 'tailwindcss/components';
-	@import 'tailwindcss/utilities';
-
-	body {
-	@apply bg-gray-800 text-white;
-	}
-
-	h1 {
-	@apply text-purple-500 text-4xl;
-	}
-
-	.cards {
-	@apply flex flex-wrap justify-center;
-	}
-
-	.card {
-	@apply bg-gray-700 rounded-lg p-6 m-4 w-64;
-	}
-
-	.card-title {
-	@apply text-2xl mb-4;
-	}
-
-	@keyframes glow {
-	0% {
-		text-shadow: 0 0 5px #9d4edd, 0 0 10px #9d4edd, 0 0 7px #9d4edd, 0 0 20px #7e2dff, 0 0 35px #7e2dff, 0 0 40px #7e2dff, 0 0 50px #7e2dff, 0 0 75px #7e2dff;
-	}
+<script>
 	
-	100% {
-		text-shadow: 0 0 20px #9d4edd, 0 0 30px #9d4edd, 0 0 10px #9d4edd, 0 0 50px #7e2dff, 0 0 70px #7e2dff, 0 0 80px #7e2dff, 0 0 100px #7e2dff, 0 0 150px #7e2dff;
-	}
-	}
+	import 'mapbox-gl/dist/mapbox-gl.css';
+	declare var mapboxgl: any;
 
-	.glow {
-	animation: glow 2s ease-in-out infinite alternate;
+	window.onload = function () {
+	  
+	mapboxgl.accessToken = "pk.eyJ1Ijoic2tqZXJkYWwiLCJhIjoiY2xrd2wxdmxpMGJ6MDNrbjdsdTlvZzF5OCJ9.d7BKZGC3rcfoeVdR0pLz0w"
+	const map = new mapboxgl.Map({
+	container: 'map',
+	style: 'mapbox://styles/skjerdal/clkwjbzrl005301pm710e17lj',
+	center: [-74.5, 40], // starting position as [lng, lat]
+	zoom: 9
+	});
+
+	const location1Btn = document.getElementById('location1');
+	const location2Btn = document.getElementById('location2');
+
+	if (location1Btn && location2Btn) {
+	location1Btn.addEventListener('click', function () {
+	  map.flyTo({
+	  center: [10.7522, 59.9139],
+	  essential: true
+	  });
+	});
+
+	location2Btn.addEventListener('click', function () {
+	  map.flyTo({
+	  center: [7.8475, 58.8733],
+	  essential: true
+	  });
+	});
 	}
+  }
+  </script>
 
-	.container {
-	display: grid;
-	place-items: center;
-	gap: 2rem;
-	}
+	<style>
 
-	.grid {
-	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-	gap: 2rem;
-	}
+		@import 'tailwindcss/base';
+		@import 'tailwindcss/components';
+		@import 'tailwindcss/utilities';
+
+		body {
+		@apply bg-gray-800 text-white;
+		}
+
+		h1 {
+		@apply text-purple-500 text-4xl;
+		}
+
+		.cards {
+		@apply flex flex-wrap justify-center;
+		}
+
+		.card {
+		@apply bg-gray-700 rounded-lg p-6 m-4 w-64;
+		}
+
+		.card.large {
+			height: 600px;
+			width: 700px;
+			}
 
 
-  </style>
+		.card-title {
+		@apply text-2xl mb-4;
+		}
+
+		@keyframes glow {
+		0% {
+			text-shadow: 0 0 5px #9d4edd, 0 0 10px #9d4edd, 0 0 7px #9d4edd, 0 0 20px #7e2dff, 0 0 35px #7e2dff, 0 0 40px #7e2dff, 0 0 50px #7e2dff, 0 0 75px #7e2dff;
+		}
+		
+		100% {
+			text-shadow: 0 0 20px #9d4edd, 0 0 30px #9d4edd, 0 0 10px #9d4edd, 0 0 50px #7e2dff, 0 0 70px #7e2dff, 0 0 80px #7e2dff, 0 0 100px #7e2dff, 0 0 150px #7e2dff;
+		}
+		}
+
+		.glow {
+		animation: glow 2s ease-in-out infinite alternate;
+		}
+
+		.container {
+		display: grid;
+		place-items: center;
+		gap: 2rem;
+		}
+
+		.grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+		gap: 2rem;
+		}
+
+	</style>
