@@ -1,0 +1,60 @@
+--- 
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+---
+<!DOCTYPE html>
+<html lang="no">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <title>Your Name</title>
+  </head>
+  <body>
+    <div>
+        <slot />
+  </body>
+</html>
+
+<style is:global>
+  /* Add your global styles here */
+  :root {
+  --background: 10, 10, 10;
+  --text: 255, 255, 255;
+
+  --purple: 128, 0, 128;
+  --purple-light: 153, 50, 204;
+  --purple-dark: 85, 26, 139;
+
+  --orange: 255, 165, 0;
+  --orange-light: 255, 195, 77;
+  --orange-dark: 204, 132, 0;
+
+  --purple-gradient: linear-gradient(45deg, rgb(var(--purple)), rgb(var(--purple-light)) 30%, rgb(var(--text)) 60%);
+  --orange-gradient: linear-gradient(45deg, rgb(var(--orange)), rgb(var(--orange-light)) 30%, rgb(var(--text)) 60%);
+}
+
+    html {
+		font-family: system-ui, sans-serif;
+		background-size: 224px;
+	}
+
+  body {
+  background-color: rgb(var(--background));
+  color: rgb(var(--text));
+}
+
+.accent {
+  background-image: var(--purple-gradient);  /* or var(--orange-gradient) */
+}
+
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+</style>
