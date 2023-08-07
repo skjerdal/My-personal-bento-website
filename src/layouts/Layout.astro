@@ -1,4 +1,4 @@
---- 
+---
 interface Props {
 	title: string;
 }
@@ -26,19 +26,17 @@ const { title } = Astro.props;
 <style is:global>
   /* Add your global styles here */
   :root {
-  --background: 10, 10, 10;
+  --background: 5, 5, 5;
   --text: 255, 255, 255;
 
-  --purple: 128, 0, 128;
-  --purple-light: 153, 50, 204;
-  --purple-dark: 85, 26, 139;
+  --grey-light: 169, 169, 169;
+  --grey: 128, 128, 128;
+  --grey-dark: 105, 105, 105;
 
-  --orange: 255, 165, 0;
-  --orange-light: 255, 195, 77;
-  --orange-dark: 204, 132, 0;
-
-  --purple-gradient: linear-gradient(45deg, rgb(var(--purple)), rgb(var(--purple-light)) 30%, rgb(var(--text)) 60%);
-  --orange-gradient: linear-gradient(45deg, rgb(var(--orange)), rgb(var(--orange-light)) 30%, rgb(var(--text)) 60%);
+  --black: 0, 0, 0;
+  
+  --grey-gradient: linear-gradient(45deg, rgb(var(--grey)), rgb(var(--grey-light)) 30%, rgb(var(--text)) 60%);
+  --black-gradient: linear-gradient(45deg, rgb(var(--black)), rgb(var(--grey-dark)) 30%, rgb(var(--text)) 60%);
 }
 
     html {
@@ -52,7 +50,7 @@ const { title } = Astro.props;
 }
 
 .accent {
-  background-image: var(--purple-gradient);  /* or var(--orange-gradient) */
+  background-image: var(--grey-gradient);
 }
 
   .container {

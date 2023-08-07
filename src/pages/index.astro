@@ -1,123 +1,143 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import 'mapbox-gl/dist/mapbox-gl.css';
 ---
 
 <Layout title="Home">
 	
-<div class="container mx-auto px-4">
-	<h1 class="text-4xl font-bold font-mono">Welcome to my website, I'm <span class="text-purple-500 glow">Thomas Skjerdal</span></h1>
-	<p class="text-xl">I'm a software developer from Norway.</p>
-	
-  
-	<section class="cards">
-		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1">
-
+	<div class="container mx-auto px-4">
+		<h1 class="text-4xl font-bold mb-4">Welcome to my website, I'm <span class="text-purple-500 glow">Thomas Skjerdal</span></h1>
+		<p class="text-xl mb-4">I'm a software developer from Norway.</p>
+		
+		<div class="card-grid">
+		  <div class="card">
+			<h2 class="card-title">About Me</h2>
+			<p class="card-content">I am a software developer with a passion for designing and building web applications. I specialize in using modern technologies like Astro, HTML, CSS, and Tailwind CSS to create high-performing, user-friendly websites.</p>
+		  </div>
 		  <div class="card large">
-			<h2 class="card-title">Locaions</h2>
+			<h2 class="card-title">My Projects</h2>
+			<p class="card-content">You can check out my portfolio of projects <a href="#">here</a>. This includes a variety of web applications built using Astro, HTML, CSS, and Tailwind CSS.</p>
+		  </div>
+		  <div class="card">
+			<h2 class="card-title">Contact</h2>
+			<p class="card-content">Feel free to reach out to me via email at <a href="mailto:example@example.com">example@example.com</a>.</p>
+		  </div>
+		  <div class="card">
+			<h2 class="card-title">Social Media</h2>
+			<p class="card-content">
+				<a href="https://github.com/example">GitHub</a>
+				<a href="https://linkedin.com/in/example">LinkedIn</a>
+			</p>
+		  </div>
+		  <div class="card large">
+			<h2 class="card-title">Locations</h2>
 			<button id="location1" class="btn">Location 1</button>
 			<button id="location2" class="btn">Location 2</button>
 			<div id='map' style='width: 100%; height: 500px;'></div>
 		  </div>
-		  
-		  <!-- Add more cards as needed -->
 		</div>
-	  </section>
-</div>
-
+	  </div>
+	
+	  <footer class="text-center text-white bg-gray-800 p-4 mt-8">
+		© 2023 Thomas Skjerdal. All rights reserved.
+	  </footer>
 </Layout>
 
 <script>
 	
-	import 'mapbox-gl/dist/mapbox-gl.css';
-	declare var mapboxgl: any;
+	import mapboxgl from 'mapbox-gl';
+	
 
-	window.onload = function () {
-	  
-	mapboxgl.accessToken = "pk.eyJ1Ijoic2tqZXJkYWwiLCJhIjoiY2xrd2wxdmxpMGJ6MDNrbjdsdTlvZzF5OCJ9.d7BKZGC3rcfoeVdR0pLz0w"
-	const map = new mapboxgl.Map({
-	container: 'map',
-	style: 'mapbox://styles/skjerdal/clkwjbzrl005301pm710e17lj',
-	center: [-74.5, 40], // starting position as [lng, lat]
-	zoom: 9
-	});
+  mapboxgl.accessToken =
+    'pk.eyJ1IjoibWlyYW5hZG9yIiwiYSI6ImNsMzQ5eW4zdDAxejkzY21xY3gwM2J5ZHgifQ.PGN6cfbpIRcBDoYUYCK-Xw';
 
-	const location1Btn = document.getElementById('location1');
-	const location2Btn = document.getElementById('location2');
+  const map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/skjerdal/clkwjbzrl005301pm710e17lj',
+    center: [-71.311, 41.4814], // starting position as [lng, lat]
+    zoom: 9,
+  });
 
-	if (location1Btn && location2Btn) {
-	location1Btn.addEventListener('click', function () {
-	  map.flyTo({
-	  center: [10.7522, 59.9139],
-	  essential: true
-	  });
-	});
+  const location1Btn = document.getElementById('location1');
+  const location2Btn = document.getElementById('location2');
 
-	location2Btn.addEventListener('click', function () {
-	  map.flyTo({
-	  center: [7.8475, 58.8733],
-	  essential: true
-	  });
-	});
-	}
-  }
+  if (location1Btn && location2Btn) {
+    location1Btn.addEventListener('click', function () {
+      map.flyTo({
+        center: [10.7522, 59.9139],
+        essential: true,
+      });
+    });
+
+    location2Btn.addEventListener('click', function () {
+      map.flyTo({
+        center: [7.8475, 58.8733],
+        essential: true,
+      });
+    });
+};
+
   </script>
 
-	<style>
-
-		@import 'tailwindcss/base';
-		@import 'tailwindcss/components';
-		@import 'tailwindcss/utilities';
-
-		body {
-		@apply bg-gray-800 text-white;
-		}
-
-		h1 {
-		@apply text-purple-500 text-4xl;
-		}
-
-		.cards {
-		@apply flex flex-wrap justify-center;
-		}
-
-		.card {
-		@apply bg-gray-700 rounded-lg p-6 m-4 w-64;
-		}
-
-		.card.large {
-			height: 600px;
-			width: 700px;
-			}
-
-
-		.card-title {
-		@apply text-2xl mb-4;
-		}
-
-		@keyframes glow {
-		0% {
-			text-shadow: 0 0 5px #9d4edd, 0 0 10px #9d4edd, 0 0 7px #9d4edd, 0 0 20px #7e2dff, 0 0 35px #7e2dff, 0 0 40px #7e2dff, 0 0 50px #7e2dff, 0 0 75px #7e2dff;
-		}
-		
-		100% {
-			text-shadow: 0 0 20px #9d4edd, 0 0 30px #9d4edd, 0 0 10px #9d4edd, 0 0 50px #7e2dff, 0 0 70px #7e2dff, 0 0 80px #7e2dff, 0 0 100px #7e2dff, 0 0 150px #7e2dff;
-		}
-		}
-
-		.glow {
-		animation: glow 2s ease-in-out infinite alternate;
-		}
-
-		.container {
-		display: grid;
-		place-items: center;
-		gap: 2rem;
-		}
-
-		.grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-		gap: 2rem;
-		}
-
+<style>
+	@import 'tailwindcss/base';
+	@import 'tailwindcss/components';
+	@import 'tailwindcss/utilities';
+	
+	body {
+	  @apply bg-gray-800 text-white;
+	}
+	
+	h1 {
+	  @apply text-white text-4xl;
+	}
+	
+	h1 span {
+	  @apply text-purple-500 glow;
+	}
+	
+	.cards {
+	  @apply flex flex-wrap justify-center;
+	}
+	
+	.card {
+	  @apply bg-gray-700 rounded-3xl p-6 m-4 w-64;
+	  transition: transform .2s;
+	  height: 500px;
+	}
+	
+	.card.large {
+	  width: 700px;
+	}
+	
+	.card-title {
+	  @apply text-2xl mb-4;
+	}
+	
+	@keyframes glow {
+	  0% {
+		text-shadow: 0 0 5px #9d4edd, 0 0 10px #9d4edd, 0 0 7px #9d4edd, 0 0 20px #7e2dff, 0 0 35px #7e2dff, 0 0 40px #7e2dff, 0 0 50px #7e2dff, 0 0 75px #7e2dff;
+	  }
+	  
+	  100% {
+		text-shadow: 0 0 20px #9d4edd, 0 0 30px #9d4edd, 0 0 10px #9d4edd, 0 0 50px #7e2dff, 0 0 70px #7e2dff, 0 0 80px #7e2dff, 0 0 100px #7e2dff, 0 0 150px #7e2dff;
+	  }
+	}
+	
+	.glow {
+	  animation: glow 2s ease-in-out infinite alternate;
+	}
+	
+	.container {
+	  @apply max-w-7xl mx-auto px-4;
+	}
+	
+	.card-grid {
+	  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4;
+	}
+	
+	footer {
+	  @apply text-center text-white bg-gray-800 p-4 mt-8;
+	}
 	</style>
+	
