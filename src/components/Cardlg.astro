@@ -1,0 +1,40 @@
+---
+interface Props {
+  title: string;
+  text: string;
+}
+
+const {title, text}  = Astro.props;
+---
+
+<div class="card large rounded-3xl">
+    <h2>{title}</h2>
+    <p>{text}</p>
+    <slot />
+</div>
+
+<style is:inline>
+
+    .card {
+        padding: 32px;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 15px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+
+            background-color: rgba(26, 25, 29, 0.9);
+            width: 600px;
+            height: 500px;
+    }
+    
+    .card h2 {
+        color: rgb(var(--text));
+        font-size: 2rem;
+    }
+
+    .card p {
+        color: rgb(var(--grey));
+        font-size: 1rem;
+    }
+
+</style>

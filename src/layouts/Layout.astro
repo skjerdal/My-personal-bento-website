@@ -24,14 +24,17 @@ const { title } = Astro.props;
 </html>
 
 <style is:global>
-  /* Add your global styles here */
+  @import 'tailwindcss/base';
+	@import 'tailwindcss/components';
+	@import 'tailwindcss/utilities';
+	
   :root {
-  --background: 5, 5, 5;
+  --background: 15, 15, 15;
   --text: 255, 255, 255;
 
   --grey-light: 169, 169, 169;
-  --grey: 128, 128, 128;
-  --grey-dark: 105, 105, 105;
+  --grey: 158, 158, 158;
+  --grey-dark: 26, 25, 29;
 
   --black: 0, 0, 0;
   
@@ -45,13 +48,14 @@ const { title } = Astro.props;
 	}
 
   body {
-  background-color: rgb(var(--background));
-  color: rgb(var(--text));
-}
+    margin: 0;
+    padding: 0;
+    background-color: rgb(var(--background));
 
-.accent {
-  background-image: var(--grey-gradient);
-}
+    color: rgb(var(--text));
+    font-family: 'Montserrat', sans-serif;
+    line-height: 1.5;
+  }
 
   .container {
     max-width: 960px;

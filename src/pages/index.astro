@@ -1,46 +1,40 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import Cardlg from '../components/Cardlg.astro';
 ---
 
 <Layout title="Home">
-	
+
+	<div class="bubbles">
+		<div class="bubble" style="width: 100px; height: 100px; top: 10%; left: 5%; animation-duration: 6s;"></div>
+		<div class="bubble" style="width: 150px; height: 150px; top: 40%; left: 10%; animation-duration: 8s;"></div>
+		<div class="bubble" style="width: 80px; height: 80px; top: 70%; left: 15%; animation-duration: 5s;"></div>
+		<div class="bubble" style="width: 120px; height: 120px; top: 20%; left: 50%; animation-duration: 7s;"></div>
+		<div class="bubble" style="width: 90px; height: 90px; top: 60%; left: 60%; animation-duration: 5.5s;"></div>
+		<div class="bubble" style="width: 140px; height: 140px; top: 80%; left: 80%; animation-duration: 9s;"></div>
+	  </div>
+	  
 	<div class="container mx-auto px-4">
 		<h1 class="text-4xl font-bold mb-4">Welcome to my website, I'm <span class="text-purple-500 glow">Thomas Skjerdal</span></h1>
 		<p class="text-xl mb-4">I'm a software developer from Norway.</p>
 		
+
 		<div class="card-grid">
-		  <div class="card">
-			<h2 class="card-title">About Me</h2>
-			<p class="card-content">I am a software developer with a passion for designing and building web applications. I specialize in using modern technologies like Astro, HTML, CSS, and Tailwind CSS to create high-performing, user-friendly websites.</p>
-		  </div>
-		  <div class="card large">
-			<h2 class="card-title">My Projects</h2>
-			<p class="card-content">You can check out my portfolio of projects <a href="#">here</a>. This includes a variety of web applications built using Astro, HTML, CSS, and Tailwind CSS.</p>
-		  </div>
-		  <div class="card">
-			<h2 class="card-title">Contact</h2>
-			<p class="card-content">Feel free to reach out to me via email at <a href="mailto:example@example.com">example@example.com</a>.</p>
-		  </div>
-		  <div class="card">
-			<h2 class="card-title">Social Media</h2>
-			<p class="card-content">
-				<a href="https://github.com/example">GitHub</a>
-				<a href="https://linkedin.com/in/example">LinkedIn</a>
-			</p>
-		  </div>
-		  <div class="card large">
-			<h2 class="card-title">Locations</h2>
-			<button id="location1" class="btn">Location 1</button>
-			<button id="location2" class="btn">Location 2</button>
-			<div id='map' style='width: 100%; height: 500px;'></div>
-		  </div>
+			<Cardlg
+				title="About Me"
+				text="lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.">
+			</Cardlg>
+			<Cardlg
+				title="Projects"
+				text="lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.">
+				<button id="location1" class="btn">Location 1</button>
+				<button id="location2" class="btn">Location 2</button>
+				<div id='map' style='width: 100%; height: 100%;'></div>
+			</Cardlg>
 		</div>
 	  </div>
 	
-	  <footer class="text-center text-white bg-gray-800 p-4 mt-8">
-		© 2023 Thomas Skjerdal. All rights reserved.
-	  </footer>
 </Layout>
 
 <script>
@@ -49,7 +43,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 	
 
   mapboxgl.accessToken =
-    'pk.eyJ1IjoibWlyYW5hZG9yIiwiYSI6ImNsMzQ5eW4zdDAxejkzY21xY3gwM2J5ZHgifQ.PGN6cfbpIRcBDoYUYCK-Xw';
+    'pk.eyJ1Ijoic2tqZXJkYWwiLCJhIjoiY2xsMHJudGV1MXpvYzNrcG15Mmp3NTFqZCJ9.yN3avNPIJWMbFfchgtU-1Q';
 
   const map = new mapboxgl.Map({
     container: 'map',
@@ -80,14 +74,30 @@ import 'mapbox-gl/dist/mapbox-gl.css';
   </script>
 
 <style>
-	@import 'tailwindcss/base';
-	@import 'tailwindcss/components';
-	@import 'tailwindcss/utilities';
-	
-	body {
-	  @apply bg-gray-800 text-white;
+
+	.bubbles {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	z-index: -1;
+	pointer-events: none;
+	overflow: hidden;
 	}
-	
+
+	.bubble {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  animation: floatBubble ease-in-out infinite alternate, glowMove 3s infinite alternate;
+}
+
+	@keyframes floatBubble {
+	from { transform: translateY(0); }
+	to { transform: translateY(-20px); }
+	}
+
 	h1 {
 	  @apply text-white text-4xl;
 	}
@@ -100,20 +110,23 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 	  @apply flex flex-wrap justify-center;
 	}
 	
-	.card {
-	  @apply bg-gray-700 rounded-3xl p-6 m-4 w-64;
-	  transition: transform .2s;
-	  height: 500px;
-	}
-	
-	.card.large {
-	  width: 700px;
-	}
-	
+
 	.card-title {
 	  @apply text-2xl mb-4;
 	}
-	
+
+		@keyframes glowMove {
+	0% { 
+		box-shadow: 0 0 5px #9d4edd, 0 0 10px #9d4edd, 0 0 15px #7e2dff, 0 0 20px #7e2dff;
+	}
+	50% { 
+		box-shadow: 0 0 10px #9d4edd, 0 0 15px #9d4edd, 0 0 20px #7e2dff, 0 0 25px #7e2dff;
+	}
+	100% { 
+		box-shadow: 0 0 5px #9d4edd, 0 0 10px #9d4edd, 0 0 15px #7e2dff, 0 0 20px #7e2dff;
+	}
+	}
+
 	@keyframes glow {
 	  0% {
 		text-shadow: 0 0 5px #9d4edd, 0 0 10px #9d4edd, 0 0 7px #9d4edd, 0 0 20px #7e2dff, 0 0 35px #7e2dff, 0 0 40px #7e2dff, 0 0 50px #7e2dff, 0 0 75px #7e2dff;
