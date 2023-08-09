@@ -16,16 +16,16 @@ const {title, text}  = Astro.props;
 <style is:inline>
 
     .card {
-    margin-right: 20px;
-
+    padding: 32px;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border-radius: 15px;
     border: 1px solid rgba(255, 255, 255, 0.2);
 
-        background-color: rgb(var(--grey-dark));
-        width: 290.0px;
-        height: 500px;
+    background-color: rgba(26, 25, 29, 0.5);
+    width: calc(25% - 6px); /* 25% for a quarter of the container width minus half the gap */
+
+        height: 400px;
+        overflow: hidden; /* Hide the overflowing parts of the pseudo-elements */
     }
     
     .card h2 {
@@ -37,5 +37,7 @@ const {title, text}  = Astro.props;
         color: rgb(var(--grey));
         font-size: 1rem;
     }
+
+
 
 </style>

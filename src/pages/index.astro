@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import Cardlg from '../components/Cardlg.astro';
+import Cardsm from '../components/Cardsm.astro';
 ---
 
 <Layout title="Home">
@@ -15,16 +16,24 @@ import Cardlg from '../components/Cardlg.astro';
 		<div class="bubble" style="width: 140px; height: 140px; top: 80%; left: 80%; animation-duration: 9s;"></div>
 	  </div>
 	  
-	<div class="container mx-auto px-4">
+	<div class="container">
 		<h1 class="text-4xl font-bold mb-4">Welcome to my website, I'm <span class="text-purple-500 glow">Thomas Skjerdal</span></h1>
 		<p class="text-xl mb-4">I'm a software developer from Norway.</p>
 		
 
 		<div class="card-grid">
+			<Cardsm
+				title="Abot Me"
+				text="lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.">
+			</Cardsm>
 			<Cardlg
 				title="About Me"
 				text="lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.">
 			</Cardlg>
+			<Cardsm
+				title="Abot Me"
+				text="lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.">
+			</Cardsm>
 			<Cardlg
 				title="Projects"
 				text="lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.">
@@ -76,22 +85,22 @@ import Cardlg from '../components/Cardlg.astro';
 <style>
 
 	.bubbles {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100vw;
-	height: 100vh;
-	z-index: -1;
-	pointer-events: none;
-	overflow: hidden;
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100vh;
+		z-index: -1;
+		pointer-events: none;
+		overflow: hidden;
 	}
 
 	.bubble {
-  position: absolute;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  animation: floatBubble ease-in-out infinite alternate, glowMove 3s infinite alternate;
-}
+		position: absolute;
+		background: rgba(164, 0, 179, 0.2);
+		border-radius: 50%;
+		animation: floatBubble ease-in-out infinite alternate, glowMove 3s infinite alternate;
+	}
 
 	@keyframes floatBubble {
 	from { transform: translateY(0); }
@@ -146,11 +155,15 @@ import Cardlg from '../components/Cardlg.astro';
 	}
 	
 	.card-grid {
-	  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4;
-	}
-	
-	footer {
-	  @apply text-center text-white bg-gray-800 p-4 mt-8;
-	}
+    z-index: 2;
+    grid-column-gap: 24px;
+    grid-row-gap: 24px;
+    grid-template-rows: auto auto auto;
+    grid-template-columns: repeat(4, 1fr);
+    padding-top: 56px;
+    display: grid;
+    position: relative;
+}
+
 	</style>
 	
