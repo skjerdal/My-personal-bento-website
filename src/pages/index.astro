@@ -35,12 +35,30 @@ import Cardsm from '../components/Cardsm.astro';
 				text="lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.">
 			</Cardsm>
 			<Cardlg
-				title="Projects"
+			title="About Me"
+			text="lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.">
+		</Cardlg>
+		<Cardlg
+		title="About Me"
+		text="lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.">
+	</Cardlg>
+			<Cardsm
+			title="Abot Me"
+			text="lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.">
+		</Cardsm>
+			<Cardlg
+				title="Locations"
 				text="lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.">
 				<button id="location1" class="btn">Location 1</button>
 				<button id="location2" class="btn">Location 2</button>
 				<div id='map' style='width: 100%; height: 100%;'></div>
 			</Cardlg>
+			<Cardsm
+			title="Abot Me"
+			text="lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.">
+		</Cardsm>
+
+
 		</div>
 	  </div>
 	
@@ -113,15 +131,6 @@ import Cardsm from '../components/Cardsm.astro';
 	
 	h1 span {
 	  @apply text-purple-500 glow;
-	}
-	
-	.cards {
-	  @apply flex flex-wrap justify-center;
-	}
-	
-
-	.card-title {
-	  @apply text-2xl mb-4;
 	}
 
 		@keyframes glowMove {

@@ -22,11 +22,11 @@ const {title, text}  = Astro.props;
         border: 1px solid rgba(255, 255, 255, 0.2);
 
             background-color: rgba(26, 25, 29, 0.5);
-            width: calc(50% - 12px); /* 50% for half the container width minus half the gap */
 
             height: 400px;
             overflow: hidden; /* Hide the overflowing parts of the pseudo-elements */
-    }
+            grid-column: span 2;
+        }
     
     .cardlg h2 {
         color: rgb(var(--text));
