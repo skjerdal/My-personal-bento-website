@@ -6,6 +6,9 @@ import Cardsm from '../components/Cardsm.astro';
 ---
 
 <Layout title="Home">
+    <Knapp>
+		fitte
+	  </Knapp>
 
 	<div class="bubbles">
 		<div class="bubble" style="width: 100px; height: 100px; top: 10%; left: 5%; animation-duration: 6s;"></div>
@@ -14,11 +17,11 @@ import Cardsm from '../components/Cardsm.astro';
 		<div class="bubble" style="width: 120px; height: 120px; top: 20%; left: 50%; animation-duration: 7s;"></div>
 		<div class="bubble" style="width: 90px; height: 90px; top: 60%; left: 60%; animation-duration: 5.5s;"></div>
 		<div class="bubble" style="width: 140px; height: 140px; top: 80%; left: 80%; animation-duration: 9s;"></div>
-	  </div>
-	  
+	</div>
 	<div class="container">
 
 		<div class="card-grid">
+			
 			<Cardsm
 				title="Abot Me"
 				text="lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.">
@@ -62,7 +65,7 @@ import Cardsm from '../components/Cardsm.astro';
 </Layout>
 
 <script>
-	
+	import Knapp from './Knapp.svelte';
 	import mapboxgl from 'mapbox-gl';
 	
 
@@ -81,10 +84,10 @@ import Cardsm from '../components/Cardsm.astro';
 
   if (location1Btn && location2Btn) {
     location1Btn.addEventListener('click', function () {
-      map.flyTo({
-        center: [10.7522, 59.9139],
+    map.flyTo({
+    	center: [10.7522, 59.9139],
         essential: true,
-      });
+    });
     });
 
     location2Btn.addEventListener('click', function () {
@@ -95,7 +98,7 @@ import Cardsm from '../components/Cardsm.astro';
     });
 };
 
-  </script>
+</script>
 
 <style>
 

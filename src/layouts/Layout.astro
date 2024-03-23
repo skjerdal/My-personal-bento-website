@@ -1,4 +1,5 @@
 ---
+import Knapp from '.components/Knapp.svelte'
 interface Props {
 	title: string;
 }
@@ -16,8 +17,15 @@ const { title } = Astro.props;
     <script src='https://api.mapbox.com/mapbox-gl-js/v2.8.1/mapbox-gl.js'></script>
   </head>
 
+  <script>
+    
+    let name = 'world';
+  </script>
+
   <body>
-    <div>
+    <Knapp>
+      dsdfkjlsdfjkgjlk
+    </Knapp>
     <slot />
   </body>
 
@@ -30,7 +38,9 @@ const { title } = Astro.props;
 	
   :root {
   --background: 15, 15, 15;
+  --light-background: 240,240,240;
   --text: 255, 255, 255;
+  --light-text: 0, 0, 0;
 
   --grey-light: 169, 169, 169;
   --grey: 158, 158, 158;
@@ -55,6 +65,11 @@ const { title } = Astro.props;
     color: rgb(var(--text));
     font-family: 'Montserrat', sans-serif;
     line-height: 1.5;
+  }
+
+  body.lightmode  {
+    color: rgb(var(--light-text));
+    background-color: rgb(var(--light-background));
   }
 
   .container {
