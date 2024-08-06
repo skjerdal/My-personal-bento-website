@@ -1,131 +1,31 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import 'mapbox-gl/dist/mapbox-gl.css';
-import Cardlg from '../components/Cardlg.astro';
-import Cardsm from '../components/Cardsm.astro';
+import Card from '../components/Card.vue';
+import { largeCards, smallCards } from '../data/cardContent';
 ---
 
-<Layout title="Home">
-
-	<div class="bubbles">
-		<div class="bubble" style="width: 100px; height: 100px; top: 10%; left: 5%; animation-duration: 6s;"></div>
-		<div class="bubble" style="width: 150px; height: 150px; top: 40%; left: 10%; animation-duration: 8s;"></div>
-		<div class="bubble" style="width: 80px; height: 80px; top: 70%; left: 15%; animation-duration: 5s;"></div>
-		<div class="bubble" style="width: 120px; height: 120px; top: 20%; left: 50%; animation-duration: 7s;"></div>
-		<div class="bubble" style="width: 90px; height: 90px; top: 60%; left: 60%; animation-duration: 5.5s;"></div>
-		<div class="bubble" style="width: 140px; height: 140px; top: 80%; left: 80%; animation-duration: 9s;"></div>
-		<div class="bubble" style="width: 110px; height: 110px; top: 15%; left: 20%; animation-duration: 6.5s;"></div>
-		<div class="bubble" style="width: 130px; height: 130px; top: 50%; left: 30%; animation-duration: 7.5s;"></div>
-		<div class="bubble" style="width: 95px; height: 95px; top: 65%; left: 25%; animation-duration: 5.2s;"></div>
-		<div class="bubble" style="width: 145px; height: 145px; top: 35%; left: 70%; animation-duration: 8.3s;"></div>
-		<div class="bubble" style="width: 105px; height: 105px; top: 25%; left: 80%; animation-duration: 6.7s;"></div>
-		<div class="bubble" style="width: 135px; height: 135px; top: 75%; left: 90%; animation-duration: 7.8s;"></div>
-		<div class="bubble" style="width: 125px; height: 125px; top: 5%; left: 35%; animation-duration: 6.1s;"></div>
-		<div class="bubble" style="width: 90px; height: 90px; top: 45%; left: 55%; animation-duration: 5.9s;"></div>
-		<div class="bubble" style="width: 160px; height: 160px; top: 10%; left: 70%; animation-duration: 8.5s;"></div>
-		<div class="bubble" style="width: 75px; height: 75px; top: 60%; left: 15%; animation-duration: 5.3s;"></div>
-		<div class="bubble" style="width: 110px; height: 110px; top: 80%; left: 25%; animation-duration: 6.8s;"></div>
-		<div class="bubble" style="width: 140px; height: 140px; top: 30%; left: 85%; animation-duration: 7.2s;"></div>
-		<div class="bubble" style="width: 100px; height: 100px; top: 70%; left: 5%; animation-duration: 6.3s;"></div>
-		<div class="bubble" style="width: 95px; height: 95px; top: 20%; left: 15%; animation-duration: 5.4s;"></div>
-		<div class="bubble" style="width: 150px; height: 150px; top: 55%; left: 65%; animation-duration: 7.9s;"></div>
-		<div class="bubble" style="width: 130px; height: 130px; top: 75%; left: 50%; animation-duration: 7.4s;"></div>
-		<div class="bubble" style="width: 85px; height: 85px; top: 85%; left: 30%; animation-duration: 5.6s;"></div>
-		<div class="bubble" style="width: 115px; height: 115px; top: 15%; left: 40%; animation-duration: 6.9s;"></div>
-		<div class="bubble" style="width: 70px; height: 70px; top: 55%; left: 75%; animation-duration: 5.1s;"></div>
-		<div class="bubble" style="width: 155px; height: 155px; top: 88%; left: 12%; animation-duration: 8.7s;"></div>
-		<div class="bubble" style="width: 95px; height: 95px; top: 32%; left: 3%; animation-duration: 5.8s;"></div>
-		<div class="bubble" style="width: 135px; height: 135px; top: 78%; left: 68%; animation-duration: 7.6s;"></div>
-		<div class="bubble" style="width: 105px; height: 105px; top: 42%; left: 92%; animation-duration: 6.2s;"></div>
-		<div class="bubble" style="width: 125px; height: 125px; top: 8%; left: 88%; animation-duration: 7.1s;"></div>
-		<div class="bubble" style="width: 80px; height: 80px; top: 95%; left: 45%; animation-duration: 5.5s;"></div>
-		<div class="bubble" style="width: 145px; height: 145px; top: 62%; left: 38%; animation-duration: 8.2s;"></div>
-		<div class="bubble" style="width: 90px; height: 90px; top: 28%; left: 58%; animation-duration: 5.7s;"></div>
-		<div class="bubble" style="width: 130px; height: 130px; top: 3%; left: 52%; animation-duration: 7.3s;"></div>
-		<div class="bubble" style="width: 110px; height: 110px; top: 72%; left: 82%; animation-duration: 6.6s;"></div>
-		<div class="bubble" style="width: 75px; height: 75px; top: 48%; left: 22%; animation-duration: 5.4s;"></div>
-		<div class="bubble" style="width: 140px; height: 140px; top: 92%; left: 62%; animation-duration: 8s;"></div>
-		<div class="bubble" style="width: 100px; height: 100px; top: 18%; left: 78%; animation-duration: 6.4s;"></div>
-	</div>
-	</div>
-	<div class="container">
-
-		<div class="card-grid">
-			
-			<Cardsm
-				title="Abot Me"
-				text="lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.">
-			</Cardsm>
-			<Cardlg
-				title="About Me"
-				text="lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.">
-			</Cardlg>
-			<Cardsm
-				title="Abot Me"
-				text="lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.">
-			</Cardsm>
-			<Cardlg
-			title="About Me"
-			text="lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.">
-		</Cardlg>
-		<Cardlg
-		title="About Me"
-		text="lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.">
-	</Cardlg>
-			<Cardsm
-			title="Abot Me"
-			text="lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.">
-		</Cardsm>
-			<Cardlg
-				title="Locations"
-				text="lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.">
-				<button id="location1" class="btn">Location 1</button>
-				<button id="location2" class="btn">Location 2</button>
-				<div id='map' style='width: 100%; height: 100%;'></div>
-			</Cardlg>
-			<Cardsm
-			title="Abot Me"
-			text="lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.">
-		</Cardsm>
-
-
-		</div>
-	  </div>
-	
+<Layout title="Your Name - Personal Website">
+  <main class="container">
+    <h1>Your Name</h1>
+    <div class="card-grid">
+      {largeCards.map(card => (
+        <Card 
+          title={card.title}
+          text={card.content}
+          large={true}
+        />
+      ))}
+      {smallCards.map(card => (
+        <Card 
+          title={card.title}
+          text={card.content}
+        />
+      ))}
+    </div>
+  </main>
 </Layout>
 
 <script>
-	import mapboxgl from 'mapbox-gl';
-	
-
-  mapboxgl.accessToken =
-    'pk.eyJ1Ijoic2tqZXJkYWwiLCJhIjoiY2xsMHJudGV1MXpvYzNrcG15Mmp3NTFqZCJ9.yN3avNPIJWMbFfchgtU-1Q';
-
-  const map = new mapboxgl.Map({
-    container: 'map',
-    style: 'mapbox://styles/skjerdal/clkwjbzrl005301pm710e17lj',
-    center: [-71.311, 41.4814], // starting position as [lng, lat]
-    zoom: 9,
-  });
-
-  const location1Btn = document.getElementById('location1');
-  const location2Btn = document.getElementById('location2');
-
-  if (location1Btn && location2Btn) {
-    location1Btn.addEventListener('click', function () {
-    map.flyTo({
-    	center: [10.7522, 59.9139],
-        essential: true,
-    });
-    });
-
-    location2Btn.addEventListener('click', function () {
-      map.flyTo({
-        center: [7.8475, 58.8733],
-        essential: true,
-      });
-    });
-};
 
 </script>
 
@@ -155,11 +55,10 @@ import Cardsm from '../components/Cardsm.astro';
 	}
 
 	h1 {
-	  @apply text-white text-4xl;
 	}
 	
 	h1 span {
-	  @apply text-purple-500 glow;
+
 	}
 
 		@keyframes glowMove {
@@ -189,17 +88,15 @@ import Cardsm from '../components/Cardsm.astro';
 	}
 	
 	.container {
-	  @apply max-w-7xl mx-auto px-4;
+		max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
 	}
 	
 	.card-grid {
-    z-index: 2;
-    grid-column-gap: 10px;
-    grid-row-gap: 10px;
-    grid-template-rows: auto auto auto;
-    grid-template-columns: repeat(4, 1fr);
-    display: grid;
-    position: relative;
+		display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
 }
 
 	</style>

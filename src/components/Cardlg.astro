@@ -7,7 +7,7 @@ interface Props {
 const {title, text}  = Astro.props;
 ---
 
-<div class="cardlg large rounded-3xl">
+<div class="cardlg">
     <h2>{title}</h2>
     <p>{text}</p>
     <slot />
@@ -27,6 +27,7 @@ const {title, text}  = Astro.props;
             overflow: hidden; /* Hide the overflowing parts of the pseudo-elements */
             grid-column: span 2;
             
+        border-radius: 20px;
         }
     
     .cardlg h2 {

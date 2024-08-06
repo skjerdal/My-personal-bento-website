@@ -1,4 +1,6 @@
 ---
+import '../styles/global.css'
+
 interface Props {
 	title: string;
 }
@@ -12,8 +14,6 @@ const { title } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <title>{title}</title>
-    <link href='https://api.mapbox.com/mapbox-gl-js/v2.8.1/mapbox-gl.css' rel='stylesheet' />
-    <script src='https://api.mapbox.com/mapbox-gl-js/v2.8.1/mapbox-gl.js'></script>
   </head>
 
   <script>
@@ -28,51 +28,3 @@ const { title } = Astro.props;
 
 </html>
 
-<style is:global>
-  @import 'tailwindcss/base';
-	@import 'tailwindcss/components';
-	@import 'tailwindcss/utilities';
-	
-  :root {
-  --background: 15, 15, 15;
-  --light-background: 240,240,240;
-  --text: 255, 255, 255;
-  --light-text: 0, 0, 0;
-
-  --grey-light: 169, 169, 169;
-  --grey: 158, 158, 158;
-  --grey-dark: 26, 25, 29;
-
-  --black: 0, 0, 0;
-  
-  --grey-gradient: linear-gradient(45deg, rgb(var(--grey)), rgb(var(--grey-light)) 30%, rgb(var(--text)) 60%);
-  --black-gradient: linear-gradient(45deg, rgb(var(--black)), rgb(var(--grey-dark)) 30%, rgb(var(--text)) 60%);
-}
-
-    html {
-		font-family: system-ui, sans-serif;
-		background-size: 224px;
-	}
-
-  body {
-    margin: 0;
-    padding: 0;
-    background-color: rgb(var(--background));
-
-    color: rgb(var(--text));
-    font-family: 'Montserrat', sans-serif;
-    line-height: 1.5;
-  }
-
-  body.lightmode  {
-    color: rgb(var(--light-text));
-    background-color: rgb(var(--light-background));
-  }
-
-  .container {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-
-</style>
