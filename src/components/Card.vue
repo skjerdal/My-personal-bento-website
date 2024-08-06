@@ -1,22 +1,45 @@
 <template>
   <div class="card" :class="{ 'card-large': large }">
     <h2>{{ title }}</h2>
-    <p>{{ text }}</p>
+    <component :is="resolveComponent(componentName)" v-if="componentName" />
+    <p v-else>{{ text }}</p>
     <slot></slot>
   </div>
 </template>
 
 <script>
+import { defineAsyncComponent, h } from 'vue';
+
 export default {
   props: {
     title: String,
     text: String,
-    large: Boolean
+    large: Boolean,
+    componentName: String
+  },
+  methods: {
+    resolveComponent(name) {
+      const componentMap = {
+        AboutMe: () => import('./card-components/AboutMe.vue'),
+        WorkExperience: () => import('./card-components/WorkExperience.vue'),
+        Education: () => import('./card-components/Education.vue'),
+        OtherLarge: () => import('./card-components/OtherLarge.vue'),
+        ContactSocial: () => import('./card-components/ContactSocial.vue'),
+        CurrentStatus: () => import('./card-components/CurrentStatus.vue'),
+        DownloadResume: () => import('./card-components/DownloadResume.vue'),
+        ExtraCard: () => import('./card-components/ExtraCard.vue')
+      };
+
+      return defineAsyncComponent(componentMap[name] || (() => h('div', 'Component not found')));
+    }
   }
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import '../styles/variables';
+@import '../styles/mixins';
+
 .card {
   background-color: rgba(26, 25, 29, 0.5);
   border-radius: 1rem;
@@ -35,11 +58,7 @@ h2 {
   margin-bottom: 1rem;
 }
 
-p {
-  font-size: 1rem;
-}
-
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .card-large {
     grid-column: span 1;
   }

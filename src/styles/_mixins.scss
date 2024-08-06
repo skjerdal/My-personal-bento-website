@@ -1,0 +1,13 @@
+@mixin flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  @mixin respond-to($breakpoint) {
+    @if map-has-key($breakpoints, $breakpoint) {
+      @media (max-width: map-get($breakpoints, $breakpoint)) {
+        @content;
+      }
+    }
+  }

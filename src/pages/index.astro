@@ -1,35 +1,30 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Card from '../components/Card.vue';
-import { largeCards, smallCards } from '../data/cardContent';
+import { cards } from '../data/cardContent';
 ---
 
 <Layout title="Your Name - Personal Website">
-  <main class="container">
-    <h1>Your Name</h1>
-    <div class="card-grid">
-      {largeCards.map(card => (
-        <Card 
-          title={card.title}
-          text={card.content}
-          large={true}
-        />
-      ))}
-      {smallCards.map(card => (
-        <Card 
-          title={card.title}
-          text={card.content}
-        />
-      ))}
-    </div>
-  </main>
-</Layout>
+	<main class="container">
+	  <h1>Your Name</h1>
+	  <div class="card-grid">
+		{cards.map(card => (
+		  <Card 
+			title={card.title}
+			text={card.content}
+			large={card.size === 'large'}
+			componentName={card.component}
+		  />
+		))}
+	  </div>
+	</main>
+  </Layout>
 
 <script>
 
 </script>
 
-<style>
+<style lang="scss">
 
 	.bubbles {
 		position: fixed;
