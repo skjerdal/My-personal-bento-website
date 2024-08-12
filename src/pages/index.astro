@@ -1,97 +1,65 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Card from '../components/Card.vue';
+import CardWrapper from '../components/CardWrapper.astro';
 import { cards } from '../data/cardContent';
 ---
 
-<Layout title="Your Name - Personal Website">
-	<main class="container">
-	  <h1>Your Name</h1>
-	  <div class="card-grid">
-		{cards.map(card => (
-		  <Card 
-			title={card.title}
-			text={card.content}
-			large={card.size === 'large'}
-			componentName={card.component}
-		  />
-		))}
-	  </div>
-	</main>
-  </Layout>
+<Layout title="Thomas Skjerdal - Personal Website">
+  <main class="container">
+    <div class="card-grid">
+      {cards.map((card) => (
+        <CardWrapper
+          isUnique={card.isUnique}
+          title={card.title}
+          content={card.content}
+          componentName={card.component}
+          position={card.position}
+          className="card"
+          style={`grid-row: ${card.position.row}; grid-column: ${card.position.col} / span ${card.position.span}`}
+          {...card}
+        />
+      ))}
+    </div>
+  </main>
+</Layout>
 
 <script>
-
+	console.log('index.astro script executed');
 </script>
 
 <style lang="scss">
+@import '../styles/variables';
+@import '../styles/mixins';
 
-	.bubbles {
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100vw;
-		height: 100vh;
-		z-index: -1;
-		pointer-events: none;
-		overflow: hidden;
-	}
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  grid-auto-rows: minmax(200px, auto);
+  grid-auto-flow: dense;
 
-	.bubble {
-		position: absolute;
-		background: rgba(164, 0, 179, 0.2);
-		border-radius: 50%;
-		animation: floatBubble ease-in-out infinite alternate, glowMove 3s infinite alternate;
-	}
+  @include respond-to(large) {
+    grid-template-columns: repeat(3, 1fr);
+  }
 
-	@keyframes floatBubble {
-	from { transform: translateY(0); }
-	to { transform: translateY(-20px); }
-	}
+  @include respond-to(medium) {
+    grid-template-columns: repeat(2, 1fr);
+  }
 
-	h1 {
-	}
-	
-	h1 span {
+  @include respond-to(small) {
+    grid-template-columns: 1fr;
+  }
+}
 
-	}
-
-		@keyframes glowMove {
-	0% { 
-		box-shadow: 0 0 5px #9d4edd, 0 0 10px #9d4edd, 0 0 15px #7e2dff, 0 0 20px #7e2dff;
-	}
-	50% { 
-		box-shadow: 0 0 10px #9d4edd, 0 0 15px #9d4edd, 0 0 20px #7e2dff, 0 0 25px #7e2dff;
-	}
-	100% { 
-		box-shadow: 0 0 5px #9d4edd, 0 0 10px #9d4edd, 0 0 15px #7e2dff, 0 0 20px #7e2dff;
-	}
-	}
-
-	@keyframes glow {
-	  0% {
-		text-shadow: 0 0 5px #9d4edd, 0 0 10px #9d4edd, 0 0 7px #9d4edd, 0 0 20px #7e2dff, 0 0 35px #7e2dff, 0 0 40px #7e2dff, 0 0 50px #7e2dff, 0 0 75px #7e2dff;
-	  }
-	  
-	  100% {
-		text-shadow: 0 0 20px #9d4edd, 0 0 30px #9d4edd, 0 0 10px #9d4edd, 0 0 50px #7e2dff, 0 0 70px #7e2dff, 0 0 80px #7e2dff, 0 0 100px #7e2dff, 0 0 150px #7e2dff;
-	  }
-	}
-	
-	.glow {
-	  animation: glow 2s ease-in-out infinite alternate;
-	}
-	
-	.container {
-		max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-	}
-	
-	.card-grid {
-		display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
+.card {
+  background-color: rgba(26, 25, 29, 0.5);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 	</style>

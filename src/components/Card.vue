@@ -1,36 +1,45 @@
 <template>
-  <div class="card" :class="{ 'card-large': large }">
-    <h2>{{ title }}</h2>
-    <component :is="resolveComponent(componentName)" v-if="componentName" />
-    <p v-else>{{ text }}</p>
+  <div class="card" :style="cardStyle">
+    <h2 v-if="componentName !== 'PokemonCard'">{{ title }}</h2>
+    <component :is="resolvedComponent" v-if="resolvedComponent && componentName !== 'PokemonCard'" />
+    <p v-else-if="componentName !== 'PokemonCard'">{{ text }}</p>
     <slot></slot>
   </div>
 </template>
 
 <script>
-import { defineAsyncComponent, h } from 'vue';
+import { defineAsyncComponent } from 'vue';
 
 export default {
   props: {
     title: String,
     text: String,
-    large: Boolean,
-    componentName: String
+    componentName: String,
+    position: Object
   },
-  methods: {
-    resolveComponent(name) {
-      const componentMap = {
-        AboutMe: () => import('./card-components/AboutMe.vue'),
-        WorkExperience: () => import('./card-components/WorkExperience.vue'),
-        Education: () => import('./card-components/Education.vue'),
-        OtherLarge: () => import('./card-components/OtherLarge.vue'),
-        ContactSocial: () => import('./card-components/ContactSocial.vue'),
-        CurrentStatus: () => import('./card-components/CurrentStatus.vue'),
-        DownloadResume: () => import('./card-components/DownloadResume.vue'),
-        ExtraCard: () => import('./card-components/ExtraCard.vue')
+  data() {
+    return {
+      resolvedComponent: null
+    }
+  },
+  computed: {
+    cardStyle() {
+      if (!this.position) return {};
+      return {
+        gridRow: `${this.position.row}`,
+        gridColumn: `${this.position.col} / span ${this.position.span || 1}`
       };
-
-      return defineAsyncComponent(componentMap[name] || (() => h('div', 'Component not found')));
+    }
+  },
+  mounted() {
+    if (this.componentName && this.componentName !== 'PokemonCard') {
+      this.resolvedComponent = defineAsyncComponent(() => 
+        import(`./card-components/${this.componentName}.vue`)
+          .catch(error => {
+            console.error('Failed to load component:', error);
+            return { template: '<p>Error loading component</p>' };
+          })
+      );
     }
   }
 }
@@ -41,26 +50,22 @@ export default {
 @import '../styles/mixins';
 
 .card {
-  background-color: rgba(26, 25, 29, 0.5);
+  background-color: $card-background;
   border-radius: 1rem;
   padding: 1.5rem;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  height: 100%;
-}
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 
-.card-large {
-  grid-column: span 2;
-}
+  h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
 
-h2 {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-}
-
-@media (max-width: 900px) {
-  .card-large {
-    grid-column: span 1;
+  @include respond-to(medium) {
+    grid-column: span 1 !important;
   }
 }
 </style>

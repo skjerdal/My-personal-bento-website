@@ -1,0 +1,12 @@
+---
+import Card from './Card.vue';
+import PokemonCard from './PokemonCard';
+
+const { isUnique, className, style, ...props } = Astro.props;
+---
+
+{isUnique ? (
+  <PokemonCard client:load className={className} style={style} {...props} />
+) : (
+  <Card client:load className={className} style={style} {...props} />
+)}
