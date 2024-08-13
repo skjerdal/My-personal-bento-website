@@ -1,57 +1,69 @@
 <template>
-  <div class="card" :style="cardStyle">
+  <div class="card" :class="className" :style="computedStyle">
     <h2 v-if="componentName !== 'PokemonCard'">{{ title }}</h2>
     <component :is="resolvedComponent" v-if="resolvedComponent && componentName !== 'PokemonCard'" />
-    <p v-else-if="componentName !== 'PokemonCard'">{{ text }}</p>
+    <p v-else-if="componentName !== 'PokemonCard'">{{ content }}</p>
     <slot></slot>
   </div>
 </template>
 
 <script>
-import { defineAsyncComponent } from 'vue';
+import { defineAsyncComponent, computed } from 'vue';
 
 export default {
   props: {
     title: String,
-    text: String,
+    content: String,
     componentName: String,
-    position: Object
+    position: Object,
+    className: String,
+    style: [String, Object]
   },
-  data() {
-    return {
-      resolvedComponent: null
-    }
-  },
-  computed: {
-    cardStyle() {
-      if (!this.position) return {};
+  setup(props) {
+    const resolvedComponent = computed(() => {
+      if (props.componentName && props.componentName !== 'PokemonCard') {
+        return defineAsyncComponent(() => 
+          import(`./card-components/${props.componentName}.vue`)
+            .catch(error => {
+              console.error('Failed to load component:', error);
+              return { template: '<p>Error loading component</p>' };
+            })
+        );
+      }
+      return null;
+    });
+
+    const computedStyle = computed(() => {
+      const baseStyle = typeof props.style === 'string' ? 
+        props.style.split(';').reduce((acc, style) => {
+          const [key, value] = style.split(':');
+          if (key && value) {
+            acc[key.trim()] = value.trim();
+          }
+          return acc;
+        }, {}) : props.style || {};
+
       return {
-        gridRow: `${this.position.row}`,
-        gridColumn: `${this.position.col} / span ${this.position.span || 1}`
+        ...baseStyle,
+        gridRow: props.position?.row,
+        gridColumn: `${props.position?.col} / span ${props.position?.span || 1}`
       };
-    }
-  },
-  mounted() {
-    if (this.componentName && this.componentName !== 'PokemonCard') {
-      this.resolvedComponent = defineAsyncComponent(() => 
-        import(`./card-components/${this.componentName}.vue`)
-          .catch(error => {
-            console.error('Failed to load component:', error);
-            return { template: '<p>Error loading component</p>' };
-          })
-      );
-    }
+    });
+
+    return {
+      resolvedComponent,
+      computedStyle
+    };
   }
 }
 </script>
-
 <style lang="scss" scoped>
 @import '../styles/variables';
 @import '../styles/mixins';
 
 .card {
   background-color: $card-background;
-  border-radius: 1rem;
+  border-radius: 2.4rem;
   padding: 1.5rem;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);

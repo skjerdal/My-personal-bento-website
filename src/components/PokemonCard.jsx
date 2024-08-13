@@ -1,67 +1,86 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Camera, GitHub, Code, Database } from 'lucide-react';
+import { Camera, Code, Database } from 'lucide-react';
 import './component-style/PokemonCard.scss';
 
-const iconComponents = { Camera, GitHub, Code, Database };
+const iconComponents = { Camera, Code, Database };
 
-const PokemonCard = ({ title, content, className, style, ...otherProps }) => {
+const PokemonCard = ({ title = '', content = '', className, style, componentName, position, ...otherProps }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const [pointerPosition, setPointerPosition] = useState({ x: 50, y: 50 });
   const [rotation, setRotation] = useState({ x: 0, y: 0 });
-  const [glowPosition, setGlowPosition] = useState({ x: 50, y: 50 });
   const cardRef = useRef(null);
 
   const handleMouseMove = (e) => {
-    if (cardRef.current) {
-      const rect = cardRef.current.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+    if (!cardRef.current) return;
 
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
 
-      const rotateX = (y - centerY) / 10;
-      const rotateY = (centerX - x) / 10;
+    setPointerPosition({ x: x * 100, y: y * 100 });
 
-      setRotation({ x: rotateX, y: rotateY });
-      setGlowPosition({ x: (x / rect.width) * 100, y: (y / rect.height) * 100 });
-    }
+    // Calculate rotation
+    const rotateY = (x - 0.5) * 20; // -10 to +10 degrees
+    const rotateX = (y - 0.5) * -20; // +10 to -10 degrees
+
+    setRotation({ x: rotateX, y: rotateY });
   };
 
+  const handleMouseEnter = () => setIsHovered(true);
   const handleMouseLeave = () => {
+    setIsHovered(false);
+    setPointerPosition({ x: 50, y: 50 });
     setRotation({ x: 0, y: 0 });
-    setGlowPosition({ x: 50, y: 50 });
   };
 
   useEffect(() => {
     const card = cardRef.current;
     if (card) {
       card.addEventListener('mousemove', handleMouseMove);
+      card.addEventListener('mouseenter', handleMouseEnter);
       card.addEventListener('mouseleave', handleMouseLeave);
     }
     return () => {
       if (card) {
         card.removeEventListener('mousemove', handleMouseMove);
+        card.removeEventListener('mouseenter', handleMouseEnter);
         card.removeEventListener('mouseleave', handleMouseLeave);
       }
     };
   }, []);
 
-  
   const renderIcon = (iconName) => {
     const IconComponent = iconComponents[iconName];
     return IconComponent ? <IconComponent size={20} /> : null;
   };
 
+  const cardStyle = {
+    ...style,
+    '--pointer-x': `${pointerPosition.x}%`,
+    '--pointer-y': `${pointerPosition.y}%`,
+    '--opacity': isHovered ? 1 : 0,
+    transform: `
+      perspective(1000px) 
+      rotateX(${rotation.x}deg) 
+      rotateY(${rotation.y}deg)
+    `,
+    transition: isHovered ? 'none' : 'transform 0.5s ease-out',
+  };
+
   return (
     <div 
       ref={cardRef} 
-      className={`pokemon-card`} // kan legge til om ein vil ha card stylen og:  ${className || ''}
-      style={{
-        ...style,
-        transform: `perspective(1000px) rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)`,
-        backgroundPosition: `${glowPosition.x}% ${glowPosition.y}%`
-      }}
+      className={`pokemon-card ${className || ''} ${isHovered ? 'hovered' : ''}`}
+      style={cardStyle}
       {...otherProps}
     >
+      <div className="card__effects">
+        <div className="card__effects__glare"></div>
+        <div className="card__effects__shine"></div>
+        <div className="card__effects__holo">
+          <div className="card__effects__holo--after"></div>
+        </div>
+      </div>
       <div className="card-content">
         <div className="card-header">
           <h2>{title || 'Your Name'}</h2>
@@ -85,10 +104,6 @@ const PokemonCard = ({ title, content, className, style, ...otherProps }) => {
           <div className="stat">
             {renderIcon('Code')}
             <span>Algorithms: 80</span>
-          </div>
-          <div className="stat">
-            {renderIcon('GitHub')}
-            <span>Open Source: 75</span>
           </div>
         </div>
       </div>
