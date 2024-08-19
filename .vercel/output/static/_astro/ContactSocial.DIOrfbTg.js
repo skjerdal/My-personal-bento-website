@@ -1,1 +1,0 @@
-import{_ as o}from"./Card.kxG7Cb12.js";import{o as t,a as e,C as s}from"./runtime-core.esm-bundler.C2EhYf4b.js";/* empty css                       */const n={name:"AboutMe"},c=s("p",null,"This is the About Me component.",-1),a=[c];function r(_,i,p,l,m,d){return t(),e("div",null,a)}const $=o(n,[["render",r]]);export{$ as default};

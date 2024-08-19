@@ -8,17 +8,18 @@ export default defineConfig({
   integrations: [vue(), react()],
   vite: {
     ssr: {
-      noExternal: ['lucide-react']
+      noExternal: ['lucide-react', 'lucide-vue-next'] // Add lucide-vue-next here
     },
     optimizeDeps: {
-      include: ['react', 'react-dom', 'lucide-react']
+      include: ['react', 'react-dom', 'lucide-react', 'lucide-vue-next'] // Add lucide-vue-next here
     },
     build: {
       rollupOptions: {
         output: {
           manualChunks: {
             'react-vendor': ['react', 'react-dom'],
-            'vue-vendor': ['vue']
+            'vue-vendor': ['vue'],
+            'lucide-vue-next-vendor': ['lucide-vue-next'] // Optionally, separate the chunk for lucide-vue-next
           }
         }
       }

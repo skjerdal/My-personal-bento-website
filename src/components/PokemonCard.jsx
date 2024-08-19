@@ -8,6 +8,7 @@ const PokemonCard = ({ title = '', content = '', className, style, componentName
   const [isHovered, setIsHovered] = useState(false);
   const [pointerPosition, setPointerPosition] = useState({ x: 50, y: 50 });
   const [rotation, setRotation] = useState({ x: 0, y: 0 });
+  const [distanceFromCenter, setDistanceFromCenter] = useState(0);
   const cardRef = useRef(null);
 
   const handleMouseMove = (e) => {
@@ -24,6 +25,11 @@ const PokemonCard = ({ title = '', content = '', className, style, componentName
     const rotateX = (y - 0.5) * -20; // +10 to -10 degrees
 
     setRotation({ x: rotateX, y: rotateY });
+
+    const centerX = 0.5;
+    const centerY = 0.5;
+    const distance = Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2));
+    setDistanceFromCenter(distance);
   };
 
   const handleMouseEnter = () => setIsHovered(true);
@@ -31,6 +37,7 @@ const PokemonCard = ({ title = '', content = '', className, style, componentName
     setIsHovered(false);
     setPointerPosition({ x: 50, y: 50 });
     setRotation({ x: 0, y: 0 });
+    setDistanceFromCenter(0);
   };
 
   useEffect(() => {
@@ -56,15 +63,16 @@ const PokemonCard = ({ title = '', content = '', className, style, componentName
 
   const cardStyle = {
     ...style,
-    '--pointer-x': `${pointerPosition.x}%`,
-    '--pointer-y': `${pointerPosition.y}%`,
-    '--opacity': isHovered ? 1 : 0,
+    '--mx': `${pointerPosition.x}%`,
+    '--my': `${pointerPosition.y}%`,
+    '--o': isHovered ? 1 : 0,
+    '--hyp': distanceFromCenter,
     transform: `
       perspective(1000px) 
       rotateX(${rotation.x}deg) 
       rotateY(${rotation.y}deg)
     `,
-    transition: isHovered ? 'none' : 'transform 0.5s ease-out',
+    transition: isHovered ? 'none' : 'transform 0.5s ease-out, box-shadow 0.5s ease-out',
   };
 
   return (
@@ -74,13 +82,8 @@ const PokemonCard = ({ title = '', content = '', className, style, componentName
       style={cardStyle}
       {...otherProps}
     >
-      <div className="card__effects">
-        <div className="card__effects__glare"></div>
-        <div className="card__effects__shine"></div>
-        <div className="card__effects__holo">
-          <div className="card__effects__holo--after"></div>
-        </div>
-      </div>
+      <div className="card__shine"></div>
+      <div className="card__glare"></div>
       <div className="card-content">
         <div className="card-header">
           <h2>{title || 'Your Name'}</h2>

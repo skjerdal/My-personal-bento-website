@@ -1,6 +1,6 @@
 import { ssrRenderAttrs } from 'vue/server-renderer';
 import { useSSRContext } from 'vue';
-import { _ as _export_sfc } from './index_Bm5XlLbI.mjs';
+import { _ as _export_sfc } from './index_FZzI_6SI.mjs';
 
 const _sfc_main = {
     name: 'AboutMe'
@@ -12,9 +12,9 @@ function _sfc_ssrRender(_ctx, _push, _parent, _attrs, $props, $setup, $data, $op
 const _sfc_setup = _sfc_main.setup;
 _sfc_main.setup = (props, ctx) => {
   const ssrContext = useSSRContext()
-  ;(ssrContext.modules || (ssrContext.modules = new Set())).add("src/components/card-components/OtherLarge.vue");
+  ;(ssrContext.modules || (ssrContext.modules = new Set())).add("src/components/card-components/CurrentStatus.vue");
   return _sfc_setup ? _sfc_setup(props, ctx) : undefined
 };
-const OtherLarge = /*#__PURE__*/_export_sfc(_sfc_main, [['ssrRender',_sfc_ssrRender]]);
+const CurrentStatus = /*#__PURE__*/_export_sfc(_sfc_main, [['ssrRender',_sfc_ssrRender]]);
 
-export { OtherLarge as default };
+export { CurrentStatus as default };

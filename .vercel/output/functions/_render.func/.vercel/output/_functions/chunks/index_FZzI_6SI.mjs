@@ -54,7 +54,7 @@ const _sfc_main = {
     const resolvedComponent = computed(() => {
       if (props.componentName && props.componentName !== 'PokemonCard') {
         return defineAsyncComponent(() => 
-          __variableDynamicImportRuntimeHelper((/* #__PURE__ */ Object.assign({"./card-components/AboutMe.vue": () => import('./AboutMe_mWeuhPmh.mjs'),"./card-components/ContactSocial.vue": () => import('./ContactSocial_DMU5vOvC.mjs'),"./card-components/CurrentStatus.vue": () => import('./CurrentStatus_CPUago_P.mjs'),"./card-components/DownloadResume.vue": () => import('./DownloadResume_40vQYUVe.mjs'),"./card-components/Education.vue": () => import('./Education_DddvoWQX.mjs'),"./card-components/ExtraCard.vue": () => import('./ExtraCard_Cb5AF3XG.mjs'),"./card-components/OtherLarge.vue": () => import('./OtherLarge_BRo1YKst.mjs'),"./card-components/WorkExperience.vue": () => import('./WorkExperience_6B6WI3la.mjs')})), `./card-components/${props.componentName}.vue`, 3)
+          __variableDynamicImportRuntimeHelper((/* #__PURE__ */ Object.assign({"./card-components/AboutMe.vue": () => import('./AboutMe_BzIELZQ2.mjs'),"./card-components/ContactSocial.vue": () => import('./ContactSocial_BvdqQT4h.mjs'),"./card-components/CurrentStatus.vue": () => import('./CurrentStatus_DuuD9jN1.mjs'),"./card-components/DownloadResume.vue": () => import('./DownloadResume_BhIiIQPD.mjs'),"./card-components/Education.vue": () => import('./Education_De52zCXm.mjs'),"./card-components/ExtraCard.vue": () => import('./ExtraCard_me_EE3il.mjs'),"./card-components/OtherLarge.vue": () => import('./OtherLarge_BFOLkqSi.mjs'),"./card-components/WorkExperience.vue": () => import('./WorkExperience_GMnFwO8S.mjs')})), `./card-components/${props.componentName}.vue`, 3)
             .catch(error => {
               console.error('Failed to load component:', error);
               return { template: '<p>Error loading component</p>' };
@@ -258,6 +258,7 @@ const PokemonCard = ({ title = "", content = "", className, style, componentName
   const [isHovered, setIsHovered] = useState(false);
   const [pointerPosition, setPointerPosition] = useState({ x: 50, y: 50 });
   const [rotation, setRotation] = useState({ x: 0, y: 0 });
+  const [distanceFromCenter, setDistanceFromCenter] = useState(0);
   const cardRef = useRef(null);
   const handleMouseMove = (e) => {
     if (!cardRef.current) return;
@@ -268,6 +269,10 @@ const PokemonCard = ({ title = "", content = "", className, style, componentName
     const rotateY = (x - 0.5) * 20;
     const rotateX = (y - 0.5) * -20;
     setRotation({ x: rotateX, y: rotateY });
+    const centerX = 0.5;
+    const centerY = 0.5;
+    const distance = Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2));
+    setDistanceFromCenter(distance);
   };
   const handleMouseEnter = () => setIsHovered(true);
   const handleMouseLeave = () => {
@@ -299,6 +304,7 @@ const PokemonCard = ({ title = "", content = "", className, style, componentName
     "--pointer-x": `${pointerPosition.x}%`,
     "--pointer-y": `${pointerPosition.y}%`,
     "--opacity": isHovered ? 1 : 0,
+    "--distance-from-center": distanceFromCenter,
     transform: `
       perspective(1000px) 
       rotateX(${rotation.x}deg) 

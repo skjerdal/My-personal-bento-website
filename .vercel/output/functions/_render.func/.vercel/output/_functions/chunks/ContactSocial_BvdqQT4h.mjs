@@ -1,6 +1,6 @@
 import { ssrRenderAttrs } from 'vue/server-renderer';
 import { useSSRContext } from 'vue';
-import { _ as _export_sfc } from './index_Bm5XlLbI.mjs';
+import { _ as _export_sfc } from './index_FZzI_6SI.mjs';
 
 const _sfc_main = {
     name: 'AboutMe'

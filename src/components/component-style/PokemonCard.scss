@@ -1,9 +1,13 @@
 .pokemon-card {
+  --space: 5%;
+  --angle: 133deg;
+  --imgsize: 50%;
+
   position: relative;
   border-radius: 2.4rem;
   overflow: hidden;
-  will-change: transform, opacity;
-  transform: perspective(100vw) rotateX(0deg) rotateY(0deg);
+  will-change: transform;
+  transform-style: preserve-3d;
   transition: transform 0.1s ease-out, box-shadow 0.1s ease-out;
   background: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
@@ -14,114 +18,82 @@
   &.hovered {
     box-shadow: 0 20px 30px rgba(0, 0, 0, 0.3);
   }
-  .card__effects {
+
+  .card__shine,
+  .card__shine:after {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    z-index: 2;
-
-    &__glare {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: radial-gradient(
-        farthest-corner circle at var(--pointer-x) var(--pointer-y),
-        rgba(237,237,237,0.6) 0%,
-        rgba(237,237,237,0.6) 20%,
-        rgba(0,0,0,0.3) 90%
+    right: 0;
+    bottom: 0;
+    background-image: 
+      url(/illusion.png),
+      repeating-linear-gradient(
+        0deg,
+        rgb(255, 119, 115) calc(var(--space) * 1),
+        rgba(255, 237, 95, 1) calc(var(--space) * 2),
+        rgba(168, 255, 95, 1) calc(var(--space) * 3),
+        rgba(131, 255, 247, 1) calc(var(--space) * 4),
+        rgba(120, 148, 255, 1) calc(var(--space) * 5),
+        rgb(216, 117, 255) calc(var(--space) * 6),
+        rgb(255, 119, 115) calc(var(--space) * 7)
+      ),
+      repeating-linear-gradient(
+        var(--angle),
+        #0e152e 0%,
+        hsl(180, 10%, 60%) 3.8%,
+        hsl(180, 29%, 66%) 4.5%,
+        hsl(180, 10%, 60%) 5.2%,
+        #0e152e 10%,
+        #0e152e 12%
+      ),
+      radial-gradient(
+        farthest-corner circle at var(--mx) var(--my),
+        rgba(0, 0, 0, 0.1) 12%,
+        rgba(0, 0, 0, 0.15) 20%,
+        rgba(0, 0, 0, 0.25) 120%
       );
-      mix-blend-mode: overlay;
-      opacity: calc(var(--opacity) * 0.5);
-      transform: translateZ(2px);
-    }
 
-    &__shine {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: transparent;
-      mix-blend-mode: color-dodge;
-      filter: brightness(0.85) contrast(2.75) saturate(0.65);
-      opacity: var(--opacity);
-      transform: translateZ(2px);
-    }
+    background-blend-mode: exclusion, hue, hard-light;
+    background-size: var(--imgsize), 200% 700%, 300%, 200%;
+    background-position: center, 0% var(--my), var(--mx) var(--my), var(--mx) var(--my);
+    filter: brightness(calc((var(--hyp) * 0.3) + 0.5)) contrast(2) saturate(1.5);
 
-    &__holo {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      --space: 5%;
-      --angle: 133deg;
-      --imgsize: 50% 42%;
-      background-image: 
-        url(/illusion.png),
-        repeating-linear-gradient(0deg, 
-          rgb(255,119,115) calc(var(--space) * 1),
-          rgb(255,237,95) calc(var(--space) * 2),
-          rgb(168,255,95) calc(var(--space) * 3),
-          rgb(131,255,247) calc(var(--space) * 4),
-          rgb(120,148,255) calc(var(--space) * 5),
-          rgb(216,117,255) calc(var(--space) * 6),
-          rgb(255,119,115) calc(var(--space) * 7)
-        ),
-        repeating-linear-gradient(var(--angle),
-          #0e152e 0%,
-          hsl(180,10%,60%) 3.8%,
-          hsl(180,29%,66%) 4.5%,
-          hsl(180,10%,60%) 5.2%,
-          #0e152e 10%,
-          #0e152e 12%
-        ),
-        radial-gradient(
-          farthest-corner circle at var(--pointer-x) var(--pointer-y),
-          rgba(0,0,0,0.1) 12%,
-          rgba(0,0,0,0.15) 20%,
-          rgba(0,0,0,0.25) 120%
-        );
-      background-blend-mode: exclusion, hue, hard-light;
-      background-size: var(--imgsize), 200% 700%, 300% 100%, 200% 100%;
-      background-position: 
-        center center,
-        0% var(--pointer-y),
-        var(--pointer-x) var(--pointer-y),
-        var(--pointer-x) var(--pointer-y);
-      filter: brightness(0.53) contrast(2) saturate(1.5);
-      mix-blend-mode: color-dodge;
-      opacity: var(--opacity);
-      z-index: -3;
-      transform: translateZ(-3px);
+  }
 
-      &--after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-image: inherit;
-        background-blend-mode: exclusion;
-        background-size: var(--imgsize), 200% 400%, 195% 100%, 200% 100%;
-        background-position: 
-          center center,
-          0% var(--pointer-y),
-          calc(var(--pointer-x) * -1) calc(var(--pointer-y) * -1),
-          var(--pointer-x) var(--pointer-y);
-        filter: brightness(0.85) contrast(1.6) saturate(1.4);
-        mix-blend-mode: exclusion;
-        opacity: var(--opacity);
-        z-index: -4;
-        transform: translateZ(-4px);
-      }
-    }
+  .card__shine {
+    z-index: 3;
+    mix-blend-mode: color-dodge;
+    opacity: var(--o);
+  }
+
+  .card__shine:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-size: var(--imgsize), 200% 400%, 195%, 200%;
+    background-position: center, 0% var(--my), calc(var(--mx) *-1) calc(var(--my) * -1), var(--mx) var(--my);
+
+    filter: brightness(calc((var(--hyp) * 0.5) + 0.8)) contrast(1.6) saturate(1.4);
+    mix-blend-mode: exclusion;
+  }
+
+  .card__glare {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 3;
+    background-image: radial-gradient(farthest-corner circle at var(--mx) var(--my), hsl(0, 0%, 100%) 0%, hsla(210, 3%, 54%, 0.33) 45%, hsla(0, 0%, 20%, 0.9) 130%);
+    mix-blend-mode: overlay;
+    background-position: center;
+    background-size: 200% 200%;
+    pointer-events: none;
+    opacity: calc(var(--o)*0.5);
   }
 
   .card-content {
@@ -129,23 +101,12 @@
     width: 100%;
     height: 100%;
     padding: 20px;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(158, 16, 16, 0.9);
     border-radius: 2.4rem;
     display: flex;
     flex-direction: column;
     color: black;
     z-index: 1;
-  }
-
-  .card-glare {
-    position: absolute;
-    width: 200px;
-    height: 200px;
-    background: radial-gradient(circle at center, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 80%);
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.2s ease-out;
-    z-index: 2;
   }
 
   .card-header {
