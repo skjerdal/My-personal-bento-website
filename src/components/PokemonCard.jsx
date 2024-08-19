@@ -7,6 +7,7 @@ const iconComponents = { Camera, Code, Database };
 const PokemonCard = ({ title = '', content = '', className, style, componentName, position, ...otherProps }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [pointerPosition, setPointerPosition] = useState({ x: 50, y: 50 });
+  const [backgroundPosition, setBackgroundPosition] = useState({ x: 50, y: 50 });
   const [rotation, setRotation] = useState({ x: 0, y: 0 });
   const [distanceFromCenter, setDistanceFromCenter] = useState(0);
   const cardRef = useRef(null);
@@ -18,7 +19,16 @@ const PokemonCard = ({ title = '', content = '', className, style, componentName
     const x = (e.clientX - rect.left) / rect.width;
     const y = (e.clientY - rect.top) / rect.height;
 
+     // Set pointer position
     setPointerPosition({ x: x * 100, y: y * 100 });
+
+
+    // Set background position (with adjusted range and smoothing)
+    setBackgroundPosition(prev => ({
+      x: prev.x + (adjust(x * 100, 0, 100, 37, 63) - prev.x) * 0.1,
+      y: prev.y + (adjust(y * 100, 0, 100, 33, 67) - prev.y) * 0.1
+    }));
+
 
     // Calculate rotation
     const rotateY = (x - 0.5) * 20; // -10 to +10 degrees
@@ -26,16 +36,22 @@ const PokemonCard = ({ title = '', content = '', className, style, componentName
 
     setRotation({ x: rotateX, y: rotateY });
 
+    // Calc distance from center
     const centerX = 0.5;
     const centerY = 0.5;
     const distance = Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2));
     setDistanceFromCenter(distance);
   };
 
+  const adjust = (value, fromMin, fromMax, toMin, toMax) => {
+    return toMin + (toMax - toMin) * ((value - fromMin) / (fromMax - fromMin));
+  };
+
   const handleMouseEnter = () => setIsHovered(true);
   const handleMouseLeave = () => {
     setIsHovered(false);
     setPointerPosition({ x: 50, y: 50 });
+    setBackgroundPosition({ x: 50, y: 50 });
     setRotation({ x: 0, y: 0 });
     setDistanceFromCenter(0);
   };
@@ -63,16 +79,15 @@ const PokemonCard = ({ title = '', content = '', className, style, componentName
 
   const cardStyle = {
     ...style,
-    '--mx': `${pointerPosition.x}%`,
-    '--my': `${pointerPosition.y}%`,
-    '--o': isHovered ? 1 : 0,
+    '--pointer-x': `${pointerPosition.x}%`,
+    '--pointer-y': `${pointerPosition.y}%`,
+    '--background-x': `${backgroundPosition.x}%`,
+    '--background-y': `${backgroundPosition.y}%`,
+    '--card-opacity': isHovered ? 1 : 0,
     '--hyp': distanceFromCenter,
-    transform: `
-      perspective(1000px) 
-      rotateX(${rotation.x}deg) 
-      rotateY(${rotation.y}deg)
-    `,
-    transition: isHovered ? 'none' : 'transform 0.5s ease-out, box-shadow 0.5s ease-out',
+    '--rotate-x': `${rotation.x}deg`,
+    '--rotate-y': `${rotation.y}deg`,
+    transition: isHovered ? 'none' : 'all 0.5s ease-out',
   };
 
   return (

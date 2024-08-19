@@ -15,6 +15,11 @@
   -webkit-font-smoothing: antialiased;
   user-select: none;
 
+  transform: 
+  perspective(1000px)
+  rotateX(var(--rotate-x))
+  rotateY(var(--rotate-y));
+  
   &.hovered {
     box-shadow: 0 20px 30px rgba(0, 0, 0, 0.3);
   }
@@ -48,7 +53,7 @@
         #0e152e 12%
       ),
       radial-gradient(
-        farthest-corner circle at var(--mx) var(--my),
+        farthest-corner circle at var(--pointer-x) var(--pointer-y),
         rgba(0, 0, 0, 0.1) 12%,
         rgba(0, 0, 0, 0.15) 20%,
         rgba(0, 0, 0, 0.25) 120%
@@ -56,7 +61,7 @@
 
     background-blend-mode: exclusion, hue, hard-light;
     background-size: var(--imgsize), 200% 700%, 300%, 200%;
-    background-position: center, 0% var(--my), var(--mx) var(--my), var(--mx) var(--my);
+    background-position: center, 0% var(--background-y), var(--background-x) var(--background-y), var(--background-x) var(--background-y);
     filter: brightness(calc((var(--hyp) * 0.3) + 0.5)) contrast(2) saturate(1.5);
 
   }
@@ -64,7 +69,7 @@
   .card__shine {
     z-index: 3;
     mix-blend-mode: color-dodge;
-    opacity: var(--o);
+    opacity: var(--card-opacity);
   }
 
   .card__shine:after {
@@ -75,7 +80,7 @@
     right: 0;
     bottom: 0;
     background-size: var(--imgsize), 200% 400%, 195%, 200%;
-    background-position: center, 0% var(--my), calc(var(--mx) *-1) calc(var(--my) * -1), var(--mx) var(--my);
+    background-position: center, 0% var(--background-y), calc(var(--background-x) *-1) calc(var(--background-y) * -1), var(--background-x) var(--background-y);
 
     filter: brightness(calc((var(--hyp) * 0.5) + 0.8)) contrast(1.6) saturate(1.4);
     mix-blend-mode: exclusion;
@@ -88,7 +93,7 @@
     right: 0;
     bottom: 0;
     z-index: 3;
-    background-image: radial-gradient(farthest-corner circle at var(--mx) var(--my), hsl(0, 0%, 100%) 0%, hsla(210, 3%, 54%, 0.33) 45%, hsla(0, 0%, 20%, 0.9) 130%);
+    background-image: radial-gradient(farthest-corner circle at var(--pointer-x) var(--pointer-y), hsl(0, 0%, 100%) 0%, hsla(210, 3%, 54%, 0.33) 45%, hsla(0, 0%, 20%, 0.9) 130%);
     mix-blend-mode: overlay;
     background-position: center;
     background-size: 200% 200%;
