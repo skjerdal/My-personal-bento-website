@@ -2,9 +2,11 @@
 import Card from './Card.vue';
 import PokemonCard from './PokemonCard';
 
-const { isUnique, className, style, componentName, position, title, content, ...props } = Astro.props;
+const { isUnique, title, content, componentName, position, className, style } = Astro.props;
+const span = position?.span || 1;
 ---
 
+<div class={`card ${className || ''}`} data-span={span} style={style}>
 {isUnique ? (
   <PokemonCard 
     client:load 
@@ -14,7 +16,6 @@ const { isUnique, className, style, componentName, position, title, content, ...
     position={position}
     title={title}
     content={content}
-    {...props}
   />
 ) : (
   <Card 
@@ -25,6 +26,6 @@ const { isUnique, className, style, componentName, position, title, content, ...
     position={position}
     title={title}
     content={content}
-    {...props}
   />
 )}
+</div>

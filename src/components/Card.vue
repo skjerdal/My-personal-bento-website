@@ -1,5 +1,5 @@
 <template>
-  <div class="card" :class="className" :style="computedStyle">
+  <div class="card" :class="className" :style="computedStyle" :data-span="position?.span || 1">
     <h2 v-if="componentName !== 'PokemonCard'">{{ title }}</h2>
     <component :is="resolvedComponent" v-if="resolvedComponent && componentName !== 'PokemonCard'" />
     <p v-else-if="componentName !== 'PokemonCard'">{{ content }}</p>
@@ -45,8 +45,6 @@ export default {
 
       return {
         ...baseStyle,
-        gridRow: props.position?.row,
-        gridColumn: `${props.position?.col} / span ${props.position?.span || 1}`
       };
     });
 

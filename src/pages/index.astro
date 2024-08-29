@@ -33,7 +33,7 @@ import { cards } from '../data/cardContent';
 .card-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+  gap: 14px;
   grid-auto-rows: minmax(200px, auto);
   grid-auto-flow: dense;
 
@@ -59,6 +59,16 @@ import { cards } from '../data/cardContent';
   display: flex;
   flex-direction: column;
   overflow: hidden;
+
+  @include respond-to(small) {
+    &[data-span="2"] {
+      grid-column: span 2;
+    }
+
+    &[data-span="3"] {
+      grid-column: span 3;
+    }
+  }
 }
 
 	</style>
