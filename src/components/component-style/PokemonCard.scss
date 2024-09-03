@@ -2,7 +2,7 @@
   --space: 5%;
   --angle: 133deg;
   --imgsize: 50%;
-
+  height: 459px;
   position: relative;
   border-radius: 2.4rem;
   overflow: hidden;
@@ -91,7 +91,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: 3;
+    z-index: 2;
     background-image: radial-gradient(farthest-corner circle at var(--pointer-x) var(--pointer-y), hsl(0, 0%, 100%) 0%, hsla(210, 3%, 54%, 0.33) 45%, hsla(0, 0%, 20%, 0.9) 130%);
     mix-blend-mode: overlay;
     background-position: center;

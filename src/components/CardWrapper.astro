@@ -6,26 +6,25 @@ const { isUnique, title, content, componentName, position, className, style } = 
 const span = position?.span || 1;
 ---
 
-<div class={`card ${className || ''}`} data-span={span} style={style}>
-{isUnique ? (
-  <PokemonCard 
-    client:load 
-    className={className} 
-    style={style} 
-    componentName={componentName}
-    position={position}
-    title={title}
-    content={content}
-  />
-) : (
-  <Card 
-    client:load 
-    className={className} 
-    style={style} 
-    componentName={componentName}
-    position={position}
-    title={title}
-    content={content}
-  />
-)}
+<div class={`card ${className || ''}`} data-span={span} style={`grid-column: span ${span}; display: grid;`}>
+  {isUnique ? (
+    <PokemonCard 
+      client:load 
+      className={className} 
+      componentName={componentName}
+      position={position}
+      title={title}
+      content={content}
+      style={style}
+    />
+  ) : (
+    <Card 
+      client:load 
+      className={className} 
+      componentName={componentName}
+      position={position}
+      title={title}
+      content={content}
+    />
+  )}
 </div>

@@ -13,5 +13,5 @@ body {
   @include flex-center;
   max-width: map-get($breakpoints, large);
   margin: 0 auto;
-  padding: 14px;
+  padding: 14px 0 0 0;
 }

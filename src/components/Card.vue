@@ -1,5 +1,5 @@
 <template>
-  <div class="card" :class="className" :style="computedStyle" :data-span="position?.span || 1">
+  <div class="card" :class="className" :data-span="position?.span || 1">
     <h2 v-if="componentName !== 'PokemonCard'">{{ title }}</h2>
     <component :is="resolvedComponent" v-if="resolvedComponent && componentName !== 'PokemonCard'" />
     <p v-else-if="componentName !== 'PokemonCard'">{{ content }}</p>
@@ -63,7 +63,7 @@ export default {
   background-color: $card-background;
   border-radius: 2.4rem;
   padding: 1.5rem;
-  height: 433px;
+  height: calc(433px - 1.5rem);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
@@ -75,8 +75,25 @@ export default {
     margin-bottom: 1rem;
   }
 
+  &[data-span="2"] {
+    grid-column: span 2;
+  }
+
+  &[data-span="3"] {
+    grid-column: span 3;
+  }
+
   @include respond-to(medium) {
-    grid-column: span 1 !important;
+    &[data-span="3"] {
+      grid-column: span 2;
+    }
+  }
+
+  @include respond-to(small) {
+    &[data-span="2"],
+    &[data-span="3"] {
+      grid-column: span 1;
+    }
   }
 }
 </style>
