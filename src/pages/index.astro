@@ -15,7 +15,7 @@ import { cards } from '../data/cardContent';
           componentName={card.component}
           position={card.position}
           className="card"
-          style={`grid-row: ${card.position.row}; grid-column: ${card.position.col} / span ${card.position.span}`}
+          style={`grid-column: span ${card.position.span}`}
         />
       ))}
     </div>
@@ -29,6 +29,7 @@ import { cards } from '../data/cardContent';
 <style lang="scss">
 @import '../styles/variables';
 @import '../styles/mixins';
+@import '../styles/functions';
 
 .card-grid {
   display: grid;
@@ -39,14 +40,17 @@ import { cards } from '../data/cardContent';
 
   @include respond-to(large) {
     grid-template-columns: repeat(3, 1fr);
+    max-width: breakpoint(medium);
   }
 
   @include respond-to(medium) {
     grid-template-columns: repeat(2, 1fr);
+    max-width: breakpoint(small);
   }
 
   @include respond-to(small) {
     grid-template-columns: 1fr;
+    max-width: breakpoint(x-small);
   }
 }
 
