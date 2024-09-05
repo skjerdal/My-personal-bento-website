@@ -28,3 +28,32 @@ const span = position?.span || 1;
     />
   )}
 </div>
+
+<style lang="scss" scoped>
+  @import '../styles/variables';
+  @import '../styles/mixins';
+  @import '../styles/functions';
+
+.card {
+  &[data-span="2"] {
+    grid-column: span 2;
+  }
+
+  &[data-span="3"] {
+    grid-column: span 3;
+  }
+
+  @include respond-to(medium) {
+    &[data-span="3"] {
+      grid-column: span 2 !important;
+    }
+  }
+
+  @include respond-to(small) {
+    &[data-span="2"],
+    &[data-span="3"] {
+      grid-column: span 1 !important;
+    }
+  }
+}
+</style>

@@ -74,26 +74,5 @@ export default {
     font-size: 1.5rem;
     margin-bottom: 1rem;
   }
-
-  &[data-span="2"] {
-    grid-column: span 2;
-  }
-
-  &[data-span="3"] {
-    grid-column: span 3;
-  }
-
-  @include respond-to(medium) {
-    &[data-span="3"] {
-      grid-column: span 2;
-    }
-  }
-
-  @include respond-to(small) {
-    &[data-span="2"],
-    &[data-span="3"] {
-      grid-column: span 1;
-    }
-  }
 }
 </style>
