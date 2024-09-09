@@ -14,7 +14,7 @@ type Card = {
 export const cards: Card[] = [
   {
     id: 'about',
-    title: 'About Me',
+    title: 'Thomas Skjerdal',
     content: 'A brief introduction about yourself...',
     component: 'PokemonCard',
     position: { span: 1 },
