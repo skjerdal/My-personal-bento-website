@@ -1,10 +1,12 @@
 .pokemon-card {
   --space: 5%;
   --angle: 133deg;
-  --imgsize: 50%;
-  aspect-ratio: 63/88;
+  --imgsize:50%;
+  aspect-ratio: 65/90;
+  //height: 459px;
+  //width: 310px;
   position: relative;
-  border-radius: 17px;
+  border-radius: 2.4rem;
   overflow: hidden;
   will-change: transform;
   transform-style: preserve-3d;
@@ -127,12 +129,31 @@
   }
 
   .type {
-    background-color: #4a90e2;
-    color: white;
-    padding: 3px 8px;
-    border-radius: 2.4rem;
+    background: linear-gradient(180deg, 
+    #606060 0%,    /* Darkest gray at the top */
+    #a0a0a0 20%,   /* Darker gray transition */
+    #e0e0e0 35%,   /* Lighter gray transition */
+    #ffffff 50%,   /* Main highlight */
+    #d0d0d0 65%,   /* Lighter gray after highlight */
+    #b0b0b0 80%,   /* Extended lighter gray */
+    #808080 100%   /* Dark gray at the bottom */
+  );
+
+
+    color: #1a1a1a;
+    padding: 3px 12px;
+    border-radius: 12px 2px 12px 2px;
     font-size: 0.8em;
-    z-index: -10;
+    font-weight: bold;
+    z-index: 1;
+    box-shadow: 
+      0 1px 3px rgba(0, 0, 0, 0.3), 
+      inset 0 1px 1px rgba(255, 255, 255, 0.6),
+      inset 0 -1px 2px rgba(0, 0, 0, 0.3);
+  
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
+    position: relative;
+    overflow: hidden;
   }
 
   .card-image {
