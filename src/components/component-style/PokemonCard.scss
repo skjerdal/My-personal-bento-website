@@ -108,58 +108,79 @@
     left: 0;
     bottom: 0;
     right: 0;
-    padding: 10px;
     background: rgba(158, 16, 16, 0.9);
+    display: grid;
     display: flex;
     flex-direction: column;
     color: black;
     z-index: 1;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0px;
+      border: 11px solid rgb(131, 40, 40);
+      border-radius: 2.4rem;
+      pointer-events: none;
+      z-index: -1;
+    }
   }
 
   .card-header {
     display: flex;
-    justify-content: space-between;
+    position: relative;
+    width: 100%;
+    margin-top: 12px;
     align-items: center;
-    margin-bottom: 15px;
-
     h2 {
-      font-size: 1.5em;
-      margin: 0;
+      font-size: 20px;
+      margin-top: 0;
+      margin-bottom: 0;
     }
   }
 
   .type {
-    background: linear-gradient(180deg, 
-    #606060 0%,    /* Darkest gray at the top */
-    #a0a0a0 20%,   /* Darker gray transition */
-    #e0e0e0 35%,   /* Lighter gray transition */
-    #ffffff 50%,   /* Main highlight */
-    #d0d0d0 65%,   /* Lighter gray after highlight */
-    #b0b0b0 80%,   /* Extended lighter gray */
-    #808080 100%   /* Dark gray at the bottom */
-  );
-
-
+    background: rgb(123,124,121);
+    background: linear-gradient(0deg, 
+      rgba(123,124,121,1) 0%, 
+      rgba(123,124,121,1) 20%, 
+      rgba(255,255,255,1) 50%, 
+      rgba(255,255,255,1) 74%, 
+      rgba(167,170,169,1) 80%, 
+      rgba(167,170,169,1) 85%, 
+      rgba(213,212,211,1) 90%
+    );
     color: #1a1a1a;
-    padding: 3px 12px;
+    padding: 3px 5px;
     border-radius: 12px 2px 12px 2px;
-    font-size: 0.8em;
+    font-size: 12px;
     font-weight: bold;
+    font-style: italic;
+
+    margin: 3px 0px 0px 8px;
     z-index: 1;
     box-shadow: 
       0 1px 3px rgba(0, 0, 0, 0.3), 
       inset 0 1px 1px rgba(255, 255, 255, 0.6),
       inset 0 -1px 2px rgba(0, 0, 0, 0.3);
-  
-    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
-    position: relative;
+    text-transform: uppercase;
+
+    text-shadow: 
+    -1px -1px 0 white,  
+     1px -1px 0 white,
+    -1px  1px 0 white,
+     1px  1px 0 white;
+     
     overflow: hidden;
+  }
+
+  .card-title {
+    margin-left: 10px;
   }
 
   .card-image {
     text-align: center;
     margin-bottom: 15px;
-
     img {
       width: 150px;
       height: 150px;
@@ -185,4 +206,37 @@
     gap: 5px;
     font-size: 0.9em;
   }
+
+  .card-skills {
+    h3 {
+      font-size: 1.2em;
+      margin-bottom: 5px;
+      color: #ffcb05; // Pokémon yellow
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+      li {
+        background: rgba(255, 255, 255, 0.1);
+        margin: 2px 0;
+        padding: 2px 5px;
+        border-radius: 3px;
+        font-size: 0.9em;
+      }
+    }
+  }
+
+  .card-experience {
+    h3 {
+      font-size: 1.2em;
+      margin-bottom: 5px;
+      color: #ffcb05; // Pokémon yellow
+    }
+    p {
+      font-size: 0.9em;
+      margin: 2px 0;
+    }
+  }
+
 }

@@ -101,28 +101,37 @@ const PokemonCard = ({ title = '', content = '', className, style, componentName
       <div className="card__glare"></div>
       <div className="card-content">
         <div className="card-header">
-          <h2>{title || 'Your Name'}</h2>
           <span className="type">Developer</span>
+          <h2 className="card-title">{title || 'Your Name'}</h2>
         </div>
         <div className="card-image">
           <img src="./Default_pfp.png" alt="Profile" />
         </div>
         <div className="card-body">
-          <p>{content || 'A passionate developer with a love for creating interactive and engaging web experiences.'}</p>
+          <p className="description">{content || 'A passionate full-stack developer with a love for creating interactive and engaging web experiences.'}</p>
         </div>
         <div className="card-stats">
           <div className="stat">
-            {renderIcon('Camera')}
+            {renderIcon('Code')}
             <span>Front-end: 90</span>
           </div>
           <div className="stat">
             {renderIcon('Database')}
             <span>Back-end: 85</span>
           </div>
-          <div className="stat">
-            {renderIcon('Code')}
-            <span>Algorithms: 80</span>
-          </div>
+        </div>
+        <div className="card-skills">
+          <h3>Special Skills</h3>
+          <ul>
+            <li>React Mastery</li>
+            <li>Node.js Expert</li>
+            <li>UI/UX Design</li>
+          </ul>
+        </div>
+        <div className="card-experience">
+          <h3>Experience</h3>
+          <p>5+ years in web development</p>
+          <p>Led 10+ successful projects</p>
         </div>
       </div>
     </div>
