@@ -15,27 +15,14 @@
 <script>
 import { ref } from 'vue';
 import Carousel from '../Carousel.vue';
+import { cards } from '../../data/cardContent';
 
 export default {
   components: {
     Carousel
   },
   setup() {
-    const jobs = ref([
-      {
-        company: 'Company A',
-        title: '1',
-        period: 'Jan 2020 - Present',
-        description: 'Developed and maintained web applications using Vue.js and Node.js.'
-      },
-      {
-        company: 'Company B',
-        title: '2',
-        period: 'Jun 2018 - Dec 2019',
-        description: 'Assisted in the development of mobile apps using React Native and Firebase.'
-      },
-      // Add more job entries as needed
-    ]);
+    const jobs = ref(cards.find(card => card.id === 'work').data);
 
     return { jobs };
   }
