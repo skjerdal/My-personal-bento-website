@@ -16,7 +16,7 @@ export const cards: Card[] = [
   {
     id: 'about',
     title: 'Thomas Skjerdal',
-    content: 'A brief introduction about yourself...',
+    content: 'A passionate full-stack developer with a love for creating interactive and engaging web experiences.',
     component: 'PokemonCard',
     position: { span: 1 },
     isUnique: true

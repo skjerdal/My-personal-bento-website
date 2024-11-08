@@ -105,7 +105,7 @@ const PokemonCard = ({ title = '', content = '', className, style, componentName
           <h2 className="card-title">{title || 'Your Name'}</h2>
         </div>
         <div className="card-image">
-          <img src="./Default_pfp.png" alt="Profile" />
+          <img src="./profil.jpg" alt="Profile" />
         </div>
         <div className="card-body">
           <p className="description">{content || 'A passionate full-stack developer with a love for creating interactive and engaging web experiences.'}</p>
