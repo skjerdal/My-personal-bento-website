@@ -24,34 +24,3 @@ import { cards } from '../data/cardContent';
 <script>
 	console.log('index.astro script executed');
 </script>
-
-<style lang="scss">
-@import '../styles/variables';
-@import '../styles/mixins';
-@import '../styles/functions';
-
-.card-grid {
-  display: grid;
-  align-items: center;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
-  grid-auto-flow: dense;
-  max-width: breakpoint(large);
-
-  @include respond-to(large) {
-    grid-template-columns: repeat(3, 1fr);
-    max-width: breakpoint(medium);
-  }
-
-  @include respond-to(medium) {
-    grid-template-columns: repeat(2, 1fr);
-    max-width: breakpoint(small);
-  }
-
-  @include respond-to(small) {
-    grid-template-columns: repeat(1, 1fr);
-    max-width: breakpoint(x-small);
-  }
-}
-
-	</style>
