@@ -1,28 +1,158 @@
 .pokemon-card {
   --space: 5%;
   --angle: 133deg;
-  --imgsize:50%;
+  --imgsize: 50%;
   aspect-ratio: 65/90;
-  //height: 459px;
-  //width: 310px;
   position: relative;
-  border-radius: 2.4rem;
+  border-radius: 1.5rem;
   overflow: hidden;
   will-change: transform;
   transform-style: preserve-3d;
-  transition: transform 0.1s ease-out, box-shadow 0.1s ease-out;
-  background: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
+  transition: transform 0.8s ease-out, box-shadow 0.3s ease-out;
+  background: linear-gradient(45deg, #ffcb05 0%, #ffde5a 99%, #ffde5a 100%);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
   cursor: pointer;
   -webkit-font-smoothing: antialiased;
+  z-index: 1;
 
+  // Initial transform state
   transform: 
-  perspective(1000px)
-  rotateX(var(--rotate-x))
-  rotateY(var(--rotate-y));
+    perspective(1000px)
+    rotateX(var(--rotate-x, 0deg))
+    rotateY(var(--rotate-y, 0deg));
+  
+  // Apply a default transition to all properties
+  &.initialized {
+    transition: transform 0.8s ease-out, box-shadow 0.3s ease-out;
+  }
   
   &.hovered {
     box-shadow: 0 20px 30px rgba(0, 0, 0, 0.3);
+    transition: transform 0.1s ease-out, box-shadow 0.3s ease-out;
+  }
+  
+  // Flipping animation
+  &.flipping {
+    transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                top 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                left 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                width 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                height 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                box-shadow 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform: perspective(1000px) rotateY(180deg);
+    pointer-events: none;
+  }
+  
+  // Fullscreen state
+  &.fullscreen {
+    position: fixed;
+    top: 50% !important;
+    left: 50% !important;
+    transform: perspective(1000px) translate(-50%, -50%) rotateY(0deg);
+    width: min(90vw, calc(90vh * (65/90)));
+    height: min(90vh, calc(90vw * (90/65)));
+    max-width: 600px;
+    max-height: 830px;
+    z-index: 1000;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+    
+    &.flipping {
+      transform: perspective(1000px) translate(-50%, -50%) rotateY(180deg);
+    }
+    
+    .card-content {
+      font-size: calc(12px * 1.5);
+      padding: 16px;
+      
+      &::before {
+        border-width: 10px;
+      }
+    }
+    
+    .card-header {
+      margin-bottom: 16px;
+      
+      .card-title {
+        font-size: 28px;
+      }
+      
+      .hp {
+        font-size: 20px;
+        padding: 4px 10px;
+      }
+    }
+    
+    .type {
+      font-size: 14px;
+      padding: 4px 10px;
+    }
+    
+    .card-image-container {
+      padding: 16px;
+      margin-bottom: 16px;
+      
+      .card-image img {
+        width: 120px;
+        height: 120px;
+        border-width: 3px;
+      }
+      
+      .card-subtitle {
+        font-size: 14px;
+        padding: 4px 12px;
+      }
+    }
+    
+    .card-description {
+      padding: 12px;
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+    
+    .card-skills {
+      gap: 10px;
+      margin-bottom: 16px;
+      
+      .skill-header {
+        margin-bottom: 4px;
+        
+        .skill-name {
+          font-size: 14px;
+        }
+        
+        .skill-value {
+          font-size: 14px;
+        }
+      }
+      
+      .skill-bar-container {
+        height: 10px;
+      }
+    }
+    
+    .card-footer {
+      .special-attack {
+        padding: 8px 12px;
+        margin-bottom: 10px;
+        
+        .attack-cost {
+          font-size: 18px;
+        }
+        
+        .attack-name {
+          font-size: 16px;
+        }
+        
+        .attack-damage {
+          font-size: 20px;
+        }
+      }
+      
+      .card-info {
+        font-size: 12px;
+        padding-top: 6px;
+      }
+    }
   }
 
   .card__shine,
@@ -54,7 +184,7 @@
         #0e152e 12%
       ),
       radial-gradient(
-        farthest-corner circle at var(--pointer-x) var(--pointer-y),
+        farthest-corner circle at var(--pointer-x, 50%) var(--pointer-y, 50%),
         rgba(0, 0, 0, 0.1) 12%,
         rgba(0, 0, 0, 0.15) 20%,
         rgba(0, 0, 0, 0.25) 120%
@@ -62,15 +192,15 @@
 
     background-blend-mode: exclusion, hue, hard-light;
     background-size: var(--imgsize), 200% 700%, 300%, 200%;
-    background-position: center, 0% var(--background-y), var(--background-x) var(--background-y), var(--background-x) var(--background-y);
-    filter: brightness(calc((var(--hyp) * 0.3) + 0.5)) contrast(2) saturate(1.5);
-
+    background-position: center, 0% var(--background-y, 50%), var(--background-x, 50%) var(--background-y, 50%), var(--background-x, 50%) var(--background-y, 50%);
+    filter: brightness(calc((var(--hyp, 0) * 0.3) + 0.5)) contrast(2) saturate(1.5);
   }
 
   .card__shine {
     z-index: 3;
     mix-blend-mode: color-dodge;
-    opacity: var(--card-opacity);
+    opacity: var(--card-opacity, 0);
+    transition: opacity 0.5s ease-out;
   }
 
   .card__shine:after {
@@ -81,25 +211,25 @@
     right: 0;
     bottom: 0;
     background-size: var(--imgsize), 200% 400%, 195%, 200%;
-    background-position: center, 0% var(--background-y), calc(var(--background-x) *-1) calc(var(--background-y) * -1), var(--background-x) var(--background-y);
-
-    filter: brightness(calc((var(--hyp) * 0.5) + 0.8)) contrast(1.6) saturate(1.4);
+    background-position: center, 0% var(--background-y, 50%), calc(var(--background-x, 50%) *-1) calc(var(--background-y, 50%) * -1), var(--background-x, 50%) var(--background-y, 50%);
+    filter: brightness(calc((var(--hyp, 0) * 0.5) + 0.8)) contrast(1.6) saturate(1.4);
     mix-blend-mode: exclusion;
   }
 
-  .card__glare  {
+  .card__glare {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     z-index: 2;
-    background-image: radial-gradient(farthest-corner circle at var(--pointer-x) var(--pointer-y), hsl(0, 0%, 100%) 0%, hsla(210, 3%, 54%, 0.33) 45%, hsla(0, 0%, 20%, 0.9) 130%);
+    background-image: radial-gradient(farthest-corner circle at var(--pointer-x, 50%) var(--pointer-y, 50%), hsl(0, 0%, 100%) 0%, hsla(210, 3%, 54%, 0.33) 45%, hsla(0, 0%, 20%, 0.9) 130%);
     mix-blend-mode: overlay;
     background-position: center;
     background-size: 200% 200%;
     pointer-events: none;
-    opacity: calc(var(--o)*0.5);
+    opacity: var(--card-opacity, 0);
+    transition: opacity 0.5s ease-out;
   }
 
   .card-content {
@@ -108,41 +238,61 @@
     left: 0;
     bottom: 0;
     right: 0;
-    background: rgba(158, 16, 16, 0.9);
-    display: grid;
+    background: #f8f3e4; // Light cream background like a Pokémon card
     display: flex;
     flex-direction: column;
-    color: black;
+    color: #333;
     z-index: 1;
-    font-size: 13px;
-    line-height: 1;
+    font-size: 12px;
+    line-height: 1.2;
+    padding: 8px;
 
     &::before {
       content: '';
       position: absolute;
       inset: 0px;
-      border: 11px solid rgb(131, 40, 40);
-      border-radius: 2.4rem;
+      border: 6px solid #ffcb05; // Pokémon yellow border
+      border-radius: 1.5rem;
       pointer-events: none;
       z-index: -1;
     }
   }
 
+  // Card Header
   .card-header {
     display: flex;
-    position: relative;
-    width: 100%;
-    margin-top: 12px;
-    align-items: center;
-    h2 {
-      font-size: 20px;
-      margin-top: 0;
-      margin-bottom: 0;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+    
+    .name-type-container {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin: 0;
+      margin-right: 8px;
+    }
+
+    .hp-container {
+      .hp {
+        background: linear-gradient(to right, #ff5e5e, #ff0000);
+        color: white;
+        padding: 2px 6px;
+        border-radius: 10px;
+        font-weight: bold;
+        font-size: 14px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+      }
     }
   }
 
+  // Type badge
   .type {
-    background: rgb(123,124,121);
     background: linear-gradient(0deg, 
       rgba(123,124,121,1) 0%, 
       rgba(123,124,121,1) 20%, 
@@ -153,98 +303,172 @@
       rgba(213,212,211,1) 90%
     );
     color: #1a1a1a;
-    padding: 3px 5px;
-    border-radius: 12px 2px 12px 2px;
-    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 10px 2px 10px 2px;
+    font-size: 10px;
     font-weight: bold;
     font-style: italic;
-
-    margin: 3px 0px 0px 8px;
-    z-index: 1;
+    margin-top: 2px;
     box-shadow: 
-      0 1px 3px rgba(0, 0, 0, 0.3), 
+      0 1px 2px rgba(0, 0, 0, 0.3), 
       inset 0 1px 1px rgba(255, 255, 255, 0.6),
-      inset 0 -1px 2px rgba(0, 0, 0, 0.3);
+      inset 0 -1px 1px rgba(0, 0, 0, 0.3);
     text-transform: uppercase;
-
     text-shadow: 
-    -1px -1px 0 white,  
-     1px -1px 0 white,
-    -1px  1px 0 white,
-     1px  1px 0 white;
-     
-    overflow: hidden;
+      -1px -1px 0 white,  
+       1px -1px 0 white,
+      -1px  1px 0 white,
+       1px  1px 0 white;
   }
 
-  .card-title {
-    margin-left: 10px;
-  }
-
-  .card-image {
-    text-align: center;
-    margin-bottom: 15px;
-    img {
-      width: 150px;
-      height: 150px;
-      border-radius: 50%;
-      border: 3px solid #4a90e2;
-    }
-  }
-
-  .card-body {
-    flex-grow: 1;
-    margin-bottom: 15px;
-    padding-left: 12px;
-    padding-right: 12px;
-  }
-
-  .card-stats {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    padding-left: 12px;
-    padding-right: 12px;
-  }
-
-  .stat {
+  // Card Image Container
+  .card-image-container {
+    background: linear-gradient(to bottom, #e0f7fa, #80deea);
+    border-radius: 8px;
+    padding: 8px;
+    margin-bottom: 8px;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 5px;
-    font-size: 0.9em;
+    border: 1px solid #b2ebf2;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+    
+    .card-image {
+      text-align: center;
+      margin-bottom: 5px;
+      
+      img {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        border: 2px solid #ffcb05;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      }
+    }
+    
+    .card-subtitle {
+      background: rgba(255, 255, 255, 0.7);
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 10px;
+      font-weight: bold;
+      color: #333;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
   }
 
-  .card-skills {
-    padding-left: 12px;
-    padding-right: 12px;
-    h3 {
-      font-size: 1.2em;
-      margin-bottom: 5px;
-      color: #ffcb05; // Pokémon yellow
-    }
-    ul {
-      list-style-type: none;
-      padding: 0;
+  // Card Description
+  .card-description {
+    background: #fff;
+    border-radius: 6px;
+    padding: 6px;
+    margin-bottom: 8px;
+    font-size: 10px;
+    border: 1px solid #ddd;
+    box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.05);
+    
+    p {
       margin: 0;
-      li {
-        background: rgba(255, 255, 255, 0.1);
-        margin: 2px 0;
-        padding: 2px 5px;
+      font-style: italic;
+    }
+  }
+
+  // Skills Section
+  .card-skills {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 8px;
+    
+    .skill-item {
+      .skill-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 2px;
+        
+        .skill-name {
+          margin-left: 4px;
+          font-weight: bold;
+          font-size: 10px;
+          flex-grow: 1;
+        }
+        
+        .skill-value {
+          font-size: 10px;
+          font-weight: bold;
+          color: #ff6b00;
+        }
+      }
+      
+      .skill-bar-container {
+        height: 6px;
+        background: #e0e0e0;
         border-radius: 3px;
-        font-size: 0.9em;
+        overflow: hidden;
+        
+        .skill-bar {
+          height: 100%;
+          background: linear-gradient(to right, #ffcb05, #ff6b00);
+          border-radius: 3px;
+          transition: width 0.3s ease;
+        }
       }
     }
   }
 
-  .card-experience {
-    h3 {
-      font-size: 1.2em;
+  // Card Footer
+  .card-footer {
+    margin-top: auto;
+    
+    .special-attack {
+      display: flex;
+      align-items: center;
+      background: #f5f5f5;
+      padding: 4px 6px;
+      border-radius: 6px;
       margin-bottom: 5px;
-      color: #ffcb05; // Pokémon yellow
+      border: 1px solid #ddd;
+      
+      .attack-cost {
+        margin-right: 6px;
+        font-size: 12px;
+      }
+      
+      .attack-name {
+        flex-grow: 1;
+        font-weight: bold;
+        font-size: 11px;
+      }
+      
+      .attack-damage {
+        font-weight: bold;
+        font-size: 14px;
+        color: #ff6b00;
+      }
     }
-    p {
-      font-size: 0.9em;
-      margin: 2px 0;
+    
+    .card-info {
+      text-align: center;
+      font-size: 8px;
+      color: #777;
+      border-top: 1px solid #ddd;
+      padding-top: 3px;
+      
+      .info-text {
+        font-style: italic;
+      }
     }
   }
+}
 
+// Overlay for fullscreen mode
+.card-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 999;
+  backdrop-filter: blur(5px);
 }
