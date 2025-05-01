@@ -45,9 +45,24 @@ export const cards: Card[] = [
   {
     id: 'contact',
     title: 'Contact & Social',
-    content: 'Your contact information and social media links...',
+    content: 'Connect with me on social media or send me an email.',
     component: 'ContactSocial',
-    position: { span: 1 }
+    position: { span: 1 },
+    data: {
+      email: 'thomas@skjerdal.com',
+      social: [
+        {
+          name: 'LinkedIn',
+          url: 'https://linkedin.com/in/thomasskjerdal',
+          icon: 'linkedin'
+        },
+        {
+          name: 'GitHub',
+          url: 'https://github.com/thomasskjerdal',
+          icon: 'github'
+        }
+      ]
+    }
   },
   {
     id: 'education',
