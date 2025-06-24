@@ -1,76 +1,144 @@
 <template>
   <div class="education">
-    <Carousel :items="educationItems" :autoSlideInterval="6000">
-      <template #default="{ item: edu, index }">
-        <div class="education-card">
-          <h3>{{ edu.degree }}</h3>
-          <p class="institution">{{ edu.institution }}</p>
-          <p class="period">{{ edu.period }}</p>
-          <ul class="achievements">
-            <li v-for="(achievement, i) in edu.achievements" :key="i">
-              {{ achievement }}
-            </li>
-          </ul>
+    <VerticalTimeline :items="educationItems">
+      <template #item="{ item: edu, active }">
+        <div class="education-item" :class="{ active }">
+          <div class="education-header">
+            <h3>{{ edu.degree }}</h3>
+            <div class="institution">{{ edu.institution }}</div>
+          </div>
+          <div class="education-meta">
+            <div class="period">{{ edu.period }}</div>
+          </div>
+          <div class="achievements" v-if="active || isMounted && windowWidth > 768">
+            <ul>
+              <li v-for="(achievement, i) in edu.achievements" :key="i">
+                {{ achievement }}
+              </li>
+            </ul>
+          </div>
         </div>
       </template>
-    </Carousel>
+    </VerticalTimeline>
   </div>
 </template>
 
 <script>
-import { ref } from 'vue';
-import Carousel from '../Carousel.vue';
+import { ref, onMounted, onUnmounted } from 'vue';
+import VerticalTimeline from '../VerticalTimeline.vue';
 import { cards } from '../../data/cardContent';
 
 export default {
   components: {
-    Carousel
+    VerticalTimeline
   },
   setup() {
     const educationItems = ref(cards.find(card => card.id === 'education').data);
+    const windowWidth = ref(0); // Initialize with a default value
+    const isMounted = ref(false); // Track if component is mounted
 
-    return { educationItems };
+    // Handle responsive design - only access window when mounted
+    const handleResize = () => {
+      if (typeof window !== 'undefined') {
+        windowWidth.value = window.innerWidth;
+      }
+    };
+
+    onMounted(() => {
+      isMounted.value = true;
+      // Set initial width
+      if (typeof window !== 'undefined') {
+        windowWidth.value = window.innerWidth;
+        window.addEventListener('resize', handleResize);
+      }
+    });
+
+    onUnmounted(() => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('resize', handleResize);
+      }
+    });
+
+    return { 
+      educationItems,
+      windowWidth,
+      isMounted
+    };
   }
 };
 </script>
 
 <style lang="scss" scoped>
-.education {
-  height: 100%;  // Ensure the carousel takes full height of the card
+@import '../../styles/color-theme.scss';
 
-  .education-card {
-    padding: 20px;
-    height: 100%;
+.education {
+  height: 100%;
+
+  .education-item {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    text-align: left;
-
-    h3 {
-      font-size: 1.2em;
-      margin-bottom: 10px;
-      color: #f0f0f0;
+    transition: all 0.3s ease;
+    
+    &.active {
+      .education-header h3 {
+        color: var(--accent-color);
+      }
     }
-
-    .institution {
-      font-weight: bold;
-      margin-bottom: 5px;
-      color: #d0d0d0;
-    }
-
-    .period {
-      font-style: italic;
-      margin-bottom: 10px;
-      color: #b0b0b0;
-    }
-
-    .achievements {
-      list-style-type: disc;
-      padding-left: 20px;
+    
+    .education-header {
+      margin-bottom: 4px;
       
-      li {
-        margin-bottom: 5px;
-        color: #c0c0c0;
+      h3 {
+        font-size: 1.1rem;
+        margin: 0 0 2px 0;
+        color: var(--text-primary);
+        transition: color 0.3s ease;
+        font-weight: 600;
+      }
+      
+      .institution {
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: var(--text-secondary);
+      }
+    }
+    
+    .education-meta {
+      margin-bottom: 8px;
+      
+      .period {
+        font-size: 0.8rem;
+        font-style: italic;
+        color: var(--text-tertiary);
+      }
+    }
+    
+    .achievements {
+      ul {
+        margin: 0;
+        padding-left: 16px;
+        
+        li {
+          font-size: 0.85rem;
+          margin-bottom: 4px;
+          color: var(--text-secondary);
+          line-height: 1.3;
+          
+          &:last-child {
+            margin-bottom: 0;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .education {
+    .education-item {
+      &:not(.active) .achievements {
+        display: none;
       }
     }
   }

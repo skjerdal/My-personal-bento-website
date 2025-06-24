@@ -14,21 +14,25 @@ const {title, text}  = Astro.props;
 </div>
 
 <style is:inline>
-
     .cardlg {
         padding: 32px;
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
         border: 1px solid rgba(255, 255, 255, 0.2);
-
-            background-color: rgba(26, 25, 29, 0.5);
-
-            height: 400px;
-            overflow: hidden; /* Hide the overflowing parts of the pseudo-elements */
-            grid-column: span 2;
-            
+        background-color: rgba(26, 25, 29, 0.5);
+        height: 400px;
+        overflow: hidden;
+        grid-column: span 2;
         border-radius: 20px;
-        }
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1), 0 2px 5px rgba(0, 0, 0, 0.07);
+        transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+    
+    .cardlg:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15), 0 4px 10px rgba(0, 0, 0, 0.1);
+        border-color: rgba(255, 255, 255, 0.3);
+    }
     
     .cardlg h2 {
         color: rgb(var(--text));
@@ -39,5 +43,4 @@ const {title, text}  = Astro.props;
         color: rgb(var(--grey));
         font-size: 1rem;
     }
-
 </style>

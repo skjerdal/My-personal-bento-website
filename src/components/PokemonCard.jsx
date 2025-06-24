@@ -233,14 +233,14 @@ const PokemonCard = ({ title = '', content = '', className, style, componentName
             </div>
           </div>
           
-          {/* Card Description */}
+          {/* Card Description - truncate long content */}
           <div className="card-description">
-            <p>{content || 'A passionate full-stack developer with a love for creating interactive and engaging web experiences.'}</p>
+            <p>{(content || 'A passionate full-stack developer with a love for creating interactive and engaging web experiences.').substring(0, 120)}{(content || '').length > 120 ? '...' : ''}</p>
           </div>
           
-          {/* Skills Section */}
+          {/* Skills Section - limited to top 4 skills when not fullscreen */}
           <div className="card-skills">
-            {skills.map((skill, index) => (
+            {skills.slice(0, isFullscreen ? skills.length : 4).map((skill, index) => (
               <div key={index} className="skill-item">
                 <div className="skill-header">
                   {renderIcon(skill.icon)}

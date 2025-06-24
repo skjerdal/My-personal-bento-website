@@ -67,6 +67,11 @@
       &::before {
         border-width: 10px;
       }
+      
+      p {
+        -webkit-line-clamp: initial;
+        overflow: visible;
+      }
     }
     
     .card-header {
@@ -107,6 +112,8 @@
       padding: 12px;
       margin-bottom: 16px;
       font-size: 14px;
+      max-height: none;
+      overflow-y: visible;
     }
     
     .card-skills {
@@ -116,12 +123,9 @@
       .skill-header {
         margin-bottom: 4px;
         
-        .skill-name {
-          font-size: 14px;
-        }
-        
-        .skill-value {
-          font-size: 14px;
+        .skill-name, .skill-value {
+          white-space: normal;
+          overflow: visible;
         }
       }
       
@@ -141,6 +145,8 @@
         
         .attack-name {
           font-size: 16px;
+          white-space: normal;
+          overflow: visible;
         }
         
         .attack-damage {
@@ -151,6 +157,10 @@
       .card-info {
         font-size: 12px;
         padding-top: 6px;
+        .info-text {
+          white-space: normal;
+          overflow: visible;
+        }
       }
     }
   }
@@ -245,7 +255,8 @@
     z-index: 1;
     font-size: 12px;
     line-height: 1.2;
-    padding: 8px;
+    padding: 10px;  // Increased padding for better spacing
+    overflow: hidden; // Prevent content overflow
 
     &::before {
       content: '';
@@ -263,19 +274,22 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 8px;
+    margin-bottom: 10px;  // Increased margin
     
     .name-type-container {
       display: flex;
       align-items: center;
       flex-wrap: wrap;
+      max-width: 70%;  // Limit width to prevent overlap
     }
 
     .card-title {
-      font-size: 18px;
+      font-size: 16px;  // Slightly smaller font size
       font-weight: bold;
       margin: 0;
       margin-right: 8px;
+      line-height: 1.1;  // Tighter line height
+      word-break: break-word;  // Allow word breaks for long titles
     }
 
     .hp-container {
@@ -287,6 +301,7 @@
         font-weight: bold;
         font-size: 14px;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        white-space: nowrap;  // Prevent wrapping
       }
     }
   }
@@ -305,7 +320,7 @@
     color: #1a1a1a;
     padding: 2px 6px;
     border-radius: 10px 2px 10px 2px;
-    font-size: 10px;
+    font-size: 9px;  // Slightly smaller
     font-weight: bold;
     font-style: italic;
     margin-top: 2px;
@@ -319,6 +334,7 @@
        1px -1px 0 white,
       -1px  1px 0 white,
        1px  1px 0 white;
+    display: inline-block;  // Better alignment
   }
 
   // Card Image Container
@@ -338,11 +354,12 @@
       margin-bottom: 5px;
       
       img {
-        width: 80px;
-        height: 80px;
+        width: 70px;  // Slightly smaller for better fit
+        height: 70px;
         border-radius: 50%;
         border: 2px solid #ffcb05;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        object-fit: cover;  // Ensure proper image scaling
       }
     }
     
@@ -350,10 +367,15 @@
       background: rgba(255, 255, 255, 0.7);
       padding: 2px 8px;
       border-radius: 10px;
-      font-size: 10px;
+      font-size: 9px;  // Slightly smaller font size
       font-weight: bold;
       color: #333;
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      text-align: center;  // Center text
+      max-width: 90%;  // Prevent overflow
+      white-space: nowrap;  // Keep on one line
+      overflow: hidden;  // Hide overflow
+      text-overflow: ellipsis;  // Show ellipsis for overflow
     }
   }
 
@@ -363,13 +385,20 @@
     border-radius: 6px;
     padding: 6px;
     margin-bottom: 8px;
-    font-size: 10px;
+    font-size: 9px;  // Slightly smaller font
     border: 1px solid #ddd;
     box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.05);
+    max-height: 40px;  // Limit height to prevent overflow
+    overflow-y: auto;  // Add scrolling if needed
     
     p {
       margin: 0;
       font-style: italic;
+      line-height: 1.3;  // Better line spacing
+      display: -webkit-box;
+      -webkit-line-clamp: 3;  // Limit to 3 lines
+      -webkit-box-orient: vertical;
+      overflow: hidden;  // Hide overflow
     }
   }
 
@@ -377,8 +406,8 @@
   .card-skills {
     display: flex;
     flex-direction: column;
-    gap: 5px;
-    margin-bottom: 8px;
+    gap: 4px;  // Tighter gap
+    margin-bottom: 6px;  // Smaller margin
     
     .skill-item {
       .skill-header {
@@ -389,19 +418,23 @@
         .skill-name {
           margin-left: 4px;
           font-weight: bold;
-          font-size: 10px;
+          font-size: 9px;  // Smaller font
           flex-grow: 1;
+          white-space: nowrap;  // Prevent wrapping
+          overflow: hidden;  // Hide overflow
+          text-overflow: ellipsis;  // Show ellipsis
         }
         
         .skill-value {
-          font-size: 10px;
+          font-size: 9px;  // Smaller font
           font-weight: bold;
           color: #ff6b00;
+          margin-left: 4px;  // Add spacing
         }
       }
       
       .skill-bar-container {
-        height: 6px;
+        height: 5px;  // Slightly smaller
         background: #e0e0e0;
         border-radius: 3px;
         overflow: hidden;
@@ -426,36 +459,43 @@
       background: #f5f5f5;
       padding: 4px 6px;
       border-radius: 6px;
-      margin-bottom: 5px;
+      margin-bottom: 4px;  // Smaller margin
       border: 1px solid #ddd;
       
       .attack-cost {
         margin-right: 6px;
-        font-size: 12px;
+        font-size: 11px;  // Smaller font
       }
       
       .attack-name {
         flex-grow: 1;
         font-weight: bold;
-        font-size: 11px;
+        font-size: 10px;  // Smaller font
+        white-space: nowrap;  // Prevent wrapping
+        overflow: hidden;  // Hide overflow
+        text-overflow: ellipsis;  // Show ellipsis
       }
       
       .attack-damage {
         font-weight: bold;
-        font-size: 14px;
+        font-size: 12px;  // Smaller font
         color: #ff6b00;
+        margin-left: 4px;  // Add spacing
       }
     }
     
     .card-info {
       text-align: center;
-      font-size: 8px;
+      font-size: 7px;  // Smaller font
       color: #777;
       border-top: 1px solid #ddd;
       padding-top: 3px;
       
       .info-text {
         font-style: italic;
+        white-space: nowrap;  // Prevent wrapping
+        overflow: hidden;  // Hide overflow
+        text-overflow: ellipsis;  // Show ellipsis
       }
     }
   }

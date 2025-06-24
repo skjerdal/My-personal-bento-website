@@ -24,21 +24,33 @@ export const cards: Card[] = [
   {
     id: 'work',
     title: 'Work Experience',
-    content: 'Detail your work history here...',
+    content: 'My professional journey as a developer',
     component: 'WorkExperience',
     position: { span: 2 },
     data: [
       {
-        company: 'Company A',
-        title: '1',
-        period: 'Jan 2020 - Present',
-        description: 'Developed and maintained web applications using Vue.js and Node.js.'
+        company: 'Tech Innovators',
+        title: 'Senior Frontend Developer',
+        period: 'Jan 2021 - Present',
+        description: 'Leading the frontend development team in creating responsive and accessible web applications. Implemented modern UI/UX patterns and improved performance by 40%.'
       },
       {
-        company: 'Company B',
-        title: '2',
-        period: 'Jun 2018 - Dec 2019',
-        description: 'Assisted in the development of mobile apps using React Native and Firebase.'
+        company: 'Digital Solutions Inc.',
+        title: 'Full-Stack Developer',
+        period: 'Mar 2019 - Dec 2020',
+        description: 'Developed and maintained web applications using Vue.js, Node.js, and MongoDB. Led the migration from legacy systems to modern frameworks.'
+      },
+      {
+        company: 'StartUp Studios',
+        title: 'Junior Developer',
+        period: 'Jun 2017 - Feb 2019',
+        description: 'Assisted in the development of mobile apps using React Native and Firebase. Implemented key features that increased user engagement by 25%.'
+      },
+      {
+        company: 'TechLabs',
+        title: 'Intern',
+        period: 'Jan 2017 - May 2017',
+        description: 'Gained hands-on experience in web development technologies and contributed to small-scale projects. Learned agile methodologies and version control.'
       }
     ]
   },
@@ -58,7 +70,7 @@ export const cards: Card[] = [
         },
         {
           name: 'GitHub',
-          url: 'https://github.com/thomasskjerdal',
+          url: 'https://github.com/skjerdal',
           icon: 'github'
         }
       ]
@@ -67,12 +79,12 @@ export const cards: Card[] = [
   {
     id: 'education',
     title: 'Education',
-    content: 'List your educational background...',
+    content: 'My academic background and achievements',
     component: 'Education',
     position: { span: 2 },
     data: [
       {
-        degree: '1',
+        degree: 'Master of Computer Science',
         institution: 'Stanford University',
         period: '2018 - 2020',
         achievements: [
@@ -82,7 +94,7 @@ export const cards: Card[] = [
         ]
       },
       {
-        degree: '2',
+        degree: 'Bachelor of Science in Computer Engineering',
         institution: 'Massachusetts Institute of Technology',
         period: '2014 - 2018',
         achievements: [
@@ -92,7 +104,7 @@ export const cards: Card[] = [
         ]
       },
       {
-        degree: '3',
+        degree: 'High School Diploma',
         institution: 'Thomas Jefferson High School for Science and Technology',
         period: '2010 - 2014',
         achievements: [
