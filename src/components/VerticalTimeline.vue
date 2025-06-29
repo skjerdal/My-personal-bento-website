@@ -42,20 +42,18 @@ export default {
 .vertical-timeline {
   position: relative;
   width: 100%;
-  max-height: 400px; /* Or your desired max height */
+  height: 100%;
   display: flex;
   flex-direction: column;
 }
 
 .timeline-scroll-container {
-  flex: 1; /* Takes available height from .vertical-timeline */
+  flex: 1;
   overflow-y: auto;
-  position: relative; /* For potential future use and consistent behavior */
-  padding: 0 5px; /* Horizontal padding for content within scrollable area */
-
-  /* Minimalistic scrollbar styling */
-  scrollbar-width: thin; /* For Firefox */
-  scrollbar-color: rgba($text-color, 0.2) transparent; /* thumb track */
+  position: relative;
+  padding: 0 5px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba($text-color, 0.2) transparent;
 
   &::-webkit-scrollbar {
     width: 6px;
@@ -68,7 +66,8 @@ export default {
   &::-webkit-scrollbar-thumb {
     background-color: rgba($text-color, 0.3);
     border-radius: 3px;
-    border: 1px solid transparent; /* Ensure no weird borders */
+    border: 1px solid transparent;
+    transition: background-color 0.2s ease;
   }
 
   &::-webkit-scrollbar-thumb:hover {
@@ -78,47 +77,102 @@ export default {
 
 .timeline {
   position: relative;
-  padding: 20px 0; /* Vertical padding for items */
-  /* width: 90%; remove this, now 100% of scroll container */
-  /* margin: 0 auto; remove this */
+  padding: 20px 0 0;
 }
 
 .timeline-entry {
   position: relative;
-  padding-left: 40px; /* Space for dot and line */
-  margin-bottom: 20px; /* Space between entries */
+  padding-left: 40px;
+  margin-bottom: 30px;
+  opacity: 0;
+  transform: translateX(-10px);
+  animation: fadeSlideIn 0.5s ease forwards;
+  
+  @for $i from 1 through 10 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{$i * 0.1}s;
+    }
+  }
 
   &:last-child {
     margin-bottom: 0;
+  }
+
+  &:hover {
+    .timeline-dot {
+      transform: scale(1.3);
+      opacity: 1;
+      box-shadow: 0 0 10px rgba($text-color, 0.3);
+    }
+
+    .timeline-line {
+      opacity: 0.5;
+      background: linear-gradient(to bottom, $text-color 0%, rgba($text-color, 0.2) 100%);
+    }
   }
 }
 
 .timeline-dot {
   position: absolute;
   left: 10px;
-  top: 5px; /* Aligns dot near the top of the entry content */
-  width: 8px;
-  height: 8px;
-  background-color: $text-color; /* Use theme color */
-  opacity: 0.6; /* Subtle visibility */
+  top: 5px;
+  width: 10px;
+  height: 10px;
+  background-color: $text-color;
+  opacity: 0.6;
   border-radius: 50%;
   z-index: 1;
+  transition: all 0.3s ease;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1px solid rgba($text-color, 0.2);
+    opacity: 0;
+    transition: all 0.3s ease;
+  }
+
+  &:hover::before {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.2);
+  }
 }
 
 .timeline-line {
   position: absolute;
-  left: calc(10px + (8px / 2) - (1px / 2)); /* Center with dot: dot.left + (dot.width/2) - (line.width/2) */
-  top: calc(5px + 8px + 4px); /* Start below dot: dot.top + dot.height + small_gap */
+  left: calc(10px + (10px / 2) - (1px / 2));
+  top: calc(5px + 10px + 4px);
   width: 1px;
-  background-color: $text-color; /* Use theme color */
-  opacity: 0.3; /* More subtle visibility for the line */
+  background-color: $text-color;
+  opacity: 0.3;
   z-index: 0;
-  bottom: -20px; /* Extends into the margin-bottom of the entry (which is 20px) */
+  bottom: -30px;
+  transition: all 0.3s ease;
 }
 
 .timeline-content {
-  /* No specific background, shadow, or border for minimalism */
-  /* Padding should be handled by the slotted content or within .timeline-entry if needed */
+  transition: transform 0.3s ease;
+  
+  &:hover {
+    transform: translateX(5px);
+  }
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 /* Responsive adjustments */
@@ -129,17 +183,22 @@ export default {
 
   .timeline-entry {
     padding-left: 30px;
-    margin-bottom: 15px;
+    margin-bottom: 25px;
   }
 
   .timeline-dot {
     left: 5px;
+    
+    &::before {
+      width: 16px;
+      height: 16px;
+    }
   }
 
   .timeline-line {
-    left: calc(5px + (8px / 2) - (1px / 2));
-    top: calc(5px + 8px + 4px);
-    bottom: -15px; /* Adjusted for new margin-bottom on mobile */
+    left: calc(5px + (10px / 2) - (1px / 2));
+    top: calc(5px + 10px + 4px);
+    bottom: -25px;
   }
 }
 </style> 

@@ -73,7 +73,7 @@ export default {
 
 .education {
   height: 100%;
-
+  
   .education-item {
     display: flex;
     flex-direction: column;

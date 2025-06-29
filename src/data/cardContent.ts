@@ -10,6 +10,7 @@ type Card = {
   position: CardPosition;
   isUnique?: boolean;
   data?: any; // Add this line to include data property
+  videoPath?: string; // Path to the video file for hover animation
 };
 
 export const cards: Card[] = [
@@ -27,6 +28,7 @@ export const cards: Card[] = [
     content: 'My professional journey as a developer',
     component: 'WorkExperience',
     position: { span: 2 },
+    videoPath: '/videos/work-loop.mp4',
     data: [
       {
         company: 'Tech Innovators',
@@ -56,16 +58,21 @@ export const cards: Card[] = [
   },
   {
     id: 'contact',
-    title: 'Contact & Social',
+    title: 'Contact',
     content: 'Connect with me on social media or send me an email.',
     component: 'ContactSocial',
     position: { span: 1 },
+    videoPath: '/videos/contact-loop.mp4',
     data: {
       email: 'thomas@skjerdal.com',
+      availability: {
+        status: 'available', // can be 'available', 'busy', or 'away'
+        message: 'Available for opportunities'
+      },
       social: [
         {
           name: 'LinkedIn',
-          url: 'https://linkedin.com/in/thomasskjerdal',
+          url: 'https://linkedin.com/in/thomas-skjerdal-8ba458283',
           icon: 'linkedin'
         },
         {
@@ -82,6 +89,7 @@ export const cards: Card[] = [
     content: 'My academic background and achievements',
     component: 'Education',
     position: { span: 2 },
+    videoPath: '/videos/education-loop.mp4',
     data: [
       {
         degree: 'Master of Computer Science',
@@ -120,7 +128,8 @@ export const cards: Card[] = [
     title: 'Current Status',
     content: 'What you are currently working on or learning...',
     component: 'CurrentStatus',
-    position: { span: 1 }
+    position: { span: 1 },
+    videoPath: '/videos/test.mp4',
   },
   {
     id: 'other',

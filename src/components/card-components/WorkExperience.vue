@@ -42,7 +42,7 @@ export default {
 
 .work-experience {
   height: 100%;
-
+  
   .job-item {
     display: flex;
     flex-direction: column;

@@ -1,6 +1,19 @@
 <template>
-  <div class="card" :class="className" :data-span="position?.span || 1">
-    <h2 v-if="componentName !== 'PokemonCard'">{{ title }}</h2>
+  <div 
+    class="card" 
+    :class="className" 
+    :data-span="position?.span || 1"
+    @mouseenter="handleCardMouseEnter"
+    @mouseleave="handleCardMouseLeave"
+  >
+    <h2 v-if="componentName !== 'PokemonCard'">
+      <span>{{ title }}</span>
+      <VideoHover class="video-hover"
+        v-if="videoPath" 
+        :videoPath="videoPath" 
+        :isCardHovered="isCardHovered"
+      />
+    </h2>
     <div class="dynamic-component-wrapper" v-if="isMounted && resolvedComponent && componentName !== 'PokemonCard'">
       <component 
         :is="resolvedComponent" 
@@ -13,18 +26,24 @@
 
 <script>
 import { defineAsyncComponent, computed, ref, onMounted } from 'vue';
+import VideoHover from './VideoHover.vue';
 
 export default {
+  components: {
+    VideoHover
+  },
   props: {
     title: String,
     content: String,
     componentName: String,
     position: Object,
     className: String,
-    style: [String, Object]
+    style: [String, Object],
+    videoPath: String
   },
   setup(props) {
     const isMounted = ref(false);
+    const isCardHovered = ref(false);
 
     const resolvedComponent = computed(() => {
       if (!isMounted.value) return null;
@@ -55,6 +74,14 @@ export default {
       };
     });
 
+    const handleCardMouseEnter = () => {
+      isCardHovered.value = true;
+    };
+
+    const handleCardMouseLeave = () => {
+      isCardHovered.value = false;
+    };
+
     onMounted(() => {
       isMounted.value = true;
     });
@@ -62,7 +89,10 @@ export default {
     return {
       resolvedComponent,
       computedStyle,
-      isMounted
+      isMounted,
+      isCardHovered,
+      handleCardMouseEnter,
+      handleCardMouseLeave
     };
   }
 }
@@ -72,35 +102,56 @@ export default {
 @import '../styles/mixins';
 
 .card {
-  background-color: var(--card-bg, $card-background);
+  background-color: $card-background;
   border-radius: 2.4rem;
-  padding: 1.8rem;
+  padding: 0;
   height: calc(433px - 1.5rem);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(var(--text-primary, 255, 255, 255), 0.1);
+  border: none;
+  position: relative;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1), 0 2px 5px rgba(0, 0, 0, 0.07);
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
   
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15), 0 4px 10px rgba(0, 0, 0, 0.1);
-    border-color: rgba(var(--text-primary, 255, 255, 255), 0.2);
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 2.4rem;
+    padding: 1px;
+    background: linear-gradient(
+      180deg, 
+      #ffffff 0%,      // Top highlight
+      #d6d6d6 25%,     // Side shadow
+      #b0b0b0 75%,     // Side shadow
+      #ffffff 100%     // Bottom highlight
+    );
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    pointer-events: none;
   }
-
+  
   h2 {
     font-size: 1.5rem;
     margin-bottom: 1rem;
     line-height: 1.2;
-    overflow-wrap: break-word;
-    word-break: break-word;
-    max-height: 3.6em;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 1.4rem 1.4rem 0 1.4rem;
+
+    span {
+      overflow-wrap: break-word;
+      word-break: break-word;
+      max-height: 3.6em;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
   }
 
   .dynamic-component-wrapper {
@@ -126,6 +177,7 @@ export default {
     -webkit-line-clamp: 8;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    padding: 0 1.4rem;
   }
 
   :deep(img) {
@@ -141,5 +193,6 @@ export default {
     height: 100%;
     overflow: hidden;
   }
+
 }
 </style>
