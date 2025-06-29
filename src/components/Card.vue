@@ -136,12 +136,14 @@ export default {
   
   h2 {
     font-size: 1.5rem;
-    margin-bottom: 1rem;
+    margin-top: 0;
+    margin-bottom: 0;
     line-height: 1.2;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 8px;
-    padding: 1.4rem 1.4rem 0 1.4rem;
+    padding: 0.2rem 1rem 0 1rem;
 
     span {
       overflow-wrap: break-word;
@@ -177,7 +179,7 @@ export default {
     -webkit-line-clamp: 8;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    padding: 0 1.4rem;
+    // padding: 0 1rem;
   }
 
   :deep(img) {
