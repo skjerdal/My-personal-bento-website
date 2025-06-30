@@ -4,7 +4,7 @@
       <template #item="{ item: job, active }">
         <div class="job-item" :class="{ active }">
           <div class="job-header">
-            <h3>{{ job.title }}</h3>
+            <h2>{{ job.title }}</h2>
             <div class="company">{{ job.company }}</div>
           </div>
           <div class="job-meta">
@@ -49,7 +49,7 @@ export default {
     transition: all 0.3s ease;
     
     &.active {
-      .job-header h3 {
+      .job-header h2 {
         color: var(--accent-color);
       }
     }
@@ -57,8 +57,8 @@ export default {
     .job-header {
       margin-bottom: 4px;
       
-      h3 {
-        font-size: 1.1rem;
+      h2 {
+        font-size: 1rem;
         margin: 0 0 2px 0;
         color: var(--text-primary);
         transition: color 0.3s ease;

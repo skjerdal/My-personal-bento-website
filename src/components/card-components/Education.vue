@@ -4,7 +4,7 @@
       <template #item="{ item: edu, active }">
         <div class="education-item" :class="{ active }">
           <div class="education-header">
-            <h3>{{ edu.degree }}</h3>
+            <h2>{{ edu.degree }}</h2>
             <div class="institution">{{ edu.institution }}</div>
           </div>
           <div class="education-meta">
@@ -73,14 +73,13 @@ export default {
 
 .education {
   height: 100%;
-  
   .education-item {
     display: flex;
     flex-direction: column;
     transition: all 0.3s ease;
     
     &.active {
-      .education-header h3 {
+      .education-header h2 {
         color: var(--accent-color);
       }
     }
@@ -88,8 +87,8 @@ export default {
     .education-header {
       margin-bottom: 4px;
       
-      h3 {
-        font-size: 1.1rem;
+      h2 {
+        font-size: 1rem;
         margin: 0 0 2px 0;
         color: var(--text-primary);
         transition: color 0.3s ease;

@@ -6,14 +6,15 @@
     @mouseenter="handleCardMouseEnter"
     @mouseleave="handleCardMouseLeave"
   >
-    <h2 v-if="componentName !== 'PokemonCard'">
+    <h1 v-if="componentName !== 'PokemonCard'" class="card-title">
       <span>{{ title }}</span>
       <VideoHover class="video-hover"
         v-if="videoPath" 
         :videoPath="videoPath" 
         :isCardHovered="isCardHovered"
       />
-    </h2>
+      <img v-else src="/testbilde.jpg" alt="Placeholder image" class="video-hover-placeholder" />
+    </h1>
     <div class="dynamic-component-wrapper" v-if="isMounted && resolvedComponent && componentName !== 'PokemonCard'">
       <component 
         :is="resolvedComponent" 
@@ -134,8 +135,16 @@ export default {
     pointer-events: none;
   }
   
-  h2 {
-    font-size: 1.5rem;
+  .video-hover-placeholder {
+    width: 90px;
+    height: 90px;
+    border-radius: 6px;
+    object-fit: cover;
+    background-color: var(--card-background-hover);
+  }
+
+  .card-title {
+    font-size: 1.2rem;
     margin-top: 0;
     margin-bottom: 0;
     line-height: 1.2;

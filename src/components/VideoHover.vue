@@ -108,7 +108,6 @@ export default {
 .video-icon-container {
   display: inline-block;
   margin-left: 8px;
-  cursor: pointer;
   vertical-align: middle;
 }
 
