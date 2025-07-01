@@ -120,7 +120,7 @@ export default {
     position: absolute;
     inset: 0;
     border-radius: 2.4rem;
-    padding: 1px;
+    padding: 3px;
     background: linear-gradient(
       180deg, 
       #ffffff 0%,      // Top highlight

@@ -8,41 +8,36 @@ const PokemonCard = ({ title = '', content = '', className, style, componentName
   const [isHovered, setIsHovered] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isFlipping, setIsFlipping] = useState(false);
-  const [pointerPosition, setPointerPosition] = useState({ x: 50, y: 50 });
-  const [backgroundPosition, setBackgroundPosition] = useState({ x: 50, y: 50 });
-  const [rotation, setRotation] = useState({ x: 0, y: 0 });
-  const [distanceFromCenter, setDistanceFromCenter] = useState(0);
   const [isInitialized, setIsInitialized] = useState(false);
   const [originalPosition, setOriginalPosition] = useState({ top: 0, left: 0, width: 0, height: 0 });
+  const [fullscreenScale, setFullscreenScale] = useState(1);
   const cardRef = useRef(null);
 
   const handleMouseMove = (e) => {
     if (!cardRef.current || isFullscreen || isFlipping) return;
 
     const rect = cardRef.current.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width;
-    const y = (e.clientY - rect.top) / rect.height;
+    const xNorm = (e.clientX - rect.left) / rect.width; // 0–1
+    const yNorm = (e.clientY - rect.top) / rect.height; // 0–1
 
-    // Set pointer position
-    setPointerPosition({ x: x * 100, y: y * 100 });
+    // Pre-compute frequently used values
+    const pointerX = xNorm * 100;
+    const pointerY = yNorm * 100;
+    const bgX = adjust(pointerX, 0, 100, 37, 63);
+    const bgY = adjust(pointerY, 0, 100, 33, 67);
+    const rotateY = (xNorm - 0.5) * 20;   // -10° → +10°
+    const rotateX = (yNorm - 0.5) * -20;  // +10° → -10°
+    const distance = Math.hypot(xNorm - 0.5, yNorm - 0.5);
 
-    // Set background position (with adjusted range and smoothing)
-    setBackgroundPosition(prev => ({
-      x: prev.x + (adjust(x * 100, 0, 100, 37, 63) - prev.x) * 0.1,
-      y: prev.y + (adjust(y * 100, 0, 100, 33, 67) - prev.y) * 0.1
-    }));
-
-    // Calculate rotation
-    const rotateY = (x - 0.5) * 20; // -10 to +10 degrees
-    const rotateX = (y - 0.5) * -20; // +10 to -10 degrees
-
-    setRotation({ x: rotateX, y: rotateY });
-
-    // Calc distance from center
-    const centerX = 0.5;
-    const centerY = 0.5;
-    const distance = Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2));
-    setDistanceFromCenter(distance);
+    // Update CSS custom properties directly – no React re-render
+    const style = cardRef.current.style;
+    style.setProperty('--pointer-x', `${pointerX}%`);
+    style.setProperty('--pointer-y', `${pointerY}%`);
+    style.setProperty('--background-x', `${bgX}%`);
+    style.setProperty('--background-y', `${bgY}%`);
+    style.setProperty('--rotate-x', `${rotateX}deg`);
+    style.setProperty('--rotate-y', `${rotateY}deg`);
+    style.setProperty('--hyp', distance);
   };
 
   const adjust = (value, fromMin, fromMax, toMin, toMax) => {
@@ -61,22 +56,25 @@ const PokemonCard = ({ title = '', content = '', className, style, componentName
       // Set initial rotation based on entry point to prevent jumping
       const rotateY = (x - 0.5) * 20;
       const rotateX = (y - 0.5) * -20;
-      setRotation({ x: rotateX, y: rotateY });
+      const style = cardRef.current.style;
+      style.setProperty('--rotate-x', `${rotateX}deg`);
+      style.setProperty('--rotate-y', `${rotateY}deg`);
       
       // Set pointer position
-      setPointerPosition({ x: x * 100, y: y * 100 });
-      
-      // Set background position
-      setBackgroundPosition({
-        x: adjust(x * 100, 0, 100, 37, 63),
-        y: adjust(y * 100, 0, 100, 33, 67)
-      });
+      const pointerX = x * 100;
+      const pointerY = y * 100;
+      const bgX = adjust(pointerX, 0, 100, 37, 63);
+      const bgY = adjust(pointerY, 0, 100, 33, 67);
+      style.setProperty('--pointer-x', `${pointerX}%`);
+      style.setProperty('--pointer-y', `${pointerY}%`);
+      style.setProperty('--background-x', `${bgX}%`);
+      style.setProperty('--background-y', `${bgY}%`);
       
       // Calculate distance from center
       const centerX = 0.5;
       const centerY = 0.5;
       const distance = Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2));
-      setDistanceFromCenter(distance);
+      cardRef.current.style.setProperty('--hyp', distance);
     }
     
     setIsHovered(true);
@@ -90,10 +88,16 @@ const PokemonCard = ({ title = '', content = '', className, style, componentName
     
     // Reset positions after transition completes
     if (!isHovered) {
-      setPointerPosition({ x: 50, y: 50 });
-      setBackgroundPosition({ x: 50, y: 50 });
-      setRotation({ x: 0, y: 0 });
-      setDistanceFromCenter(0);
+      const style = cardRef.current?.style;
+      if (style) {
+        style.setProperty('--pointer-x', '50%');
+        style.setProperty('--pointer-y', '50%');
+        style.setProperty('--background-x', '50%');
+        style.setProperty('--background-y', '50%');
+        style.setProperty('--rotate-x', '0deg');
+        style.setProperty('--rotate-y', '0deg');
+        style.setProperty('--hyp', '0');
+      }
     }
   };
 
@@ -103,7 +107,7 @@ const PokemonCard = ({ title = '', content = '', className, style, componentName
     setIsFlipping(true);
     
     if (!isFullscreen) {
-      // Store the original position before going fullscreen
+      // Store the original position and compute scale factor
       const rect = cardRef.current.getBoundingClientRect();
       setOriginalPosition({
         top: rect.top,
@@ -111,9 +115,16 @@ const PokemonCard = ({ title = '', content = '', className, style, componentName
         width: rect.width,
         height: rect.height
       });
+
+      // Calculate scale factor to fit 90% of viewport while preserving aspect ratio
+      const viewportWidth = window.innerWidth * 0.9;
+      const viewportHeight = window.innerHeight * 0.9;
+      const scale = Math.min(viewportWidth / rect.width, viewportHeight / rect.height);
+      setFullscreenScale(scale);
       
       // Reset rotation for the flip animation
-      setRotation({ x: 0, y: 0 });
+      cardRef.current.style.setProperty('--rotate-x', '0deg');
+      cardRef.current.style.setProperty('--rotate-y', '0deg');
       
       // Add a small delay before setting fullscreen to allow the flip animation to start
       setTimeout(() => {
@@ -126,11 +137,13 @@ const PokemonCard = ({ title = '', content = '', className, style, componentName
       }, 50);
     } else {
       // Reset rotation for the flip back animation
-      setRotation({ x: 0, y: 0 });
+      cardRef.current.style.setProperty('--rotate-x', '0deg');
+      cardRef.current.style.setProperty('--rotate-y', '0deg');
       
       // Add a small delay before removing fullscreen to allow the flip animation to start
       setTimeout(() => {
         setIsFullscreen(false);
+        setFullscreenScale(1);
         
         // After the flip animation completes, reset the flipping state
         setTimeout(() => {
@@ -180,15 +193,20 @@ const PokemonCard = ({ title = '', content = '', className, style, componentName
 
   const cardStyle = {
     ...style,
-    '--pointer-x': `${pointerPosition.x}%`,
-    '--pointer-y': `${pointerPosition.y}%`,
-    '--background-x': `${backgroundPosition.x}%`,
-    '--background-y': `${backgroundPosition.y}%`,
+    '--pointer-x': '50%',
+    '--pointer-y': '50%',
+    '--background-x': '50%',
+    '--background-y': '50%',
     '--card-opacity': isHovered ? 1 : 0,
-    '--hyp': distanceFromCenter,
-    '--rotate-x': `${rotation.x}deg`,
-    '--rotate-y': `${rotation.y}deg`,
-    // Let the CSS handle transitions based on hover state
+    '--hyp': 0,
+    '--rotate-x': '0deg',
+    '--rotate-y': '0deg',
+    '--zoom': fullscreenScale,
+    '--scale-factor': 1,
+    ...(isFullscreen && {
+      width: `${originalPosition.width}px`,
+      height: `${originalPosition.height}px`
+    })
   };
 
   // Skills data with progress values
@@ -209,63 +227,74 @@ const PokemonCard = ({ title = '', content = '', className, style, componentName
         onClick={handleCardClick}
         {...otherProps}
       >
-        <div className="card__shine"></div>
-        <div className="card__glare"></div>
-        <div className="card-content">
-          {/* Card Header */}
-          <div className="card-header">
-            <div className="name-type-container">
-              <h2 className="card-title">{title || 'Thomas Skjerdal'}</h2>
-              <span className="type">Developer</span>
-            </div>
-            <div className="hp-container">
-              <span className="hp">HP 100</span>
-            </div>
-          </div>
-          
-          {/* Card Image */}
-          <div className="card-image-container">
-            <div className="card-image">
-              <img src="./profil.jpg" alt="Profile" />
-            </div>
-            <div className="card-subtitle">
-              <span>Full-Stack Developer</span>
-            </div>
-          </div>
-          
-          {/* Card Description - truncate long content */}
-          <div className="card-description">
-            <p>{(content || 'A passionate full-stack developer with a love for creating interactive and engaging web experiences.').substring(0, 120)}{(content || '').length > 120 ? '...' : ''}</p>
-          </div>
-          
-          {/* Skills Section - limited to top 4 skills when not fullscreen */}
-          <div className="card-skills">
-            {skills.slice(0, isFullscreen ? skills.length : 4).map((skill, index) => (
-              <div key={index} className="skill-item">
-                <div className="skill-header">
-                  {renderIcon(skill.icon)}
-                  <span className="skill-name">{skill.name}</span>
-                  <span className="skill-value">{skill.value}</span>
+        <div className="card-inner">
+          {/* FRONT */}
+          <div className="card-face card-front">
+            <div className="card__shine"></div>
+            <div className="card__glare"></div>
+            <div className="card-content">
+              {/* Card Header */}
+              <div className="card-header">
+                <div className="name-type-container">
+                  <h2 className="card-title">{title || 'Thomas Skjerdal'}</h2>
+                  <span className="type">Developer</span>
                 </div>
-                <div className="skill-bar-container">
-                  <div className="skill-bar" style={{ width: `${skill.value}%` }}></div>
+                <div className="hp-container">
+                  <img src="./computertype.png" alt="Computer Type" className="type-icon" />
+                  <span className="hp">100 HP</span>
                 </div>
               </div>
-            ))}
-          </div>
-          
-          {/* Card Footer */}
-          <div className="card-footer">
-            <div className="special-attack">
-              <span className="attack-cost">⚡⚡</span>
-              <span className="attack-name">Code Mastery</span>
-              <span className="attack-damage">90+</span>
+              
+              {/* Card Image */}
+              <div className="card-image-container">
+                <div className="card-image">
+                  <img src="./profil.jpg" alt="Profile" />
+                </div>
+                <div className="card-subtitle">
+                  <span>Full-Stack Developer</span>
+                </div>
+              </div>
+              
+              {/* Card Description - truncate long content */}
+              <div className="card-description">
+                <p>{(content || 'A passionate full-stack developer with a love for creating interactive and engaging web experiences.').substring(0, 120)}{(content || '').length > 120 ? '...' : ''}</p>
+              </div>
+              
+              {/* Skills Section - limited to top 4 skills when not fullscreen */}
+              <div className="card-skills">
+                {skills.slice(0, isFullscreen ? skills.length : 4).map((skill, index) => (
+                  <div key={index} className="skill-item">
+                    <div className="skill-header">
+                      {renderIcon(skill.icon)}
+                      <span className="skill-name">{skill.name}</span>
+                      <span className="skill-value">{skill.value}</span>
+                    </div>
+                    <div className="skill-bar-container">
+                      <div className="skill-bar" style={{ width: `${skill.value}%` }}></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              {/* Card Footer */}
+              <div className="card-footer">
+                <div className="special-attack">
+                  <span className="attack-cost">⚡⚡</span>
+                  <span className="attack-name">Code Mastery</span>
+                  <span className="attack-damage">90+</span>
+                </div>
+                <div className="card-info">
+                  <span className="info-text">Rare Holo • Developer • #001 ⭐</span>
+                </div>
+              </div>
             </div>
-            <div className="card-info">
-              <span className="info-text">Rare Holo • Developer • #001 ⭐</span>
-            </div>
           </div>
-        </div>
+
+          {/* BACK */}
+          <div className="card-face card-back">
+            <img src="./pokemonback.png" alt="Card back" className="card-back-image" />
+          </div>
+        </div>{/* end card-inner */}
       </div>
       {isFullscreen && (
         <div className="card-overlay" onClick={handleCardClick}></div>

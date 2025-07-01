@@ -18,6 +18,7 @@
   // Initial transform state
   transform: 
     perspective(1000px)
+    scale(var(--zoom, 1))
     rotateX(var(--rotate-x, 0deg))
     rotateY(var(--rotate-y, 0deg));
   
@@ -48,115 +49,142 @@
     position: fixed;
     top: 50% !important;
     left: 50% !important;
-    transform: perspective(1000px) translate(-50%, -50%) rotateY(0deg);
-    width: min(90vw, calc(90vh * (65/90)));
-    height: min(90vh, calc(90vw * (90/65)));
-    max-width: 600px;
-    max-height: 830px;
+    --scale-factor: 1;
+    transform: perspective(1000px) translate(-50%, -50%) scale(var(--zoom, 1)) rotateX(var(--rotate-x, 0deg)) rotateY(var(--rotate-y, 0deg));
+    /* Size will be set inline from JS based on original rect; scale enlarges it */
     z-index: 1000;
     box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+    /* aspect ratio inherently preserved by scaling */
     
     &.flipping {
       transform: perspective(1000px) translate(-50%, -50%) rotateY(180deg);
     }
     
+    &.hovered {
+      transition: transform 0.1s ease-out, box-shadow 0.3s ease-out;
+    }
+    
     .card-content {
-      font-size: calc(12px * 1.5);
-      padding: 16px;
-      
-      &::before {
-        border-width: 10px;
-      }
-      
-      p {
-        -webkit-line-clamp: initial;
-        overflow: visible;
-      }
+      /* No internal font/spacing scaling needed because we use transform: scale */
     }
     
     .card-header {
-      margin-bottom: 16px;
+      margin-bottom: calc(10px * var(--scale-factor));
       
       .card-title {
-        font-size: 28px;
+        font-size: calc(16px * var(--scale-factor));
       }
       
-      .hp {
-        font-size: 20px;
-        padding: 4px 10px;
+      .hp-container {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+
+        .type-icon {
+          width: 25px;
+          height: 25px;
+          object-fit: contain;
+        }
+
+        .hp {
+          font-family: 'Futura', 'Arial Black', sans-serif;
+          font-weight: 900;
+          font-size: 16px;
+          color: #212121;
+          display: flex;
+          align-items: center;
+          position: relative;
+          letter-spacing: -0.5px;
+
+          &::before {
+            content: '';
+            position: absolute;
+            inset: -4px -6px;
+            background: linear-gradient(
+              45deg,
+              rgba(255, 255, 255, 0.8) 0%,
+              rgba(255, 255, 255, 0.9) 50%,
+              rgba(255, 255, 255, 0.8) 100%
+            );
+            border-radius: 4px;
+            z-index: -1;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+          }
+        }
       }
     }
     
     .type {
-      font-size: 14px;
-      padding: 4px 10px;
+      font-size: calc(9px * var(--scale-factor));
+      padding: calc(2px * var(--scale-factor)) calc(6px * var(--scale-factor));
     }
     
     .card-image-container {
-      padding: 16px;
-      margin-bottom: 16px;
+      padding: calc(8px * var(--scale-factor));
+      margin-bottom: calc(8px * var(--scale-factor));
       
       .card-image img {
-        width: 120px;
-        height: 120px;
-        border-width: 3px;
+        width: calc(70px * var(--scale-factor));
+        height: calc(70px * var(--scale-factor));
+        border-width: calc(2px * var(--scale-factor));
       }
       
       .card-subtitle {
-        font-size: 14px;
-        padding: 4px 12px;
+        font-size: calc(9px * var(--scale-factor));
+        padding: calc(2px * var(--scale-factor)) calc(8px * var(--scale-factor));
       }
     }
     
     .card-description {
-      padding: 12px;
-      margin-bottom: 16px;
-      font-size: 14px;
+      padding: calc(6px * var(--scale-factor));
+      margin-bottom: calc(8px * var(--scale-factor));
+      font-size: calc(9px * var(--scale-factor));
       max-height: none;
       overflow-y: visible;
     }
     
     .card-skills {
-      gap: 10px;
-      margin-bottom: 16px;
+      gap: calc(4px * var(--scale-factor));
+      margin-bottom: calc(6px * var(--scale-factor));
       
       .skill-header {
-        margin-bottom: 4px;
+        margin-bottom: calc(2px * var(--scale-factor));
         
         .skill-name, .skill-value {
+          font-size: calc(9px * var(--scale-factor));
           white-space: normal;
           overflow: visible;
         }
       }
       
       .skill-bar-container {
-        height: 10px;
+        height: calc(5px * var(--scale-factor));
       }
     }
     
     .card-footer {
       .special-attack {
-        padding: 8px 12px;
-        margin-bottom: 10px;
+        padding: calc(4px * var(--scale-factor)) calc(6px * var(--scale-factor));
+        margin-bottom: calc(5px * var(--scale-factor));
         
         .attack-cost {
-          font-size: 18px;
+          font-size: calc(12px * var(--scale-factor));
         }
         
         .attack-name {
-          font-size: 16px;
+          font-size: calc(10px * var(--scale-factor));
           white-space: normal;
           overflow: visible;
         }
         
         .attack-damage {
-          font-size: 20px;
+          font-size: calc(12px * var(--scale-factor));
         }
       }
       
       .card-info {
-        font-size: 12px;
-        padding-top: 6px;
+        font-size: calc(8px * var(--scale-factor));
+        padding-top: calc(3px * var(--scale-factor));
         .info-text {
           white-space: normal;
           overflow: visible;
@@ -262,10 +290,36 @@
       content: '';
       position: absolute;
       inset: 0px;
-      border: 6px solid #ffcb05; // Pokémon yellow border
+      background: linear-gradient(135deg, 
+        #e8e8e8 0%,     // Light silver
+        #c0c0c0 15%,    // Medium silver
+        #f5f5f5 30%,    // Bright highlight
+        #a8a8a8 45%,    // Dark silver
+        #d4d4d4 60%,    // Medium-light silver
+        #f8f8f8 75%,    // Bright highlight
+        #b8b8b8 90%,    // Medium-dark silver
+        #e0e0e0 100%    // Light silver
+      );
+      border: 5px solid #ffcb05; // Honey-colored border
       border-radius: 1.5rem;
+      padding: 5px; // Reduced padding to account for border
       pointer-events: none;
       z-index: -1;
+      box-shadow: 
+        inset 0 2px 4px rgba(255, 255, 255, 0.8),  // Inner highlight
+        inset 0 -2px 4px rgba(0, 0, 0, 0.3),       // Inner shadow
+        0 0 0 1px rgba(0, 0, 0, 0.1),              // Subtle outer edge
+        0 2px 8px rgba(0, 0, 0, 0.15);             // Drop shadow
+      
+      // Create the inner content area
+      &::after {
+        content: '';
+        position: absolute;
+        inset: 5px; // Keep the same inset to maintain the border width
+        background: var(--card-bg, #faf7f0);
+        border-radius: calc(1.5rem - 5px);
+        z-index: 1;
+      }
     }
   }
 
@@ -293,15 +347,40 @@
     }
 
     .hp-container {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+
+      .type-icon {
+        width: 25px;
+        height: 25px;
+        object-fit: contain;
+      }
+
       .hp {
-        background: linear-gradient(to right, #ff5e5e, #ff0000);
-        color: white;
-        padding: 2px 6px;
-        border-radius: 10px;
-        font-weight: bold;
-        font-size: 14px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-        white-space: nowrap;  // Prevent wrapping
+        font-family: 'Futura', 'Arial Black', sans-serif;
+        font-weight: 900;
+        font-size: 16px;
+        color: #212121;
+        display: flex;
+        align-items: center;
+        position: relative;
+        letter-spacing: -0.5px;
+
+        &::before {
+          content: '';
+          position: absolute;
+          inset: -4px -6px;
+          background: linear-gradient(
+            45deg,
+            rgba(255, 255, 255, 0.8) 0%,
+            rgba(255, 255, 255, 0.9) 50%,
+            rgba(255, 255, 255, 0.8) 100%
+          );
+          border-radius: 4px;
+          z-index: -1;
+          border: 1px solid rgba(0, 0, 0, 0.2);
+        }
       }
     }
   }
@@ -497,6 +576,33 @@
         overflow: hidden;  // Hide overflow
         text-overflow: ellipsis;  // Show ellipsis
       }
+    }
+  }
+
+  .card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d; /* enable 3d for children */
+  }
+
+  .card-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+  }
+
+  .card-back {
+    transform: rotateY(180deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+
+    .card-back-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
   }
 }
