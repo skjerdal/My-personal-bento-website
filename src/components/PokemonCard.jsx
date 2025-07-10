@@ -6,15 +6,11 @@ const iconComponents = { Code, Database, Cpu, Globe, Palette };
 
 const PokemonCard = ({ title = '', content = '', className, style, componentName, position, ...otherProps }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const [isFullscreen, setIsFullscreen] = useState(false);
-  const [isFlipping, setIsFlipping] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
-  const [originalPosition, setOriginalPosition] = useState({ top: 0, left: 0, width: 0, height: 0 });
-  const [fullscreenScale, setFullscreenScale] = useState(1);
   const cardRef = useRef(null);
 
   const handleMouseMove = (e) => {
-    if (!cardRef.current || isFullscreen || isFlipping) return;
+    if (!cardRef.current) return;
 
     const rect = cardRef.current.getBoundingClientRect();
     const xNorm = (e.clientX - rect.left) / rect.width; // 0–1
@@ -45,7 +41,6 @@ const PokemonCard = ({ title = '', content = '', className, style, componentName
   };
 
   const handleMouseEnter = (e) => {
-    if (isFullscreen || isFlipping) return;
     
     // Calculate initial position based on where the mouse entered
     if (cardRef.current) {
@@ -81,7 +76,6 @@ const PokemonCard = ({ title = '', content = '', className, style, componentName
   };
 
   const handleMouseLeave = () => {
-    if (isFullscreen || isFlipping) return;
     
     // Smoothly transition back to neutral position
     setIsHovered(false);
@@ -100,72 +94,6 @@ const PokemonCard = ({ title = '', content = '', className, style, componentName
       }
     }
   };
-
-  const handleCardClick = () => {
-    if (isFlipping) return;
-    
-    setIsFlipping(true);
-    
-    if (!isFullscreen) {
-      // Store the original position and compute scale factor
-      const rect = cardRef.current.getBoundingClientRect();
-      setOriginalPosition({
-        top: rect.top,
-        left: rect.left,
-        width: rect.width,
-        height: rect.height
-      });
-
-      // Calculate scale factor to fit 90% of viewport while preserving aspect ratio
-      const viewportWidth = window.innerWidth * 0.9;
-      const viewportHeight = window.innerHeight * 0.9;
-      const scale = Math.min(viewportWidth / rect.width, viewportHeight / rect.height);
-      setFullscreenScale(scale);
-      
-      // Reset rotation for the flip animation
-      cardRef.current.style.setProperty('--rotate-x', '0deg');
-      cardRef.current.style.setProperty('--rotate-y', '0deg');
-      
-      // Add a small delay before setting fullscreen to allow the flip animation to start
-      setTimeout(() => {
-        setIsFullscreen(true);
-        
-        // After the flip animation completes, reset the flipping state
-        setTimeout(() => {
-          setIsFlipping(false);
-        }, 600);
-      }, 50);
-    } else {
-      // Reset rotation for the flip back animation
-      cardRef.current.style.setProperty('--rotate-x', '0deg');
-      cardRef.current.style.setProperty('--rotate-y', '0deg');
-      
-      // Add a small delay before removing fullscreen to allow the flip animation to start
-      setTimeout(() => {
-        setIsFullscreen(false);
-        setFullscreenScale(1);
-        
-        // After the flip animation completes, reset the flipping state
-        setTimeout(() => {
-          setIsFlipping(false);
-        }, 600);
-      }, 50);
-    }
-  };
-
-  // Handle escape key to exit fullscreen
-  useEffect(() => {
-    const handleEscKey = (e) => {
-      if (e.key === 'Escape' && isFullscreen && !isFlipping) {
-        handleCardClick();
-      }
-    };
-    
-    window.addEventListener('keydown', handleEscKey);
-    return () => {
-      window.removeEventListener('keydown', handleEscKey);
-    };
-  }, [isFullscreen, isFlipping]);
 
   useEffect(() => {
     const card = cardRef.current;
@@ -201,12 +129,7 @@ const PokemonCard = ({ title = '', content = '', className, style, componentName
     '--hyp': 0,
     '--rotate-x': '0deg',
     '--rotate-y': '0deg',
-    '--zoom': fullscreenScale,
     '--scale-factor': 1,
-    ...(isFullscreen && {
-      width: `${originalPosition.width}px`,
-      height: `${originalPosition.height}px`
-    })
   };
 
   // Skills data with progress values
@@ -222,9 +145,8 @@ const PokemonCard = ({ title = '', content = '', className, style, componentName
     <>
       <div 
         ref={cardRef} 
-        className={`pokemon-card ${className || ''} ${isHovered ? 'hovered' : ''} ${isInitialized ? 'initialized' : ''} ${isFullscreen ? 'fullscreen' : ''} ${isFlipping ? 'flipping' : ''}`}
+        className={`pokemon-card ${className || ''} ${isHovered ? 'hovered' : ''} ${isInitialized ? 'initialized' : ''}`}
         style={cardStyle}
-        onClick={handleCardClick}
         {...otherProps}
       >
         <div className="card-inner">
@@ -241,7 +163,10 @@ const PokemonCard = ({ title = '', content = '', className, style, componentName
                 </div>
                 <div className="hp-container">
                   <img src="./computertype.png" alt="Computer Type" className="type-icon" />
-                  <span className="hp">100 HP</span>
+                  <span className="hp">
+                    <span className="hp-text">HP</span>
+                    <span className="hp-value">100</span>
+                  </span>
                 </div>
               </div>
               
@@ -262,7 +187,7 @@ const PokemonCard = ({ title = '', content = '', className, style, componentName
               
               {/* Skills Section - limited to top 4 skills when not fullscreen */}
               <div className="card-skills">
-                {skills.slice(0, isFullscreen ? skills.length : 4).map((skill, index) => (
+                {skills.slice(0, 4).map((skill, index) => (
                   <div key={index} className="skill-item">
                     <div className="skill-header">
                       {renderIcon(skill.icon)}
@@ -296,9 +221,6 @@ const PokemonCard = ({ title = '', content = '', className, style, componentName
           </div>
         </div>{/* end card-inner */}
       </div>
-      {isFullscreen && (
-        <div className="card-overlay" onClick={handleCardClick}></div>
-      )}
     </>
   );
 };

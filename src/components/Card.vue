@@ -3,17 +3,9 @@
     class="card" 
     :class="className" 
     :data-span="position?.span || 1"
-    @mouseenter="handleCardMouseEnter"
-    @mouseleave="handleCardMouseLeave"
   >
     <h1 v-if="componentName !== 'PokemonCard'" class="card-title">
       <span>{{ title }}</span>
-      <VideoHover class="video-hover"
-        v-if="videoPath" 
-        :videoPath="videoPath" 
-        :isCardHovered="isCardHovered"
-      />
-      <img v-else src="/testbilde.jpg" alt="Placeholder image" class="video-hover-placeholder" />
     </h1>
     <div class="dynamic-component-wrapper" v-if="isMounted && resolvedComponent && componentName !== 'PokemonCard'">
       <component 
@@ -27,12 +19,9 @@
 
 <script>
 import { defineAsyncComponent, computed, ref, onMounted } from 'vue';
-import VideoHover from './VideoHover.vue';
 
 export default {
-  components: {
-    VideoHover
-  },
+  components: {},
   props: {
     title: String,
     content: String,
@@ -44,7 +33,6 @@ export default {
   },
   setup(props) {
     const isMounted = ref(false);
-    const isCardHovered = ref(false);
 
     const resolvedComponent = computed(() => {
       if (!isMounted.value) return null;
@@ -75,14 +63,6 @@ export default {
       };
     });
 
-    const handleCardMouseEnter = () => {
-      isCardHovered.value = true;
-    };
-
-    const handleCardMouseLeave = () => {
-      isCardHovered.value = false;
-    };
-
     onMounted(() => {
       isMounted.value = true;
     });
@@ -90,10 +70,7 @@ export default {
     return {
       resolvedComponent,
       computedStyle,
-      isMounted,
-      isCardHovered,
-      handleCardMouseEnter,
-      handleCardMouseLeave
+      isMounted
     };
   }
 }
@@ -133,14 +110,6 @@ export default {
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     pointer-events: none;
-  }
-  
-  .video-hover-placeholder {
-    width: 90px;
-    height: 90px;
-    border-radius: 6px;
-    object-fit: cover;
-    background-color: var(--card-background-hover);
   }
 
   .card-title {
