@@ -1,3 +1,6 @@
+// Import fonts at the top of the file
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@700&display=swap');
+
 .pokemon-card {
   --space: 5%;
   --angle: 133deg;
@@ -9,9 +12,7 @@
   will-change: transform;
   transform-style: preserve-3d;
   transition: transform 0.8s ease-out, box-shadow 0.3s ease-out;
-  background: linear-gradient(45deg, #ffcb05 0%, #ffde5a 99%, #ffde5a 100%);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
   -webkit-font-smoothing: antialiased;
   z-index: 1;
 
@@ -32,85 +33,9 @@
     transition: transform 0.1s ease-out, box-shadow 0.3s ease-out;
   }
   
-  // Flipping animation
-  &.flipping {
-    transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
-                top 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
-                left 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275),
-                width 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275),
-                height 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275),
-                box-shadow 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    transform: perspective(1000px) rotateY(180deg);
-    pointer-events: none;
-  }
-  
-  // Fullscreen state
-  &.fullscreen {
-    position: fixed;
-    top: 50% !important;
-    left: 50% !important;
-    --scale-factor: 1;
-    transform: perspective(1000px) translate(-50%, -50%) scale(var(--zoom, 1)) rotateX(var(--rotate-x, 0deg)) rotateY(var(--rotate-y, 0deg));
-    /* Size will be set inline from JS based on original rect; scale enlarges it */
-    z-index: 1000;
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
-    /* aspect ratio inherently preserved by scaling */
-    
-    &.flipping {
-      transform: perspective(1000px) translate(-50%, -50%) rotateY(180deg);
-    }
-    
-    &.hovered {
-      transition: transform 0.1s ease-out, box-shadow 0.3s ease-out;
-    }
-    
-    .card-content {
-      /* No internal font/spacing scaling needed because we use transform: scale */
-    }
-    
-    .card-header {
-      margin-bottom: calc(10px * var(--scale-factor));
-      
-      .card-title {
-        font-size: calc(16px * var(--scale-factor));
-      }
-      
-      .hp-container {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-
-        .type-icon {
-          width: 25px;
-          height: 25px;
-          object-fit: contain;
-        }
-
-        .hp {
-          font-family: 'Futura', 'Arial Black', sans-serif;
-          font-weight: 900;
-          font-size: 16px;
-          color: #212121;
-          display: flex;
-          align-items: baseline;
-          position: relative;
-          letter-spacing: -0.5px;
-
-          .hp-text {
-            font-size: 10px;
-            color: #c00;
-            margin-right: 2px;
-            font-style: italic;
-            font-weight: bold;
-          }
-
-          .hp-value {
-            font-size: 20px;
-            font-style: italic;
-            transform: skewX(-10deg);
-          }
-        }
-      }
+  &.is-flipped {
+    .card-inner {
+      transform: rotateY(180deg);
     }
   }
 
@@ -200,20 +125,23 @@
     left: 0;
     bottom: 0;
     right: 0;
-    background: #f8f3e4; // Light cream background like a Pokémon card
     display: flex;
     flex-direction: column;
     color: #333;
     z-index: 1;
-    font-size: 12px;
+    font-size: 11px; // Base font smaller
     line-height: 1.2;
-    padding: 10px;  // Increased padding for better spacing
+    padding: 8px; // Slightly reduce padding to fit more content
     overflow: hidden; // Prevent content overflow
+    backface-visibility: hidden; // <-- add this so it disappears when flipped
+    -webkit-backface-visibility: hidden;
 
     &::before {
       content: '';
       position: absolute;
       inset: 0px;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
       background: linear-gradient(135deg, 
         #e8e8e8 0%,     // Light silver
         #c0c0c0 15%,    // Medium silver
@@ -242,17 +170,31 @@
         inset: 5px; // Keep the same inset to maintain the border width
         background: var(--card-bg, #faf7f0);
         border-radius: calc(1.5rem - 5px);
-        z-index: 1;
+        z-index: -1; // Pushed behind the new bg layer
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
       }
+      
     }
   }
+
+  // Hide the front-side content completely when the card has been flipped
+  // &.is-flipped {
+  //   .card-content {
+  //     opacity: 0;
+  //     transition: opacity 0.2s ease;
+  //   }
+  //   .card-front {
+  //     display: none !important;
+  //   }
+  // }
 
   // Card Header
   .card-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 10px;  // Increased margin
+    margin-bottom: 6px; // Reduce margin
     
     .name-type-container {
       display: flex;
@@ -279,72 +221,70 @@
         width: 25px;
         height: 25px;
         object-fit: contain;
+        order: 1; // Move to the right side
       }
 
       .hp {
-        font-family: 'Futura', 'Arial Black', sans-serif;
-        font-weight: 900;
+        // font-weight: 900;
         font-size: 16px;
         color: #212121;
         display: flex;
         align-items: baseline;
         position: relative;
-        letter-spacing: -0.5px;
+        letter-spacing: -1px;
 
         .hp-text {
-          font-size: 10px;
-          color: #c00;
+          font-size: 9px;
+          color: rgb(0, 0, 0);
           margin-right: 2px;
-          font-style: italic;
-          font-weight: bold;
+          position: relative;
+          font-weight: 900;
+          letter-spacing: 0;
         }
 
-        .hp-value {
-          font-size: 20px;
-          font-style: italic;
-          transform: skewX(-10deg);
-        }
+
       }
     }
   }
 
   // Type badge
-  .type {
-    background: linear-gradient(0deg, 
-      rgba(123,124,121,1) 0%, 
-      rgba(123,124,121,1) 20%, 
-      rgba(255,255,255,1) 50%, 
-      rgba(255,255,255,1) 74%, 
-      rgba(167,170,169,1) 80%, 
-      rgba(167,170,169,1) 85%, 
-      rgba(213,212,211,1) 90%
-    );
-    color: #1a1a1a;
-    padding: 2px 6px;
-    border-radius: 10px 2px 10px 2px;
-    font-size: 9px;  // Slightly smaller
-    font-weight: bold;
-    font-style: italic;
-    margin-top: 2px;
-    box-shadow: 
-      0 1px 2px rgba(0, 0, 0, 0.3), 
-      inset 0 1px 1px rgba(255, 255, 255, 0.6),
-      inset 0 -1px 1px rgba(0, 0, 0, 0.3);
-    text-transform: uppercase;
-    text-shadow: 
-      -1px -1px 0 white,  
-       1px -1px 0 white,
-      -1px  1px 0 white,
-       1px  1px 0 white;
-    display: inline-block;  // Better alignment
-  }
+  // .type {
+    
+  //   background: linear-gradient(0deg, 
+  //     rgba(123,124,121,1) 0%, 
+  //     rgba(123,124,121,1) 20%, 
+  //     rgba(255,255,255,1) 50%, 
+  //     rgba(255,255,255,1) 74%, 
+  //     rgba(167,170,169,1) 80%, 
+  //     rgba(167,170,169,1) 85%, 
+  //     rgba(213,212,211,1) 90%
+  //   );
+  //   color: #1a1a1a;
+  //   padding: 2px 6px;
+  //   border-radius: 10px 2px 10px 2px;
+  //   font-size: 9px;  // Slightly smaller
+  //   font-weight: bold;
+  //   font-style: italic;
+  //   margin-top: 2px;
+  //   box-shadow: 
+  //     0 1px 2px rgba(0, 0, 0, 0.3), 
+  //     inset 0 1px 1px rgba(255, 255, 255, 0.6),
+  //     inset 0 -1px 1px rgba(0, 0, 0, 0.3);
+  //   text-transform: uppercase;
+  //   text-shadow: 
+  //     -1px -1px 0 white,  
+  //      1px -1px 0 white,
+  //     -1px  1px 0 white,
+  //      1px  1px 0 white;
+  //   display: inline-block;  // Better alignment
+  // }
 
   // Card Image Container
   .card-image-container {
     background: linear-gradient(to bottom, #e0f7fa, #80deea);
     border-radius: 8px;
-    padding: 8px;
-    margin-bottom: 8px;
+    padding: 6px 6px 0px 6px; // Reduce
+    margin-bottom: 6px; // Reduce
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -353,11 +293,10 @@
     
     .card-image {
       text-align: center;
-      margin-bottom: 5px;
-      
+
       img {
-        width: 70px;  // Slightly smaller for better fit
-        height: 70px;
+        width: 80px; // Slightly smaller for better fit
+        height: 80px;
         border-radius: 50%;
         border: 2px solid #ffcb05;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
@@ -367,9 +306,9 @@
     
     .card-subtitle {
       background: rgba(255, 255, 255, 0.7);
-      padding: 2px 8px;
+      padding: 1px 6px; // Slightly smaller padding
       border-radius: 10px;
-      font-size: 9px;  // Slightly smaller font size
+      font-size: 8px; // Slightly smaller font size
       font-weight: bold;
       color: #333;
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
@@ -406,98 +345,175 @@
 
   // Skills Section
   .card-skills {
+    display: none; // Temporarily hide skills to fit new content; can adjust if space allows
+  }
+
+  // Ability section
+  .card-ability {
+    background: #f7f7f7;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 8px 10px; // Increased padding
+    margin-bottom: 10px; // Increased margin
+    box-shadow: inset 0 0 4px rgba(0,0,0,0.05);
+
+    .ability-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .ability-badge {
+      background: linear-gradient(130deg, #c0392b, #e74c3c, #c0392b);
+      color: white;
+      font-size: 9px; // Slightly larger
+      font-weight: bold;
+      font-style: italic;
+      padding: 4px 7px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
+
+    .ability-name {
+      font-size: 14px; // Slightly larger
+      font-weight: bold;
+      color: #c0392b;
+      margin-left: 6px;
+    }
+    
+    p {
+      font-size: 10px; // Slightly larger
+      margin: 0;
+      line-height: 1.3; // Increased line height
+      font-style: italic;
+    }
+  }
+
+  // Attacks section
+  .card-attacks {
     display: flex;
     flex-direction: column;
-    gap: 4px;  // Tighter gap
-    margin-bottom: 6px;  // Smaller margin
+    gap: 6px; // Increased gap between attacks
+    margin-bottom: 8px;
     
-    .skill-item {
-      .skill-header {
+    .attack {
+      background: #f5f5f5;
+      padding: 6px 8px; // Increased padding
+      border-radius: 4px;
+      border: 1px solid #ddd;
+      
+      .attack-header {
         display: flex;
         align-items: center;
-        margin-bottom: 2px;
+        width: 100%;
+        margin-bottom: 3px;
+      }
+
+      .attack-cost {
+        display: flex;
+        align-items: center;
+        gap: 2px; // Reduced space between icons
+        margin-right: 10px; // Increased space after icons
         
-        .skill-name {
-          margin-left: 4px;
-          font-weight: bold;
-          font-size: 9px;  // Smaller font
-          flex-grow: 1;
-          white-space: nowrap;  // Prevent wrapping
-          overflow: hidden;  // Hide overflow
-          text-overflow: ellipsis;  // Show ellipsis
-        }
-        
-        .skill-value {
-          font-size: 9px;  // Smaller font
-          font-weight: bold;
-          color: #ff6b00;
-          margin-left: 4px;  // Add spacing
+        img {
+          width: 14px; // Made icons larger
+          height: 14px; // Made icons larger
+          filter: invert(1);
         }
       }
       
-      .skill-bar-container {
-        height: 5px;  // Slightly smaller
-        background: #e0e0e0;
-        border-radius: 3px;
-        overflow: hidden;
-        
-        .skill-bar {
-          height: 100%;
-          background: linear-gradient(to right, #ffcb05, #ff6b00);
-          border-radius: 3px;
-          transition: width 0.3s ease;
-        }
+      .attack-name {
+        flex-grow: 1; // Allow the name to take up all available space
+        text-align: center; // Center the name within its space
+        font-size: 12px; // Slightly larger
+        font-weight: bold;
+        color: #2c3e50;
+        padding: 0 8px; // Add some horizontal padding
+      }
+      
+      .attack-damage {
+        font-size: 15px; // Slightly larger
+        font-weight: bold;
+        color: #e74c3c;
+        flex-shrink: 0; // Prevent the damage from shrinking
+      }
+      
+      p {
+        font-size: 9px; // Slightly larger
+        margin: 2px 0 0 0;
+        line-height: 1.3; // Increased line height
       }
     }
   }
 
-  // Card Footer
-  .card-footer {
-    margin-top: auto;
-    
-    .special-attack {
-      display: flex;
-      align-items: center;
-      background: #f5f5f5;
-      padding: 4px 6px;
-      border-radius: 6px;
-      margin-bottom: 4px;  // Smaller margin
-      border: 1px solid #ddd;
-      
-      .attack-cost {
-        margin-right: 6px;
-        font-size: 11px;  // Smaller font
-      }
-      
-      .attack-name {
-        flex-grow: 1;
-        font-weight: bold;
-        font-size: 10px;  // Smaller font
-        white-space: nowrap;  // Prevent wrapping
-        overflow: hidden;  // Hide overflow
-        text-overflow: ellipsis;  // Show ellipsis
-      }
-      
-      .attack-damage {
-        font-weight: bold;
-        font-size: 12px;  // Smaller font
-        color: #ff6b00;
-        margin-left: 4px;  // Add spacing
-      }
+  // Weakness section
+  .card-weakness {
+    display: flex;
+    justify-content: space-between;
+    font-size: 8px;
+    gap: 4px;
+    margin-top: auto; // Pushes it to the bottom
+    position: relative;
+    padding-top: 8px; // Space for the top line
+    padding-bottom: 8px; // Space for the bottom line
+    margin-bottom: 0; // Remove bottom margin to be close to footer
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(0deg,
+        rgba(123,124,121,1) 0%,
+        rgba(123,124,121,1) 20%,
+        rgba(255,255,255,1) 50%,
+        rgba(255,255,255,1) 74%,
+        rgba(167,170,169,1) 80%,
+        rgba(167,170,169,1) 85%,
+        rgba(213,212,211,1) 90%
+      );
+      clip-path: polygon(5% 0%, 95% 0%, 100% 100%, 0% 100%);
+    }
+
+    &::before {
+      top: 2px;
     }
     
-    .card-info {
+    &::after {
+      bottom: 2px;
+    }
+    
+    div {
       text-align: center;
-      font-size: 7px;  // Smaller font
-      color: #777;
-      border-top: 1px solid #ddd;
-      padding-top: 3px;
+      flex: 1;
       
-      .info-text {
-        font-style: italic;
-        white-space: nowrap;  // Prevent wrapping
-        overflow: hidden;  // Hide overflow
-        text-overflow: ellipsis;  // Show ellipsis
+      span:first-child {
+        display: block;
+        font-weight: bold;
+        color: #666;
+      }
+      
+      .weakness-type {
+        color: #c00;
+      }
+      
+      .resistance-type {
+        color: #060;
+      }
+      
+      .retreat-cost {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 2px;
+        
+        img {
+          width: 12px;
+          height: 12px;
+        }
       }
     }
   }
@@ -507,12 +523,23 @@
     width: 100%;
     height: 100%;
     transform-style: preserve-3d; /* enable 3d for children */
+    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
 
   .card-face {
     position: absolute;
     inset: 0;
     backface-visibility: hidden;
+    border-radius: 1.5rem;
+    overflow: hidden;
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    -ms-backface-visibility: hidden;
+  }
+
+  .card-front {
+    background: linear-gradient(45deg, #ffcb05 0%, #ffde5a 99%, #ffde5a 100%);
+    transform: rotateY(0deg);
   }
 
   .card-back {
@@ -520,7 +547,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #fff;
+    background: transparent;
 
     .card-back-image {
       width: 100%;
@@ -528,16 +555,279 @@
       object-fit: cover;
     }
   }
+
+  .card-bg-layer {
+    position: absolute;
+    inset: 5px;
+    background-color: #e2e2e2; 
+    clip-path: polygon(
+      0% 0%,
+      73% 0%,
+      62% 14%,
+      1% 14%,
+      1% 85%,
+      100% 85%,
+      100% 100%,
+      0% 100%
+    );
+    z-index: 0;
+    border-radius: calc(1.5rem - 5px);
+  }
 }
 
-// Overlay for fullscreen mode
-.card-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
-  z-index: 999;
-  backdrop-filter: blur(5px);
+.card-header,
+.card-image-container,
+.card-ability,
+.card-attacks,
+.card-weakness,
+.card-footer {
+  position: relative;
+  z-index: 1;
+}
+
+// Adjust image container
+.card-image-container {
+  background: linear-gradient(to bottom, #e0f7fa, #80deea);
+  border-radius: 8px;
+  padding: 6px;
+  margin-bottom: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid #b2ebf2;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+  height: 100px;
+  
+  .card-image {
+    text-align: center;
+    margin-bottom: 4px;
+    
+    img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: 2px solid #ffcb05;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      object-fit: cover;
+      margin-top: 10px;
+    }
+  }
+  
+  .card-subtitle {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 9px;
+    font-weight: bold;
+    color: #333;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+}
+
+// Update the header again to reduce overlap
+.card-header {
+  margin-bottom: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: relative;
+  padding: 0 4px;
+  z-index: 2;
+  height: 22px;
+
+  .name-type-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: 68%;
+    padding-top: 6px; // give space for badge overlap
+    padding-bottom: 10px; // reserve space for evolution bar
+
+    .evolution {
+      position: absolute;
+      top: 29px; // fixed position below title
+      left: -3px; // fixed left position
+      width: 195px; // fixed width
+      height: 12px; // fixed height
+      display: flex;
+      align-items: center;
+      // justify-content: center;
+      padding-left: 6px;
+      font-size: 8px;
+      font-style: italic;
+      font-weight: 600;
+      line-height: 1;
+      color: #000000;
+      // text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
+      background: linear-gradient(0deg,
+        rgb(180, 182, 176) 0%,
+        rgb(157, 158, 154) 20%,
+        rgba(255,255,255,1) 50%,
+        rgba(255,255,255,1) 74%,
+        rgb(185, 189, 187) 80%,
+        rgb(194, 199, 197) 85%,
+        rgba(213,212,211,1) 90%
+      );
+      border-radius: 12px 3px 12px 3px;
+      box-shadow: 
+        0 2px 4px rgba(0, 0, 0, 0.4), 
+        inset 0 1px 1px rgba(255, 255, 255, 0.6), 
+        inset 0 -1px 1px rgba(0, 0, 0, 0.3);
+      text-transform: uppercase;
+      border: 1px solid rgba(0,0,0,0.2);
+    }
+  }
+
+  .hp-container {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: auto;
+    padding-left: 6px;
+    transform: none; // reset transform to avoid overlap
+  }
+
+  .type-icon {
+    width: 20px;
+    height: 20px;
+    margin-left: 2px;
+  }
+
+  .evolution {
+    margin-left: 2px; // small indent
+  }
+
+  .type {
+    top: -10px; // slight adjust
+    left: -6px;
+  }
+
+  .name-type-container {
+
+    .card-title {
+      position: absolute;
+      top: 5px;
+      left: 80px;
+      font-family: 'Roboto Condensed', 'Gill Sans', 'Arial Black', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      margin: 0;
+      line-height: 1;
+      letter-spacing: -0.5px;
+      // text-transform: uppercase;
+      color: #1a1a1a;
+      text-shadow: 1px 1px 1px rgba(255,255,255,0.5);
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .type {
+      position: absolute;
+      top: -2px;
+      left: -4px;
+      background: linear-gradient(0deg,
+        rgba(123,124,121,1) 0%,
+        rgba(123,124,121,1) 20%,
+        rgba(255,255,255,1) 50%,
+        rgba(255,255,255,1) 74%,
+        rgba(167,170,169,1) 80%,
+        rgba(167,170,169,1) 85%,
+        rgba(213,212,211,1) 90%
+      );
+      color: #1a1a1a;
+      padding: 3px 8px;
+      border-radius: 12px 3px 12px 3px;
+      font-size: 9px;
+      font-weight: bold;
+      font-style: italic;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.6), inset 0 -1px 1px rgba(0, 0, 0, 0.3);
+      text-transform: uppercase;
+      text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;
+      border: 1px solid rgba(0,0,0,0.2);
+    }
+  }
+
+  .hp-container {
+    .hp-value {
+      font-size: 20px;
+      font-weight: 900;
+    }
+  }
+}
+
+.card-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 7px;
+  color: #333;
+  // margin-top: auto; // No longer needed here
+  padding: 2px 5px;
+
+  .card-set-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; // gather on left
+    font-weight: bold;
+    gap: 4px; // spacing between items
+
+    .set-number {
+      font-family: 'Roboto Condensed', sans-serif;
+    }
+
+    .rarity-symbol {
+      position: relative;
+      width: 12px;
+      height: 12px;
+      margin: 0 4px;
+
+      .star,
+      &::before,
+      &::after {
+        content: '★';
+        position: absolute;
+        color: #e8b200;
+        font-size: 8px;
+        line-height: 1;
+      }
+
+      .star {
+        top: 2px;
+        left: 2px;
+      }
+
+      &::before {
+        top: -1px;
+        left: -2px;
+      }
+      
+      &::after {
+        top: -1px;
+        right: -2px;
+      }
+    }
+
+    .set-icon {
+      width: 12px;
+      height: 12px;
+      margin-left: 2px;
+    }
+  }
+
+  .card-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .illus {
+      font-style: italic;
+    }
+
+    copyright {
+      font-size: 6px;
+    }
+  }
 }

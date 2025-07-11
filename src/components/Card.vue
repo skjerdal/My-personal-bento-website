@@ -1,7 +1,7 @@
 <template>
   <div 
     class="card" 
-    :class="className" 
+    :class="[{ 'pokemon-card-host': componentName === 'PokemonCard' }, className]" 
     :data-span="position?.span || 1"
   >
     <h1 v-if="componentName !== 'PokemonCard'" class="card-title">
@@ -92,6 +92,14 @@ export default {
   overflow: hidden;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1), 0 2px 5px rgba(0, 0, 0, 0.07);
   
+  &.pokemon-card-host {
+    background-color: transparent;
+    box-shadow: none;
+    &::before {
+      display: none;
+    }
+  }
+
   &::before {
     content: '';
     position: absolute;

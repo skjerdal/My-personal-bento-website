@@ -288,35 +288,6 @@ The website supports animated video icons that appear next to card headlines and
    }
    ```
 
-3. **Video Requirements**:
-   - Perfect white background (#FFFFFF)
-   - Seamless loop (2-5 seconds duration)
-   - MP4 format, optimized for web (< 2MB)
-   - 720p or lower resolution recommended
-
-### Important Notes
-
-- **PokemonCard (About)**: Does not need a video - it has its own unique 3D hover effects
-- **Optional Videos**: Only add `videoPath` to cards where you want video hover effects
-- **Graceful Fallback**: Cards without videos work normally with their existing hover states
-- **Performance**: Videos are only loaded when `videoPath` is specified
-
-### Video Integration Features
-
-- **Icon Placement**: Videos appear as 24x24px icons next to card headlines
-- **Hover Playback**: Videos start playing when you hover over the icon
-- **Smooth Transitions**: Icons have subtle opacity changes on hover
-- **Perfect Loops**: Videos reset to beginning on each hover interaction
-- **Performance Optimized**: Preloaded metadata for instant hover response
-- **Graceful Fallback**: Console warnings for failed video loads
-
-### Customizing Video Effects
-
-Modify the video appearance in `src/components/VideoHover.vue`:
-- Change icon size (currently 24px)
-- Adjust opacity levels
-- Modify transition timing
-- Change border radius or other styling
 
 ---
 

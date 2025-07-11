@@ -133,13 +133,13 @@ const PokemonCard = ({ title = '', content = '', className, style, componentName
   };
 
   // Skills data with progress values
-  const skills = [
-    { name: 'Frontend', value: 90, icon: 'Code' },
-    { name: 'Backend', value: 85, icon: 'Database' },
-    { name: 'DevOps', value: 75, icon: 'Cpu' },
-    { name: 'UI/UX', value: 80, icon: 'Palette' },
-    { name: 'Web3', value: 70, icon: 'Globe' }
-  ];
+  // const skills = [
+  //   { name: 'Attack', value: 90, icon: 'Code' }, // Frontend as Attack
+  //   { name: 'Defense', value: 85, icon: 'Database' }, // Backend as Defense
+  //   { name: 'Speed', value: 75, icon: 'Cpu' }, // DevOps as Speed
+  //   { name: 'Special', value: 80, icon: 'Palette' }, // UI/UX as Special
+  //   { name: 'HP', value: 330, icon: 'Globe' } // Web3 as something, but HP is separate
+  // ];
 
   return (
     <>
@@ -155,18 +155,20 @@ const PokemonCard = ({ title = '', content = '', className, style, componentName
             <div className="card__shine"></div>
             <div className="card__glare"></div>
             <div className="card-content">
+              <div className="card-bg-layer" />
               {/* Card Header */}
               <div className="card-header">
                 <div className="name-type-container">
                   <h2 className="card-title">{title || 'Thomas Skjerdal'}</h2>
+                  <span className="evolution">Evolves from Junior Dev</span>
                   <span className="type">Developer</span>
                 </div>
                 <div className="hp-container">
                   <img src="./computertype.png" alt="Computer Type" className="type-icon" />
-                  <span className="hp">
+                  <div className="hp">
                     <span className="hp-text">HP</span>
-                    <span className="hp-value">100</span>
-                  </span>
+                    <span className="hp-value">340</span>
+                  </div>
                 </div>
               </div>
               
@@ -175,49 +177,80 @@ const PokemonCard = ({ title = '', content = '', className, style, componentName
                 <div className="card-image">
                   <img src="./profil.jpg" alt="Profile" />
                 </div>
-                <div className="card-subtitle">
+                {/* <div className="card-subtitle">
                   <span>Full-Stack Developer</span>
+                </div> */}
+              </div>
+              
+              {/* Ability Section */}
+              <div className="card-ability">
+                <div className="ability-header">
+                  <span className="ability-badge">Ability</span>
+                  <span className="ability-name"> Code Surge</span>
+                </div>
+                <p>Once per turn, draw an extra idea from your inspiration deck.</p>
+              </div>
+              
+              {/* Attacks */}
+              <div className="card-attacks">
+                <div className="attack">
+                  <div className="attack-header">
+                    <div className="attack-cost">
+                      <img src="/caffeineicon.png" alt="cost" />
+                    </div>
+                    <span className="attack-name">Quick Fix</span>
+                    <span className="attack-damage">30</span>
+                  </div>
+                  <p>Flip a coin. If heads, prevent all effects of an attack during your opponent's next turn.</p>
+                </div>
+                <div className="attack">
+                  <div className="attack-header">
+                    <div className="attack-cost">
+                      <img src="/caffeineicon.png" alt="cost" />
+                      <img src="/caffeineicon.png" alt="cost" />
+                      <img src="/caffeineicon.png" alt="cost" />
+                    </div>
+                    <span className="attack-name">Full Deployment</span>
+                    <span className="attack-damage">90</span>
+                  </div>
+                  <p>This attack does 20 more damage for each bug fixed this turn.</p>
                 </div>
               </div>
               
-              {/* Card Description - truncate long content */}
-              <div className="card-description">
-                <p>{(content || 'A passionate full-stack developer with a love for creating interactive and engaging web experiences.').substring(0, 120)}{(content || '').length > 120 ? '...' : ''}</p>
-              </div>
-              
-              {/* Skills Section - limited to top 4 skills when not fullscreen */}
-              <div className="card-skills">
-                {skills.slice(0, 4).map((skill, index) => (
-                  <div key={index} className="skill-item">
-                    <div className="skill-header">
-                      {renderIcon(skill.icon)}
-                      <span className="skill-name">{skill.name}</span>
-                      <span className="skill-value">{skill.value}</span>
-                    </div>
-                    <div className="skill-bar-container">
-                      <div className="skill-bar" style={{ width: `${skill.value}%` }}></div>
-                    </div>
+              {/* Weakness/Resistance/Retreat */}
+              <div className="card-weakness">
+                <div>
+                  <span>Weakness</span>
+                  <span className="weakness-type">Monster Shortage ×2</span>
+                </div>
+                <div>
+                  <span>Resistance</span>
+                  <span className="resistance-type">Deadline Pressure -20</span>
+                </div>
+                <div>
+                  <span>Retreat Cost</span>
+                  <div className="retreat-cost">
+                    <img src="/caffeineicon.png" alt="cost" />
+                    <img src="/caffeineicon.png" alt="cost" />
                   </div>
-                ))}
+                </div>
               </div>
               
               {/* Card Footer */}
               <div className="card-footer">
-                <div className="special-attack">
-                  <span className="attack-cost">⚡⚡</span>
-                  <span className="attack-name">Code Mastery</span>
-                  <span className="attack-damage">90+</span>
+                <div className="card-set-row">
+                  <span className="set-number">001/001</span>
+                  <div className="rarity-symbol">
+                    <span className="star">★</span>
+                  </div>
+                  <img src="/caffeineicon.png" alt="Set icon" className="set-icon" />
                 </div>
-                <div className="card-info">
-                  <span className="info-text">Rare Holo • Developer • #001 ⭐</span>
+                <div className="card-info-row">
+                  <span className="illus">Illus. Thomas Skjerdal</span>
+                  <span className="copyright">© 2024 T. Skjerdal</span>
                 </div>
               </div>
             </div>
-          </div>
-
-          {/* BACK */}
-          <div className="card-face card-back">
-            <img src="./pokemonback.png" alt="Card back" className="card-back-image" />
           </div>
         </div>{/* end card-inner */}
       </div>
