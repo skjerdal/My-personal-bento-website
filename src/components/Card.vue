@@ -94,6 +94,7 @@ export default {
   flex-direction: column;
   overflow: hidden;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1), 0 2px 5px rgba(0, 0, 0, 0.07);
+  z-index: 10; // Ensure cards are above the airplane flight layer
   
   &.clickable-card {
     cursor: pointer;

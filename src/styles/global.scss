@@ -26,3 +26,11 @@ p {
   margin: 0 auto;
   padding: 14px 0 0 0;
 }
+
+/* Airplane flight layer - sits above cards but below overlays */
+.airplane-sky {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 999; /* Higher than cards (10), lower than theme toggle (1000) */
+}
