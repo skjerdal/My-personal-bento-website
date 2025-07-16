@@ -42,15 +42,20 @@
       </svg>
     </button>
   </div>
+  <!-- <BottleWave @bottle-click="handleBottleClick" /> -->
+  <PaperAirplane />
   </div>
 </template>
 
 <script>
 import { ref } from 'vue';
 import { cards } from '../../data/cardContent';
+import BottleWave from './BottleWave.vue';
+import PaperAirplane from './PaperAirplane.vue';
 
 export default {
   name: 'ContactSocial',
+  components: { BottleWave, PaperAirplane },
   setup() {
     const contactData = ref(cards.find(card => card.id === 'contact').data);
     const copied = ref(false);
@@ -72,12 +77,18 @@ export default {
       if (event.target.closest('.copy-button')) return;
       window.location.href = `mailto:${contactData.value.email}`;
     };
+
+    const handleBottleClick = () => {
+      // Copy email when bottle is clicked
+      copyEmail();
+    };
     
     return { 
       contactData,
       copied,
       copyEmail,
-      handleEmailClick
+      handleEmailClick,
+      handleBottleClick
     };
   }
 }
@@ -353,6 +364,11 @@ export default {
         color: rgba(0, 0, 0, 0.8);
       }
     }
+  }
+
+  :deep(.bottle-wave) {
+    flex-grow: 1;
+    min-height: 0;
   }
 }
 

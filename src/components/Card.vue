@@ -1,6 +1,7 @@
 <template>
   <div 
-    class="card" 
+    ref="cardElement"
+    class="card clickable-card" 
     :class="[{ 'pokemon-card-host': componentName === 'PokemonCard' }, className]" 
     :data-span="position?.span || 1"
   >
@@ -33,6 +34,7 @@ export default {
   },
   setup(props) {
     const isMounted = ref(false);
+    const cardElement = ref(null);
 
     const resolvedComponent = computed(() => {
       if (!isMounted.value) return null;
@@ -68,6 +70,7 @@ export default {
     });
 
     return {
+      cardElement,
       resolvedComponent,
       computedStyle,
       isMounted
@@ -92,6 +95,16 @@ export default {
   overflow: hidden;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1), 0 2px 5px rgba(0, 0, 0, 0.07);
   
+  &.clickable-card {
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15), 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+  }
+  
   &.pokemon-card-host {
     background-color: transparent;
     box-shadow: none;
@@ -105,7 +118,7 @@ export default {
     position: absolute;
     inset: 0;
     border-radius: 2.4rem;
-    padding: 3px;
+    padding: 2px;
     background: linear-gradient(
       180deg, 
       #ffffff 0%,      // Top highlight
@@ -148,6 +161,7 @@ export default {
     min-height: 0;
     display: flex;
     flex-direction: column;
+    padding: 0 0.5rem 0 0rem;
   }
 
   :deep(.dynamic-component-wrapper > *) {

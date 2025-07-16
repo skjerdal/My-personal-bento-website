@@ -2,6 +2,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@700&display=swap');
 
 .pokemon-card {
+  color: #333; // Set a default text color to override theme
+  * {
+    color: inherit; // Ensure all children inherit the card's color
+  }
   --space: 5%;
   --angle: 133deg;
   --imgsize: 50%;

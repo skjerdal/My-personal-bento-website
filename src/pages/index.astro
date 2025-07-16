@@ -7,7 +7,7 @@ import { cards } from '../data/cardContent';
 <Layout title="Thomas Skjerdal - Personal Website">
   <main class="container">
     <div class="card-grid">
-      {cards.map((card) => (
+      {cards.map((card, index) => (
         <CardWrapper
           isUnique={card.isUnique}
           title={card.title}
@@ -16,6 +16,7 @@ import { cards } from '../data/cardContent';
           position={card.position}
           className="card"
           videoPath={card.videoPath}
+          style={`animation-delay: ${index * 100}ms`}
         />
       ))}
     </div>

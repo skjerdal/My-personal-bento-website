@@ -6,7 +6,7 @@ const { isUnique, title, content, componentName, position, className, style, vid
 const span = position?.span || 1;
 ---
 
-<div class={`card ${className || ''}`} data-span={span} style={`grid-column: span ${span}; display: grid;`}>
+<div class={`card ${className || ''}`} data-span={span} style={`grid-column: span ${span}; display: grid; ${style ?? ''}`}>
   {isUnique ? (
     <PokemonCard 
       client:load 
@@ -60,6 +60,10 @@ const span = position?.span || 1;
   }
 
   .card {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fly-in 0.4s ease-out forwards;
+    
     &[data-span="2"] {
       grid-column: span 2;
     }
@@ -79,6 +83,13 @@ const span = position?.span || 1;
       &[data-span="3"] {
         grid-column: span 1 !important;
       }
+    }
+  }
+
+  @keyframes fly-in {
+    to {
+      opacity: 1;
+      transform: translateY(0);
     }
   }
 </style>

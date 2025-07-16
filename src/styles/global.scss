@@ -4,7 +4,7 @@
 body {
   background-color: $background-color;
   color: var(--text-primary, $text-color);
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Inter', sans-serif;
   line-height: 1.5;
   margin: 0;
   transition: background-color 0.3s ease, color 0.3s ease;
@@ -13,7 +13,7 @@ body {
 // Apply text colors based on theme
 h1, h2, h3, h4, h5, h6 {
   color: var(--text-primary, $text-color);
-  font-family: 'Space Mono', monospace;
+  font-family: 'Inter', sans-serif;
 }
 
 p {

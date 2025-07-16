@@ -51,7 +51,7 @@ export default {
   flex: 1;
   overflow-y: auto;
   position: relative;
-  padding: 0 5px;
+  padding: 0 5px 25px 5px;
   scrollbar-width: thin;
   scrollbar-color: rgba($text-color, 0.2) transparent;
 
