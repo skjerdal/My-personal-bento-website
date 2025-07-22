@@ -13,7 +13,7 @@
       :style="airplaneStyle"
       ref="airplane"
     >
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="airplane-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="airplane-icon" :style="airplaneRotationStyle">
         <path d="M21 3L3 10l7 2 2 7 9-9z"/>
         <path d="M12 12l9-9"/>
         <path d="M10 12l-7-2"/>
@@ -45,6 +45,9 @@
         
         <!-- Shadow on ground -->
         <div class="airplane-shadow" :style="shadowStyle"></div>
+        
+        <!-- Dust puff effect -->
+        <div v-if="dustPuff.active" class="dust-puff" :style="dustPuffStyle"></div>
       </div>
     </Teleport>
   </div>
@@ -53,6 +56,110 @@
 <script>
 import { ref, reactive, computed, onMounted, onUnmounted, nextTick } from 'vue';
 
+// ===== REAL-WORLD PHYSICS CONSTANTS (SI UNITS) =====
+const PIXELS_PER_METER = 100;        // 1 pixel = 1 cm scale
+const AIRPLANE_MASS = 0.003;          // 3 grams in kg
+const WING_AREA = 0.015;              // 150 cm² in m²
+const AIR_DENSITY = 1.225;            // kg/m³ at sea level
+const GRAVITY = 9.81;                 // m/s²
+const CL_ALPHA = 4.0;                 // lift curve slope (per radian) - lowered
+const STALL_ANGLE = Math.PI / 9;      // ±20° stall angle - widened
+const CD0 = 0.02;                     // parasite drag coefficient
+const K_INDUCED = 0.07;               // induced drag factor
+const MOMENT_OF_INERTIA = 5e-5;        // kg⋅m² (feels right for ~20 cm span)
+const ROTATIONAL_DAMPING = 0.8;       // per second
+const PHYSICS_DT = 1/120;             // 120Hz physics timestep
+const GROUND_BOUNCE_COEFF = 0.2;      // bounce damping
+const MIN_SPEED_THRESHOLD = 0.15;     // m/s - below this, plane "sleeps"
+const WIND_GUST_STRENGTH = 0.2;       // m/s max wind variation - reduced for stability
+const THREE_DEG_IN_RAD = Math.PI / 60; // 3 degrees in radians
+
+// Vector utilities - optimized for reuse
+class Vec2 {
+  constructor(x = 0, y = 0) {
+    this.x = x;
+    this.y = y;
+  }
+  
+  static from(x, y) {
+    return new Vec2(x, y);
+  }
+  
+  set(x, y) {
+    this.x = x;
+    this.y = y;
+    return this;
+  }
+  
+  len() {
+    return Math.sqrt(this.x * this.x + this.y * this.y);
+  }
+  
+  lenSq() {
+    return this.x * this.x + this.y * this.y;
+  }
+  
+  unit() {
+    const length = this.len();
+    if (length < 1e-10) return new Vec2(1, 0);
+    return new Vec2(this.x / length, this.y / length);
+  }
+  
+  perpCCW() {
+    return new Vec2(-this.y, this.x);
+  }
+  
+  scale(s) {
+    return new Vec2(this.x * s, this.y * s);
+  }
+  
+  add(v) {
+    return new Vec2(this.x + v.x, this.y + v.y);
+  }
+  
+  sub(v) {
+    return new Vec2(this.x - v.x, this.y - v.y);
+  }
+  
+  neg() {
+    return new Vec2(-this.x, -this.y);
+  }
+  
+  dot(v) {
+    return this.x * v.x + this.y * v.y;
+  }
+  
+  limit(maxLength) {
+    const length = this.len();
+    if (length > maxLength) {
+      const scale = maxLength / length;
+      this.x *= scale;
+      this.y *= scale;
+    }
+    return this;
+  }
+}
+
+// Helper function to wrap angles to [-π, π]
+const wrapPi = (angle) => {
+  while (angle > Math.PI) angle -= 2 * Math.PI;
+  while (angle < -Math.PI) angle += 2 * Math.PI;
+  return angle;
+};
+
+// Simple Perlin noise for wind gusts
+class SimplexNoise {
+  constructor(seed = 1) {
+    this.seed = seed;
+  }
+  
+  noise(x, y) {
+    // Simple pseudo-random noise - good enough for wind effects
+    let n = Math.sin(x * 12.9898 + y * 78.233 + this.seed) * 43758.5453123;
+    return 2 * (n - Math.floor(n)) - 1;
+  }
+}
+
 export default {
   name: 'PaperAirplane',
   setup() {
@@ -60,44 +167,66 @@ export default {
     const airplane = ref(null);
     const isDragging = ref(false);
     const isFlying = ref(false);
-    const animationId = ref(null);
+    const isSleeping = ref(false);
     
     const dragPosition = reactive({ x: 0, y: 0 });
-    const dragStart = reactive({ x: 0, y: 0 });
     const mousePos = reactive({ x: 0, y: 0 });
     const lastMousePos = reactive({ x: 0, y: 0 });
+    
+    // Physics state in SI units (meters, radians, etc.)
+    const physics = reactive({
+      position: new Vec2(0, 0),     // meters
+      velocity: new Vec2(0, 0),     // m/s
+      theta: 0,                     // airplane orientation (radians)
+      omega: 0,                     // angular velocity (rad/s)
+      accumulatedTime: 0,           // for fixed timestep
+      lastUpdateTime: 0,
+      groundLevel: 0,               // meters from top
+      windOffset: new Vec2(0, 0),   // current wind vector
+      groundTimer: 0,               // time spent on ground for auto-sleep
+    });
+    
+    const dustPuff = reactive({
+      active: false,
+      x: 0,
+      y: 0,
+      scale: 1,
+      opacity: 1
+    });
+    
+    const noise = new SimplexNoise(Date.now());
+    let animationId = null;
+    
+    // Scratch vectors for reuse (avoid GC)
+    const scratchVecs = {
+      vAir: new Vec2(0, 0),
+      vHat: new Vec2(0, 0),
+      liftDir: new Vec2(0, 0),
+      lift: new Vec2(0, 0),
+      drag: new Vec2(0, 0),
+      weight: new Vec2(0, AIRPLANE_MASS * GRAVITY),
+      totalForce: new Vec2(0, 0)
+    };
     
     const isReadyToThrow = computed(() => {
       const power = Math.sqrt(dragPosition.x * dragPosition.x + dragPosition.y * dragPosition.y);
       return isDragging.value && power > 10;
     });
     
-    const flightState = reactive({
-      x: 0,
-      y: 0,
-      vx: 0,
-      vy: 0,
-      rotation: 0,
-      scale: 1
-    });
-
-    // --- New, More Realistic Physics Model ---
-    // The previous models were flawed. This model is based on more accurate physics principles
-    // for unpowered flight, ensuring the plane behaves like a true glider.
-
-    // Gravity: A constant downward acceleration.
-    const GRAVITY = 0.08;
-
-    // Drag Coefficient: Drag increases with the SQUARE of velocity, slowing the plane from a fast throw to a gentle glide.
-    const DRAG_COEFFICIENT = 0.001;
-
-    // Lift Coefficient: Lift also increases with the SQUARE of velocity, but is tuned to be weaker than gravity.
-    const LIFT_COEFFICIENT = 0.0008;
-
+    // Convert drag distance to launch speed via energy
+    const getLaunchSpeed = (dragDistance) => {
+      const maxDragPixels = 80;
+      const normalizedDrag = Math.min(dragDistance / maxDragPixels, 1);
+      // Map to kinetic energy (60% of "deadly fast")
+      const energy = normalizedDrag * 0.6;
+      // Solve for speed: KE = 1/2 * m * v^2, but use gravity*height equivalent
+      return Math.sqrt(2 * energy * GRAVITY * 1); // 1m height worth of energy
+    };
+    
     const airplaneStyle = computed(() => {
       if (isFlying.value) {
         return {
-          opacity: '0.3', // Make original airplane semi-transparent when flying
+          opacity: '0.3',
           transform: `translate(${dragPosition.x}px, ${dragPosition.y}px)`,
           transition: 'opacity 0.3s ease'
         };
@@ -109,15 +238,37 @@ export default {
         transition: isDragging.value ? 'none' : 'transform 0.3s ease'
       };
     });
+    
+    const airplaneRotationStyle = computed(() => {
+      if (!isFlying.value) return {};
+      
+      // Body roll based on angular velocity + pitch angle
+      const bank = THREE_DEG_IN_RAD * (physics.omega * 40); // spin → roll
+      const theta = physics.theta * (180 / Math.PI); // pitch in degrees
+      
+      return {
+        transform: `rotate(${bank * (180 / Math.PI)}deg) rotate(${theta}deg)`,
+        transition: 'transform 0.05s ease'
+      };
+    });
 
     const flyingAirplaneStyle = computed(() => {
       if (!isFlying.value) return {};
       
+      // Convert physics position (meters) to screen pixels
+      const screenX = physics.position.x * PIXELS_PER_METER;
+      const screenY = physics.position.y * PIXELS_PER_METER;
+      const rotationDeg = physics.theta * (180 / Math.PI);
+      
+      // Calculate altitude for scaling
+      const altitude = Math.max(0, physics.groundLevel - physics.position.y);
+      const scale = Math.max(0.3, 1 - altitude * 0.001);
+      
       return {
         position: 'fixed',
-        left: `${flightState.x}px`,
-        top: `${flightState.y}px`,
-        transform: `rotate(${flightState.rotation}deg) scale(${flightState.scale})`,
+        left: `${screenX}px`,
+        top: `${screenY}px`,
+        transform: `rotate(${rotationDeg}deg) scale(${scale})`,
         transition: 'none',
         pointerEvents: 'none',
         zIndex: '1'
@@ -127,16 +278,16 @@ export default {
     const trailStyle = computed(() => {
       if (!isFlying.value) return {};
       
-      const speed = Math.sqrt(flightState.vx * flightState.vx + flightState.vy * flightState.vy);
-      const trailLength = Math.min(speed * 8, 120);
-      const trailOpacity = Math.min(speed * 0.1, 0.6);
+      const speed = physics.velocity.len();
+      const trailLength = Math.min(speed * PIXELS_PER_METER * 0.8, 120);
+      const trailOpacity = Math.min(speed * 0.15, 0.7);
       
       return {
         position: 'absolute',
         width: `${trailLength}px`,
         height: '2px',
         background: `linear-gradient(90deg, rgba(0,0,0,${trailOpacity}) 0%, transparent 100%)`,
-        left: '-' + trailLength + 'px',
+        left: `-${trailLength}px`,
         top: '50%',
         transform: 'translateY(-50%)',
         transformOrigin: 'right center',
@@ -147,15 +298,16 @@ export default {
     const shadowStyle = computed(() => {
       if (!isFlying.value) return {};
       
-      const groundY = window.innerHeight - 50; // Assume ground is near bottom
-      const shadowDistance = Math.max(0, groundY - flightState.y);
-      const shadowOpacity = Math.max(0, 0.3 - shadowDistance * 0.0005);
-      const shadowSize = Math.max(0.3, 1 - shadowDistance * 0.001);
+      const screenX = physics.position.x * PIXELS_PER_METER;
+      const groundScreenY = physics.groundLevel * PIXELS_PER_METER;
+      const altitude = Math.max(0, physics.groundLevel - physics.position.y);
+      const shadowOpacity = Math.max(0, 0.4 - altitude * 0.01);
+      const shadowSize = Math.max(0.3, 1 - altitude * 0.005);
       
       return {
         position: 'fixed',
-        left: `${flightState.x}px`,
-        top: `${groundY}px`,
+        left: `${screenX}px`,
+        top: `${groundScreenY}px`,
         width: `${32 * shadowSize}px`,
         height: `${32 * shadowSize}px`,
         background: `rgba(0,0,0,${shadowOpacity})`,
@@ -165,14 +317,30 @@ export default {
         zIndex: '-1'
       };
     });
+    
+    const dustPuffStyle = computed(() => {
+      if (!dustPuff.active) return {};
+      
+      return {
+        position: 'fixed',
+        left: `${dustPuff.x}px`,
+        top: `${dustPuff.y}px`,
+        width: `${20 * dustPuff.scale}px`,
+        height: `${20 * dustPuff.scale}px`,
+        background: `rgba(139, 69, 19, ${dustPuff.opacity})`,
+        borderRadius: '50%',
+        filter: 'blur(3px)',
+        transform: 'translate(-50%, -50%)',
+        pointerEvents: 'none'
+      };
+    });
 
     const powerBarStyle = computed(() => {
       const power = Math.sqrt(dragPosition.x * dragPosition.x + dragPosition.y * dragPosition.y);
       const maxPower = 80;
       const powerPercent = Math.min(power / maxPower, 1);
       
-      // Color changes from green to yellow to red as power increases
-      const hue = (1 - powerPercent) * 120; // 120 is green, 0 is red
+      const hue = (1 - powerPercent) * 120;
       const color = `hsl(${hue}, 70%, 50%)`;
       
       return {
@@ -181,17 +349,207 @@ export default {
         transition: 'width 0.1s ease'
       };
     });
+    
+    const getAngleOfAttack = (vAir) => {
+      const speed = vAir.len();
+      if (speed < 0.1) return 0;
+      
+      const flightAngle = Math.atan2(vAir.y, vAir.x);
+      let alpha = wrapPi(physics.theta - flightAngle);
+      
+      // Clamp to ±25° to prevent huge lift torque at stall
+      return Math.max(-25 * Math.PI/180, Math.min(25 * Math.PI/180, alpha));
+    };
+    
+    const calculateForces = () => {
+      // Air-relative velocity (wind subtracts from plane motion)
+      scratchVecs.vAir.set(physics.velocity.x - physics.windOffset.x, 
+                          physics.velocity.y - physics.windOffset.y);
+      const speed = scratchVecs.vAir.len();
+      
+      if (speed < MIN_SPEED_THRESHOLD) {
+        isSleeping.value = true;
+        return { force: scratchVecs.totalForce.set(0, 0), moment: 0 };
+      }
+      
+      isSleeping.value = false;
+      
+      scratchVecs.vHat.set(scratchVecs.vAir.x / speed, scratchVecs.vAir.y / speed);
+      scratchVecs.liftDir.set(-scratchVecs.vHat.y, scratchVecs.vHat.x);
+      const q = 0.5 * AIR_DENSITY * speed * speed; // dynamic pressure
+      
+      // Angle of attack and lift coefficient
+      const alpha = getAngleOfAttack(scratchVecs.vAir);
+      const CL = CL_ALPHA * alpha;
+      
+      // Drag polar
+      const CD = CD0 + K_INDUCED * CL * CL;
+      
+      // Forces using scratch vectors
+      const liftMagnitude = q * WING_AREA * CL;
+      scratchVecs.lift.set(scratchVecs.liftDir.x * liftMagnitude, 
+                          scratchVecs.liftDir.y * liftMagnitude);
+      
+      const dragMagnitude = q * WING_AREA * CD;
+      scratchVecs.drag.set(-scratchVecs.vHat.x * dragMagnitude, 
+                          -scratchVecs.vHat.y * dragMagnitude);
+      
+      scratchVecs.totalForce.set(scratchVecs.lift.x + scratchVecs.drag.x, 
+                                scratchVecs.lift.y + scratchVecs.drag.y + scratchVecs.weight.y);
+      
+      // Natural pitching moment from lift at aerodynamic center
+      const leverX = 0.003; // 4-5 mm aft of CG
+      const leverY = 0.001; 
+      const moment = scratchVecs.lift.y * leverX - scratchVecs.lift.x * leverY;
+      
+      return { force: scratchVecs.totalForce, moment: moment };
+    };
+    
+    const updateWind = (time) => {
+      // Simple wind gusts using noise - reduced frequency for stability
+      const windFreq = 0.0005;
+      const windX = noise.noise(time * windFreq, 0) * WIND_GUST_STRENGTH;
+      const windY = noise.noise(0, time * windFreq) * WIND_GUST_STRENGTH * 0.5;
+      
+      physics.windOffset.x = windX;
+      physics.windOffset.y = windY;
+    };
+    
+    const stepPhysics = (dt) => {
+      if (isSleeping.value && physics.velocity.len() < MIN_SPEED_THRESHOLD) {
+        return;
+      }
+      
+      const { force, moment } = calculateForces();
+      
+      // Linear motion
+      const acceleration = force.scale(1 / AIRPLANE_MASS);
+      physics.velocity = physics.velocity.add(acceleration.scale(dt));
+      physics.position = physics.position.add(physics.velocity.scale(dt));
+      
+      // Gentle nose-to-flight-path blending (weather-cock effect)
+      if (scratchVecs.vAir.len() > 0.5) { // Only when moving reasonably fast
+        const followRate = 2; // rad/s
+        const desiredTheta = Math.atan2(scratchVecs.vAir.y, scratchVecs.vAir.x);
+        const thetaError = wrapPi(desiredTheta - physics.theta);
+        physics.omega += thetaError * followRate * dt;
+      }
+      
+      // Rotational motion with linear and quadratic damping
+      const aeroDamp = -Math.sign(physics.omega) * physics.omega * physics.omega * 0.00002;
+      const angularAccel = (moment + aeroDamp) / MOMENT_OF_INERTIA - physics.omega * ROTATIONAL_DAMPING;
+      physics.omega += angularAccel * dt;
+      physics.theta += physics.omega * dt;
+      
+      // Ground interaction
+      const groundY = physics.groundLevel;
+      const onGround = physics.position.y >= groundY;
+      
+      if (onGround) {
+        physics.position.y = groundY;
+        physics.groundTimer += dt;
+        
+        if (physics.velocity.y > 0) {
+          physics.velocity.y = -physics.velocity.y * GROUND_BOUNCE_COEFF;
+          createDustPuff();
+        }
+        
+        // Coulomb ground drag instead of simple friction
+        if (Math.abs(physics.velocity.x) < 0.3) {
+          physics.velocity.x = 0; // Stop if very slow
+        } else {
+          physics.velocity.x *= 0.95; // Drag each step while on ground
+        }
+        
+        // Auto-sleep when slow and on ground
+        if (physics.velocity.len() < MIN_SPEED_THRESHOLD) {
+          isSleeping.value = true;
+          landAirplane();
+          return;
+        }
+        
+        // Auto-sleep after 3s on ground if still creeping
+        if (physics.groundTimer > 3.0 && physics.velocity.len() < 0.3) {
+          landAirplane();
+          return;
+        }
+      } else {
+        physics.groundTimer = 0; // Reset timer when airborne
+      }
+      
+      // Check boundaries
+      const margin = 2; // meters
+      const screenWidthM = window.innerWidth / PIXELS_PER_METER;
+      const screenHeightM = window.innerHeight / PIXELS_PER_METER;
+      
+      if (physics.position.x < -margin || 
+          physics.position.x > screenWidthM + margin ||
+          physics.position.y > screenHeightM + margin) {
+        landAirplane();
+      }
+    };
+    
+    const createDustPuff = () => {
+      const screenX = physics.position.x * PIXELS_PER_METER;
+      const screenY = physics.groundLevel * PIXELS_PER_METER;
+      
+      dustPuff.active = true;
+      dustPuff.x = screenX;
+      dustPuff.y = screenY;
+      dustPuff.scale = 1;
+      dustPuff.opacity = 0.6;
+      
+      // Animate dust puff
+      const startTime = Date.now();
+      const animateDust = () => {
+        const elapsed = Date.now() - startTime;
+        const progress = elapsed / 1000; // 1 second duration
+        
+        if (progress >= 1) {
+          dustPuff.active = false;
+          return;
+        }
+        
+        dustPuff.scale = 1 + progress * 2;
+        dustPuff.opacity = 0.6 * (1 - progress);
+        
+        requestAnimationFrame(animateDust);
+      };
+      
+      requestAnimationFrame(animateDust);
+    };
+    
+    const physicsLoop = (currentTime) => {
+      if (!isFlying.value) return;
+      
+      const frameTime = (currentTime - physics.lastUpdateTime) / 1000;
+      physics.lastUpdateTime = currentTime;
+      physics.accumulatedTime += frameTime;
+      
+      // Update wind
+      updateWind(currentTime);
+      
+      // Fixed timestep physics
+      while (physics.accumulatedTime >= PHYSICS_DT) {
+        stepPhysics(PHYSICS_DT);
+        physics.accumulatedTime -= PHYSICS_DT;
+      }
+      
+      // Continue loop
+      animationId = requestAnimationFrame(physicsLoop);
+    };
 
     const startDrag = (event) => {
       if (isFlying.value) return;
       
       isDragging.value = true;
       const rect = container.value.getBoundingClientRect();
-      dragStart.x = event.clientX - rect.left - rect.width / 2;
-      dragStart.y = event.clientY - rect.top - rect.height / 2;
       
       lastMousePos.x = event.clientX;
       lastMousePos.y = event.clientY;
+      
+      // Wake up sleeping plane
+      isSleeping.value = false;
       
       document.addEventListener('mousemove', handleGlobalMouseMove);
       document.addEventListener('mouseup', handleGlobalMouseUp);
@@ -208,7 +566,6 @@ export default {
       let newX = event.clientX - rect.left - rect.width / 2;
       let newY = event.clientY - rect.top - rect.height / 2;
       
-      // Limit drag distance
       const distance = Math.sqrt(newX * newX + newY * newY);
       if (distance > maxDistance) {
         newX = (newX / distance) * maxDistance;
@@ -217,14 +574,6 @@ export default {
       
       dragPosition.x = newX;
       dragPosition.y = newY;
-      
-      // Calculate rotation based on drag direction
-      const deltaX = event.clientX - lastMousePos.x;
-      const deltaY = event.clientY - lastMousePos.y;
-      
-      if (Math.abs(deltaX) > 1 || Math.abs(deltaY) > 1) {
-        flightState.rotation = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
-      }
       
       lastMousePos.x = event.clientX;
       lastMousePos.y = event.clientY;
@@ -245,153 +594,91 @@ export default {
       document.removeEventListener('mousemove', handleGlobalMouseMove);
       document.removeEventListener('mouseup', handleGlobalMouseUp);
       
-      // Calculate throw velocity based on drag distance
       const throwPower = Math.sqrt(dragPosition.x * dragPosition.x + dragPosition.y * dragPosition.y);
-      const throwMultiplier = Math.min(throwPower * 0.3, 15);
       
       if (throwPower < 10) {
-        // Not enough power, return to center
         returnToCenter();
         return;
       }
       
       isFlying.value = true;
+      isSleeping.value = false;
       
       await nextTick();
       
-      // Get starting position from the airplane in the card
+      // Get starting position and convert to meters (account for scroll)
       const rect = airplane.value.getBoundingClientRect();
-      flightState.x = rect.left + rect.width / 2;
-      flightState.y = rect.top + rect.height / 2;
+      const scrollY = window.scrollY || window.pageYOffset;
+      physics.position.x = (rect.left + rect.width / 2) / PIXELS_PER_METER;
+      physics.position.y = (rect.top + scrollY + rect.height / 2) / PIXELS_PER_METER;
+      physics.groundLevel = (window.innerHeight - 50) / PIXELS_PER_METER;
       
-      // Set initial velocity in opposite direction (slingshot effect)
-      const angle = flightState.rotation * (Math.PI / 180);
-      flightState.vx = -Math.cos(angle) * throwMultiplier;
-      flightState.vy = -Math.sin(angle) * throwMultiplier;
+      // Calculate launch velocity and orientation
+      const launchSpeed = getLaunchSpeed(throwPower);
+      const dragAngle = Math.atan2(dragPosition.y, dragPosition.x); // Use local drag offset
       
-      // Also adjust rotation to match actual flight direction
-      flightState.rotation = Math.atan2(flightState.vy, flightState.vx) * (180 / Math.PI);
-      flightState.scale = 1;
+      physics.velocity.x = Math.cos(dragAngle) * launchSpeed;
+      physics.velocity.y = Math.sin(dragAngle) * launchSpeed;
       
-      // Start physics simulation
-      animationId.value = requestAnimationFrame(updateFlight);
-    };
-
-    const updateFlight = () => {
-      if (!isFlying.value) return;
-
-      const speedSq = flightState.vx * flightState.vx + flightState.vy * flightState.vy;
-      const speed = Math.sqrt(speedSq);
-
-      // 1. Gravity
-      // A constant downward force is always applied.
-      flightState.vy += GRAVITY;
-
-      if (speed > 0.01) {
-        // 2. Drag
-        // Drag opposes the direction of motion and is proportional to the square of the speed.
-        // This is the primary force that slows the plane down from its initial launch speed.
-        const dragForce = speedSq * DRAG_COEFFICIENT;
-        flightState.vx -= (flightState.vx / speed) * dragForce;
-        flightState.vy -= (flightState.vy / speed) * dragForce;
-
-        // 3. Lift
-        // Lift acts perpendicular to the direction of motion. For simplicity in this 2D model,
-        // we apply it as an upward force proportional to the square of the HORIZONTAL velocity.
-        // This makes the plane want to stay level, creating the glide effect.
-        const liftForce = flightState.vx * flightState.vx * LIFT_COEFFICIENT;
-        flightState.vy -= liftForce;
-      }
+      // Cap initial speed to keep plane on-screen
+      const velocityVec = new Vec2(physics.velocity.x, physics.velocity.y);
+      velocityVec.limit(6); // 6 m/s max
+      physics.velocity.x = velocityVec.x;
+      physics.velocity.y = velocityVec.y;
       
-      // 4. Update Position
-      flightState.x += flightState.vx;
-      flightState.y += flightState.vy;
+      physics.theta = dragAngle + THREE_DEG_IN_RAD * 5; // 5° nose-up launch
+      physics.omega = 0;
+      physics.accumulatedTime = 0;
+      physics.groundTimer = 0; // Reset ground timer
+      physics.lastUpdateTime = performance.now(); // Zero just once
       
-      // 5. Update Visuals
-      // The plane's rotation should smoothly follow its direction of travel.
-      const targetRotation = Math.atan2(flightState.vy, flightState.vx) * (180 / Math.PI);
-      // Add a lerp for smooth rotation
-      let delta = targetRotation - flightState.rotation;
-      if (delta > 180) delta -= 360;
-      if (delta < -180) delta += 360;
-      flightState.rotation += delta * 0.1;
-
-      // Scale gives a sense of depth.
-      const heightFactor = Math.max(0.7, 1 - (flightState.y / window.innerHeight) * 0.3);
-      const speedFactor = Math.max(0.8, 1 - speed * 0.01);
-      flightState.scale = heightFactor * speedFactor;
-      
-      // 6. Check Boundaries
-      const margin = 200;
-      if (flightState.x < -margin || 
-          flightState.x > window.innerWidth + margin ||
-          flightState.y > window.innerHeight + margin) {
-        landAirplane();
-      } else {
-        animationId.value = requestAnimationFrame(updateFlight);
-      }
+      // Start requestAnimationFrame physics loop
+      animationId = requestAnimationFrame(physicsLoop);
     };
 
     const landAirplane = () => {
       isFlying.value = false;
-      if (animationId.value) {
-        cancelAnimationFrame(animationId.value);
-        animationId.value = null;
+      isSleeping.value = true;
+      
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+        animationId = null;
       }
       
-      // Return to center with a smooth animation after a short delay
       setTimeout(() => {
         returnToCenter();
       }, 500);
     };
 
     const returnToCenter = () => {
-      // Smooth animation back to center
       const startTime = Date.now();
       const duration = 800;
       const startX = dragPosition.x;
       const startY = dragPosition.y;
-      const startRotation = flightState.rotation;
-      const startScale = flightState.scale;
       
       const animateReturn = () => {
         const elapsed = Date.now() - startTime;
         const progress = Math.min(elapsed / duration, 1);
-        
-        // Easing function for smooth animation
         const easeOut = 1 - Math.pow(1 - progress, 3);
         
         dragPosition.x = startX * (1 - easeOut);
         dragPosition.y = startY * (1 - easeOut);
-        flightState.rotation = startRotation * (1 - easeOut);
-        flightState.scale = startScale + (1 - startScale) * easeOut;
         
         if (progress < 1) {
           requestAnimationFrame(animateReturn);
         } else {
-          // Ensure values are exactly at rest position
           dragPosition.x = 0;
           dragPosition.y = 0;
-          flightState.rotation = 0;
-          flightState.scale = 1;
+          isSleeping.value = false;
         }
       };
       
       requestAnimationFrame(animateReturn);
     };
 
-    onMounted(() => {
-      // Add the flying airplane to the global airplane-sky layer
-      const airplaneSky = document.querySelector('.airplane-sky');
-      if (airplaneSky) {
-        // The flying airplane will be rendered here via portal-like behavior
-        // Vue's conditional rendering will handle this
-      }
-    });
-
     onUnmounted(() => {
-      if (animationId.value) {
-        cancelAnimationFrame(animationId.value);
+      if (animationId) {
+        cancelAnimationFrame(animationId);
       }
       document.removeEventListener('mousemove', handleGlobalMouseMove);
       document.removeEventListener('mouseup', handleGlobalMouseUp);
@@ -404,10 +691,13 @@ export default {
       isFlying,
       isReadyToThrow,
       airplaneStyle,
+      airplaneRotationStyle,
       flyingAirplaneStyle,
       trailStyle,
       shadowStyle,
+      dustPuffStyle,
       powerBarStyle,
+      dustPuff,
       startDrag,
       handleMouseMove,
       throwAirplane,
