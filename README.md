@@ -8,6 +8,7 @@ A modern, responsive personal website built with Astro and Vue.js that features 
 - **Fixed Card Sizing**: Cards maintain perfect proportions and don't alter width when squeezed
 - **Component-Based Architecture**: Each card can be filled with custom Vue components
 - **Data-Driven Content**: All content is managed through `cardContent.ts` file
+- **Custom Card Styling**: Flexible theming with CSS variables, classes, and custom CSS injection
 - **Flexible Positioning**: Cards can span multiple grid columns
 - **Unique Card Support**: Special wrapper for custom, non-template cards
 - **Responsive Design**: Automatically adjusts grid layout for different screen sizes
@@ -160,7 +161,133 @@ For cards that don't follow the template pattern:
 
 3. **Import and use it in `CardWrapper.astro`**
 
-## 🎨 Card Positioning
+## 🎨 Card Styling & Customization
+
+### Custom Card Styling
+
+The system supports flexible custom styling for individual cards while maintaining core functionality. You can customize cards using CSS variables, classes, or inject custom CSS directly.
+
+#### Basic Custom Styling
+
+Add a `customStyle` property to any card in `cardContent.ts`:
+
+```typescript
+{
+  id: 'contact',
+  title: 'Contact',
+  component: 'ContactSocial',
+  position: { span: 1 },
+  customStyle: {
+    // CSS Variables - cleanest approach
+    cssVariables: {
+      '--card-bg': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      '--text-color': '#ffffff',
+      '--shadow-color': 'rgba(102, 126, 234, 0.4)'
+    },
+    
+    // CSS Classes - for reusable themes
+    cssClasses: ['premium-card', 'animated-border'],
+    
+    // Custom CSS - for unique styling
+    customCSS: `
+      .custom-contact-glow {
+        box-shadow: 0 0 30px var(--shadow-color, rgba(0,0,0,0.1));
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.8; }
+      }
+    `
+  }
+}
+```
+
+#### Styling Options
+
+1. **CSS Variables** (`cssVariables`)
+   - Cleanest approach for theming
+   - Inherits all base functionality
+   - Easy to maintain and modify
+
+2. **CSS Classes** (`cssClasses`)
+   - Perfect for reusable themes
+   - Define classes in your global styles
+   - Can be combined with CSS variables
+
+3. **Custom CSS** (`customCSS`)
+   - Most flexible for unique designs
+   - Injected directly into the component
+   - Use for complex animations or layouts
+
+#### Styling Examples
+
+**Gradient Background Card:**
+```typescript
+{
+  id: 'premium-work',
+  component: 'WorkExperience',
+  customStyle: {
+    cssVariables: {
+      '--card-bg': 'linear-gradient(45deg, #ff6b6b, #4ecdc4)',
+      '--text-color': 'white',
+      '--border-radius': '20px'
+    }
+  }
+}
+```
+
+**Neon Glow Effect:**
+```typescript
+{
+  id: 'neon-status',
+  component: 'CurrentStatus',
+  customStyle: {
+    cssClasses: ['neon-glow'],
+    customCSS: `
+      .neon-glow {
+        box-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff;
+        border: 2px solid #00ffff;
+        background: #001122;
+      }
+    `
+  }
+}
+```
+
+**Dark Theme Card:**
+```typescript
+{
+  id: 'dark-education',
+  component: 'Education',
+  customStyle: {
+    cssVariables: {
+      '--card-bg': '#1a1a1a',
+      '--text-color': '#e0e0e0',
+      '--accent-color': '#bb86fc',
+      '--shadow-intensity': '0.3'
+    }
+  }
+}
+```
+
+#### What Gets Inherited vs. Customized
+
+**✅ Always Inherited:**
+- Card size and positioning
+- Grid responsiveness
+- Fly-in animations
+- Basic structure and layout
+
+**🎨 Fully Customizable:**
+- Background colors/gradients
+- Text colors and fonts
+- Shadows and effects
+- Borders and border radius
+- Custom animations
+- Component-specific styling
+
+### Card Positioning
 
 Cards can span different numbers of columns:
 
@@ -181,6 +308,12 @@ type CardPosition = {
   span: number;
 };
 
+type CustomStyle = {
+  cssVariables?: Record<string, string>;
+  cssClasses?: string[];
+  customCSS?: string;
+};
+
 type Card = {
   id: string;
   title: string;
@@ -189,6 +322,8 @@ type Card = {
   position: CardPosition;
   isUnique?: boolean;
   data?: any; // Custom data for your components
+  videoPath?: string; // Path to hover animation video
+  customStyle?: CustomStyle; // Custom styling options
 };
 ```
 
@@ -214,6 +349,8 @@ type Card = {
 2. **SCSS Mixins**: Leverage existing mixins for responsive design
 3. **Consistent Spacing**: Follow the established spacing system
 4. **Accessibility**: Ensure proper contrast ratios and keyboard navigation
+5. **Custom Styling**: Prefer CSS variables over custom CSS for maintainability
+6. **Theme Reusability**: Use cssClasses for themes that will be used across multiple cards
 
 ## 🔧 Customization
 

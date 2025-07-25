@@ -2,9 +2,21 @@
   <div 
     ref="cardElement"
     class="card clickable-card" 
-    :class="[{ 'pokemon-card-host': componentName === 'PokemonCard' }, className]" 
+    :class="[
+      { 'pokemon-card-host': componentName === 'PokemonCard' }, 
+      className,
+      customStyle?.cssClasses || []
+    ]" 
+    :style="computedStyle"
     :data-span="position?.span || 1"
   >
+    <!-- Inject custom CSS if provided -->
+    <component 
+      v-if="customStyle?.customCSS" 
+      :is="'style'" 
+      v-html="customStyle.customCSS"
+    />
+    
     <h1 v-if="componentName !== 'PokemonCard'" class="card-title">
       <span>{{ title }}</span>
     </h1>
@@ -30,7 +42,8 @@ export default {
     position: Object,
     className: String,
     style: [String, Object],
-    videoPath: String
+    videoPath: String,
+    customStyle: Object // Add customStyle prop
   },
   setup(props) {
     const isMounted = ref(false);
@@ -51,6 +64,7 @@ export default {
     });
 
     const computedStyle = computed(() => {
+      // Parse existing style prop
       const baseStyle = typeof props.style === 'string' ? 
         props.style.split(';').reduce((acc, style) => {
           const [key, value] = style.split(':');
@@ -60,8 +74,12 @@ export default {
           return acc;
         }, {}) : props.style || {};
 
+      // Add CSS variables from customStyle
+      const cssVariables = props.customStyle?.cssVariables || {};
+      
       return {
         ...baseStyle,
+        ...cssVariables
       };
     });
 
@@ -83,37 +101,39 @@ export default {
 @import '../styles/mixins';
 
 .card {
-  background-color: $card-background;
-  border-radius: 2.4rem;
-  padding: 0;
+  background: var(--card-bg, $card-background);
+  color: var(--text-color, inherit);
+  border-radius: 19px;
+  padding: var(--card-padding, 0);
   height: calc(433px - 1.5rem);
-  backdrop-filter: blur(10px);
-  border: none;
+  backdrop-filter: var(--backdrop-filter, blur(10px));
+  border: var(--card-border, none);
   position: relative;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1), 0 2px 5px rgba(0, 0, 0, 0.07);
+  box-shadow: var(--box-shadow, 0 8px 20px rgba(0, 0, 0, 0.1), 0 2px 5px rgba(0, 0, 0, 0.07));
   z-index: 10; // Ensure cards are above the airplane flight layer
   
-  &.clickable-card {
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  // &.clickable-card {
+  //   cursor: pointer;
+  //   transition: transform 0.2s ease, box-shadow 0.2s ease;
     
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15), 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
-  }
+  //   &:hover {
+  //     transform: translateY(-2px);
+  //     box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15), 0 4px 10px rgba(0, 0, 0, 0.1);
+  //   }
+  // }
   
-  &.pokemon-card-host {
-    background-color: transparent;
-    box-shadow: none;
-    &::before {
-      display: none;
-    }
-  }
+  // &.pokemon-card-host {
+  //   background-color: transparent;
+  //   box-shadow: none;
+  //   &::before {
+  //     display: none;
+  //   }
+  // }
 
+  /* Metallic border disabled
   &::before {
     content: '';
     position: absolute;
@@ -133,6 +153,7 @@ export default {
     -webkit-mask-composite: xor;
     pointer-events: none;
   }
+  */
 
   .card-title {
     font-size: 1.2rem;
@@ -144,6 +165,7 @@ export default {
     justify-content: space-between;
     gap: 8px;
     padding: 0.2rem 1rem 0 1rem;
+    color: inherit;
 
     span {
       overflow-wrap: break-word;
@@ -180,6 +202,7 @@ export default {
     -webkit-line-clamp: 8;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    color: inherit;
     // padding: 0 1rem;
   }
 

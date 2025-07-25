@@ -247,7 +247,7 @@ const PokemonCard = ({ title = '', content = '', className, style, componentName
                 </div>
                 <div className="card-info-row">
                   <span className="illus">Illus. Thomas Skjerdal</span>
-                  <span className="copyright">© 2024 T. Skjerdal</span>
+                  <span className="copyright">© 2025 T. Skjerdal</span>
                 </div>
               </div>
             </div>

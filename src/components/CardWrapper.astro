@@ -2,7 +2,7 @@
 import Card from './Card.vue';
 import PokemonCard from './PokemonCard';
 
-const { isUnique, title, content, componentName, position, className, style, videoPath } = Astro.props;
+const { isUnique, title, content, componentName, position, className, style, videoPath, customStyle } = Astro.props;
 const span = position?.span || 1;
 ---
 
@@ -26,6 +26,7 @@ const span = position?.span || 1;
       title={title}
       content={content}
       videoPath={videoPath}
+      customStyle={customStyle}
     />
   )}
 </div>

@@ -7,17 +7,26 @@
     @mouseleave="throwAirplane"
     ref="container"
   >
+    <!-- Slingshot line -->
+    <div v-if="isDragging" class="slingshot-line" :style="slingshotLineStyle"></div>
+    
     <div 
       class="paper-airplane"
       :class="{ 'dragging': isDragging, 'ready-to-throw': isReadyToThrow }"
       :style="airplaneStyle"
       ref="airplane"
     >
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="airplane-icon" :style="airplaneRotationStyle">
-        <path d="M21 3L3 10l7 2 2 7 9-9z"/>
-        <path d="M12 12l9-9"/>
-        <path d="M10 12l-7-2"/>
-        <path d="M12 12l-2 7"/>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 16" fill="currentColor" class="airplane-icon" :style="airplaneRotationStyle">
+        <!-- Paper airplane body -->
+        <path d="M2 8 L24 3 L30 8 L24 13 Z" fill="currentColor" opacity="0.9"/>
+        <!-- Wing fold lines -->
+        <path d="M2 8 L24 8" stroke="currentColor" stroke-width="0.5" opacity="0.6"/>
+        <!-- Top wing crease -->
+        <path d="M7 8 L24 5" stroke="currentColor" stroke-width="0.3" opacity="0.4"/>
+        <!-- Bottom wing crease -->
+        <path d="M7 8 L24 11" stroke="currentColor" stroke-width="0.3" opacity="0.4"/>
+        <!-- Nose point highlight -->
+        <circle cx="29" cy="8" r="1" fill="currentColor" opacity="0.8"/>
       </svg>
       
       <!-- Power indicator -->
@@ -36,11 +45,17 @@
         <!-- Trail effect -->
         <div class="airplane-trail" :style="trailStyle"></div>
         
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="airplane-icon">
-          <path d="M21 3L3 10l7 2 2 7 9-9z"/>
-          <path d="M12 12l9-9"/>
-          <path d="M10 12l-7-2"/>
-          <path d="M12 12l-2 7"/>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 16" fill="currentColor" class="airplane-icon">
+          <!-- Paper airplane body -->
+          <path d="M2 8 L24 3 L30 8 L24 13 Z" fill="currentColor" opacity="0.9"/>
+          <!-- Wing fold lines -->
+          <path d="M2 8 L24 8" stroke="currentColor" stroke-width="0.5" opacity="0.6"/>
+          <!-- Top wing crease -->
+          <path d="M7 8 L24 5" stroke="currentColor" stroke-width="0.3" opacity="0.4"/>
+          <!-- Bottom wing crease -->
+          <path d="M7 8 L24 11" stroke="currentColor" stroke-width="0.3" opacity="0.4"/>
+          <!-- Nose point highlight -->
+          <circle cx="29" cy="8" r="1" fill="currentColor" opacity="0.8"/>
         </svg>
         
         <!-- Shadow on ground -->
@@ -224,16 +239,10 @@ export default {
     };
     
     const airplaneStyle = computed(() => {
-      if (isFlying.value) {
-        return {
-          opacity: '0.3',
-          transform: `translate(${dragPosition.x}px, ${dragPosition.y}px)`,
-          transition: 'opacity 0.3s ease'
-        };
-      }
-      
+      // Always show the airplane in the container as fully opaque and ready
       const scale = isDragging.value ? 1.2 : 1;
       return {
+        opacity: '1',
         transform: `translate(${dragPosition.x}px, ${dragPosition.y}px) scale(${scale})`,
         transition: isDragging.value ? 'none' : 'transform 0.3s ease'
       };
@@ -347,6 +356,39 @@ export default {
         width: `${powerPercent * 100}%`,
         background: color,
         transition: 'width 0.1s ease'
+      };
+    });
+
+    const slingshotLineStyle = computed(() => {
+      if (!isDragging.value) return {};
+      
+      const power = Math.sqrt(dragPosition.x * dragPosition.x + dragPosition.y * dragPosition.y);
+      const angle = Math.atan2(dragPosition.y, dragPosition.x) * 180 / Math.PI;
+      
+      // Line color based on power (green to red)
+      const maxPower = 80;
+      const powerPercent = Math.min(power / maxPower, 1);
+      const hue = (1 - powerPercent) * 120;
+      const lineColor = `hsl(${hue}, 70%, 50%)`;
+      
+      // Position the line to start from the airplane's current position
+      const containerWidth = container.value?.offsetWidth || 200;
+      const containerHeight = container.value?.offsetHeight || 120;
+      const startX = 50 + (dragPosition.x / containerWidth * 100);
+      const startY = 50 + (dragPosition.y / containerHeight * 100);
+      
+      return {
+        position: 'absolute',
+        left: `${startX}%`,
+        top: `${startY}%`,
+        width: `${power}px`,
+        height: '2px',
+        background: lineColor,
+        transformOrigin: 'left center',
+        transform: `rotate(${angle + 180}deg)`, // Reverse direction to show slingshot effect
+        opacity: '0.8',
+        borderRadius: '1px',
+        zIndex: '5'
       };
     });
     
@@ -613,12 +655,13 @@ export default {
       physics.position.y = (rect.top + scrollY + rect.height / 2) / PIXELS_PER_METER;
       physics.groundLevel = (window.innerHeight - 50) / PIXELS_PER_METER;
       
-      // Calculate launch velocity and orientation
+      // Calculate launch velocity and orientation (opposite direction like a slingshot)
       const launchSpeed = getLaunchSpeed(throwPower);
       const dragAngle = Math.atan2(dragPosition.y, dragPosition.x); // Use local drag offset
+      const launchAngle = dragAngle + Math.PI; // Launch in opposite direction (slingshot effect)
       
-      physics.velocity.x = Math.cos(dragAngle) * launchSpeed;
-      physics.velocity.y = Math.sin(dragAngle) * launchSpeed;
+      physics.velocity.x = Math.cos(launchAngle) * launchSpeed;
+      physics.velocity.y = Math.sin(launchAngle) * launchSpeed;
       
       // Cap initial speed to keep plane on-screen
       const velocityVec = new Vec2(physics.velocity.x, physics.velocity.y);
@@ -626,7 +669,7 @@ export default {
       physics.velocity.x = velocityVec.x;
       physics.velocity.y = velocityVec.y;
       
-      physics.theta = dragAngle + THREE_DEG_IN_RAD * 5; // 5° nose-up launch
+      physics.theta = launchAngle + THREE_DEG_IN_RAD * 5; // 5° nose-up launch
       physics.omega = 0;
       physics.accumulatedTime = 0;
       physics.groundTimer = 0; // Reset ground timer
@@ -634,6 +677,13 @@ export default {
       
       // Start requestAnimationFrame physics loop
       animationId = requestAnimationFrame(physicsLoop);
+      
+      // Reset immediately to allow rapid successive throws
+      setTimeout(() => {
+        returnToCenterFast();
+        // Ensure dragging state is fully reset
+        isDragging.value = false;
+      }, 50);
     };
 
     const landAirplane = () => {
@@ -645,9 +695,7 @@ export default {
         animationId = null;
       }
       
-      setTimeout(() => {
-        returnToCenter();
-      }, 500);
+      // No need to reset position here since we do it immediately after throwing
     };
 
     const returnToCenter = () => {
@@ -660,6 +708,32 @@ export default {
         const elapsed = Date.now() - startTime;
         const progress = Math.min(elapsed / duration, 1);
         const easeOut = 1 - Math.pow(1 - progress, 3);
+        
+        dragPosition.x = startX * (1 - easeOut);
+        dragPosition.y = startY * (1 - easeOut);
+        
+        if (progress < 1) {
+          requestAnimationFrame(animateReturn);
+        } else {
+          dragPosition.x = 0;
+          dragPosition.y = 0;
+          isSleeping.value = false;
+        }
+      };
+      
+      requestAnimationFrame(animateReturn);
+    };
+
+    const returnToCenterFast = () => {
+      const startTime = Date.now();
+      const duration = 200; // Much faster return
+      const startX = dragPosition.x;
+      const startY = dragPosition.y;
+      
+      const animateReturn = () => {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easeOut = 1 - Math.pow(1 - progress, 2); // Faster easing
         
         dragPosition.x = startX * (1 - easeOut);
         dragPosition.y = startY * (1 - easeOut);
@@ -697,6 +771,7 @@ export default {
       shadowStyle,
       dustPuffStyle,
       powerBarStyle,
+      slingshotLineStyle,
       dustPuff,
       startDrag,
       handleMouseMove,

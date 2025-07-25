@@ -2,6 +2,12 @@ type CardPosition = {
   span: number;
 };
 
+type CustomStyle = {
+  cssVariables?: Record<string, string>;
+  cssClasses?: string[];
+  customCSS?: string;
+};
+
 type Card = {
   id: string;
   title: string;
@@ -11,6 +17,7 @@ type Card = {
   isUnique?: boolean;
   data?: any; // Add this line to include data property
   videoPath?: string; // Path to the video file for hover animation
+  customStyle?: CustomStyle; // Add custom styling capability
 };
 
 export const cards: Card[] = [
@@ -28,7 +35,6 @@ export const cards: Card[] = [
     content: 'My professional journey as a developer',
     component: 'WorkExperience',
     position: { span: 2 },
-    videoPath: '/videos/work-loop.mp4',
     data: [
       {
         company: 'Tech Innovators',
@@ -62,7 +68,6 @@ export const cards: Card[] = [
     content: 'Connect with me on social media or send me an email.',
     component: 'ContactSocial',
     position: { span: 1 },
-    videoPath: '/videos/contact-loop.mp4',
     data: {
       email: 'thomas@skjerdal.com',
       availability: {
@@ -129,7 +134,15 @@ export const cards: Card[] = [
     content: 'What you are currently working on or learning...',
     component: 'CurrentStatus',
     position: { span: 1 },
-    videoPath: '/videos/test.mp4',
+    customStyle: {
+      cssVariables: {
+        '--card-bg': '#0813ff',
+        '--text-color': '#ffffff',
+        '--box-shadow': '0 20px 68px #00000040, 0 1px 2px #0000004d, 0 0 #000, inset 1px 1px .2px #ffffff9e',
+        '--card-border': '1px solid #0813ff',
+        '--backdrop-filter': 'none'
+      }
+    }
   },
   {
     id: 'other',
@@ -143,7 +156,16 @@ export const cards: Card[] = [
     title: 'Download Resume',
     content: 'Link to download your resume...',
     component: 'DownloadResume',
-    position: { span: 1 }
+    position: { span: 1 },
+    customStyle: {
+      cssVariables: {
+        '--card-bg': '#000000', // Solid black background
+        '--text-color': '#ffffff', // White text for contrast
+        '--box-shadow': '0 20px 68px #00000040, 0 1px 2px #0000004d, 0 0 #000, inset 0 2px 1px #ffffff80, inset 1px 1px .25px #ffffff4d', // Complete shadow effect
+        '--card-border': '1px solid #000', // Black border
+        '--backdrop-filter': 'none' // Remove blur that might interfere
+      }
+    }
   },
   {
     id: 'extra',
