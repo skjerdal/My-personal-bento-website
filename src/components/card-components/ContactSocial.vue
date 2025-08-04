@@ -1,6 +1,9 @@
 <template>
   <div class="contact-social">
     
+    <!-- 3D background extracted from DownloadResume -->
+    <LanyardBackground />
+
     <div class="social-links">
       <a 
       v-for="(social, index) in contactData.social" 
@@ -54,12 +57,13 @@
 <script>
 import { ref } from 'vue';
 import { cards } from '../../data/cardContent';
+import LanyardBackground from './LanyardBackground.vue';
 import BottleWave from './BottleWave.vue';
 import PaperAirplane from './PaperAirplane.vue';
 
 export default {
   name: 'ContactSocial',
-  components: { BottleWave, PaperAirplane },
+  components: { BottleWave, PaperAirplane, LanyardBackground },
   setup() {
     const contactData = ref(cards.find(card => card.id === 'contact').data);
     const copied = ref(false);
@@ -114,6 +118,7 @@ export default {
 
 <style lang="scss" scoped>
 .contact-social {
+  position: relative; // ensure 3D background positions correctly
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -123,6 +128,13 @@ export default {
   gap: 0.6rem;
   overflow: visible;
   
+  // Ensure we inherit CSS variables from parent card
+  color: var(--text-primary, #ffffff);
+  
+  // Make sure content sits above the 3D canvas
+  .social-links { z-index: 2; }
+  .email-section { z-index: 2; }
+
   .social-links {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -140,7 +152,7 @@ export default {
       line-height: 28px;
       letter-spacing: -0.01em;
       text-align: center;
-      color: rgb(0, 0, 0);
+      color: var(--text-primary, #333333);
       position: relative;
       backdrop-filter: blur(1px);
       box-shadow: rgba(0, 0, 0, 0.1) 0px 78px 51px 0px, rgba(0, 0, 0, 0.07) 0px 50px 30px 0px, rgba(0, 0, 0, 0.06) 0px 30px 16px 0px, rgba(0, 0, 0, 0.04) 0px 16px 8px, rgba(0, 0, 0, 0.04) 0px 6px 4px, rgba(0, 0, 0, 0.02) 0px 2px 2px;
@@ -171,10 +183,11 @@ export default {
       &:hover {
         .social-icon-container {
           transform: scale(1.05);
-          background: rgba(0, 0, 0, 0.08);
+          background: rgba(128, 128, 128, 0.08);
           
           .social-icon {
-            color: rgba(0, 0, 0, 0.8);
+            color: var(--text-primary, #ffffff);
+            opacity: 0.9;
           }
         }
       }
@@ -208,7 +221,7 @@ export default {
           flex-shrink: 0;
           width: 24px;
           height: 24px;
-          background: rgba(0, 0, 0, 0.05);
+          background: rgba(128, 128, 128, 0.05);
           border-radius: 6px;
           margin-right: 0.4rem;
           transition: all 0.3s ease;
@@ -216,7 +229,7 @@ export default {
           .social-icon {
             width: 12px;
             height: 12px;
-            color: rgba(0, 0, 0, 0.6);
+            color: var(--text-secondary, rgba(255, 255, 255, 0.8));
             transition: all 0.3s ease;
             
             &[stroke="currentColor"] {
@@ -227,7 +240,7 @@ export default {
         }
         
         .social-name {
-          color: rgba(0, 0, 0, 0.7);
+          color: var(--text-secondary, rgba(255, 255, 255, 0.8));
           font-size: 0.8rem;
           font-weight: 500;
           white-space: nowrap;
@@ -250,9 +263,9 @@ export default {
     line-height: 28px;
     letter-spacing: -0.01em;
     text-align: center;
-    color: rgb(0, 0, 0);
-    position: relative;
-    z-index: 10;
+          color: var(--text-primary, #ffffff);
+      position: relative;
+      z-index: 10;
     backdrop-filter: blur(1px);
     box-shadow: rgba(0, 0, 0, 0.1) 0px 78px 51px 0px, rgba(0, 0, 0, 0.07) 0px 50px 30px 0px, rgba(0, 0, 0, 0.06) 0px 30px 16px 0px, rgba(0, 0, 0, 0.04) 0px 16px 8px, rgba(0, 0, 0, 0.04) 0px 6px 4px, rgba(0, 0, 0, 0.02) 0px 2px 2px;
     --gradientBorder-size: 1px;
@@ -282,10 +295,11 @@ export default {
       .email-section__inner {
         .icon-container {
           transform: scale(1.05);
-          background: rgba(0, 0, 0, 0.08);
+          background: rgba(128, 128, 128, 0.08);
           
           .email-icon {
-            color: rgba(0, 0, 0, 0.8);
+            color: var(--text-primary, #ffffff);
+            opacity: 0.9;
           }
         }
 
@@ -320,7 +334,7 @@ export default {
         flex-shrink: 0;
         width: 24px;
         height: 24px;
-        background: rgba(0, 0, 0, 0.05);
+        background: rgba(128, 128, 128, 0.05);
         border-radius: 6px;
         margin-right: 0.4rem;
         transition: all 0.3s ease;
@@ -328,13 +342,13 @@ export default {
         .email-icon {
           width: 12px;
           height: 12px;
-          color: rgba(0, 0, 0, 0.6);
+          color: var(--text-secondary, rgba(255, 255, 255, 0.8));
           transition: all 0.3s ease;
         }
       }
       
       .email-text {
-        color: rgba(0, 0, 0, 0.7);
+        color: var(--text-secondary, rgba(255, 255, 255, 0.8));
         font-size: 0.8rem;
         font-weight: 500;
         transition: color 0.3s ease;
@@ -415,7 +429,8 @@ export default {
           }
 
           .copy-icon {
-            color: rgba(0, 0, 0, 0.8);
+            color: var(--text-primary, #ffffff);
+            opacity: 0.9;
           }
         }
 
@@ -433,7 +448,7 @@ export default {
         .copy-icon {
           width: 12px;
           height: 12px;
-          color: rgba(0, 0, 0, 0.5);
+          color: var(--text-tertiary, rgba(255, 255, 255, 0.6));
           transition: all 0.3s ease;
         }
       }

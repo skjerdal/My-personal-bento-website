@@ -86,6 +86,15 @@ export const cards: Card[] = [
           icon: 'github'
         }
       ]
+    },
+    customStyle: {
+      cssVariables: {
+        '--card-bg': '#000000', // Solid black background
+        '--text-primary': '#ffffff', // White text for contrast
+        '--box-shadow': '0 20px 68px #00000040, 0 1px 2px #0000004d, 0 0 #000, inset 0 2px 1px #ffffff80, inset 1px 1px .25px #ffffff4d', // Complete shadow effect
+        '--card-border': '1px solid #000', // Black border
+        '--backdrop-filter': 'none' // Remove blur that might interfere
+      }
     }
   },
   {
@@ -137,7 +146,7 @@ export const cards: Card[] = [
     customStyle: {
       cssVariables: {
         '--card-bg': '#0813ff',
-        '--text-color': '#ffffff',
+        '--text-primary': '#ffffff',
         '--box-shadow': '0 20px 68px #00000040, 0 1px 2px #0000004d, 0 0 #000, inset 1px 1px .2px #ffffff9e',
         '--card-border': '1px solid #0813ff',
         '--backdrop-filter': 'none'
@@ -156,16 +165,7 @@ export const cards: Card[] = [
     title: 'Download Resume',
     content: 'Link to download your resume...',
     component: 'DownloadResume',
-    position: { span: 1 },
-    customStyle: {
-      cssVariables: {
-        '--card-bg': '#000000', // Solid black background
-        '--text-color': '#ffffff', // White text for contrast
-        '--box-shadow': '0 20px 68px #00000040, 0 1px 2px #0000004d, 0 0 #000, inset 0 2px 1px #ffffff80, inset 1px 1px .25px #ffffff4d', // Complete shadow effect
-        '--card-border': '1px solid #000', // Black border
-        '--backdrop-filter': 'none' // Remove blur that might interfere
-      }
-    }
+    position: { span: 1 }
   },
   {
     id: 'extra',

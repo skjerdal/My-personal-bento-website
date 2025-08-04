@@ -1,7 +1,7 @@
 <template>
   <div class="download-resume">
     <!-- Three.js 3D Background -->
-    <div ref="threeContainer" class="three-container"></div>
+    <!-- <div ref="threeContainer" class="three-container"></div> -->
     
     <!-- Content Overlay -->
     <div class="content-wrapper">
@@ -24,6 +24,7 @@
 <script>
 import * as THREE from 'three';
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 export default {
   name: 'DownloadResume',
@@ -61,7 +62,7 @@ export default {
         0.1,
         1000
       );
-      this.camera.position.set(0, 0, 6); // Closer for better visibility
+      this.camera.position.set(1.5, 0, 5); // Adjusted for a better view of the model
 
       // Renderer
       this.renderer = new THREE.WebGLRenderer({ 
@@ -73,23 +74,22 @@ export default {
       this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       this.renderer.outputColorSpace = THREE.SRGBColorSpace;
       this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      this.renderer.toneMappingExposure = 1.5; // Increased for visibility on black background
+      this.renderer.toneMappingExposure = 1.8; // Slightly increased exposure
       container.appendChild(this.renderer.domElement);
 
-      // Add strong lighting for visibility on black background
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+      // Add strong lighting for visibility
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
       this.scene.add(ambientLight);
 
-      const directionalLight = new THREE.DirectionalLight(0xffffff, 1.2);
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
       directionalLight.position.set(5, 5, 5);
-      directionalLight.castShadow = true;
       this.scene.add(directionalLight);
+      
+      const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.8);
+      directionalLight2.position.set(-5, -5, -5);
+      this.scene.add(directionalLight2);
 
-      const pointLight = new THREE.PointLight(0xffffff, 0.8, 10);
-      pointLight.position.set(-3, 3, 3);
-      this.scene.add(pointLight);
-
-      // Load HDR environment
+      // Load HDR environment for reflections
       const rgbeLoader = new RGBELoader();
       rgbeLoader.load('/assets/beach.hdr', (texture) => {
         texture.mapping = THREE.EquirectangularReflectionMapping;
@@ -97,124 +97,99 @@ export default {
         this.scene.background = null; // Keep transparent
       });
 
-      // Create lanyard and card
-      this.createLanyard();
+      // Load the GLB model
+      this.loadLanyardModel();
       
-      // Start animation
+      // Start animation loop
       this.animate();
 
       // Handle resize
       window.addEventListener('resize', this.onWindowResize);
     },
 
-    createLanyard() {
-      this.lanyardGroup = new THREE.Group();
-      this.lanyardSegments = [];
-      
-      // Lanyard properties - made thicker for visibility
-      const segmentHeight = 0.15;
-      const segmentRadius = 0.04;
-      const numSegments = 12;
-      const chainColor = new THREE.Color(0xc0c0c0); // Bright silver
-      
-      // Create lanyard segments (chain links)
-      for (let i = 0; i < numSegments; i++) {
-        const geometry = new THREE.CylinderGeometry(segmentRadius, segmentRadius, segmentHeight, 8);
-        const material = new THREE.MeshStandardMaterial({ 
-          color: chainColor,
-          metalness: 0.9,
-          roughness: 0.1,
-          emissive: new THREE.Color(0x202020) // Slight glow
-        });
-        
-        const segment = new THREE.Mesh(geometry, material);
-        segment.position.y = -i * segmentHeight * 0.9;
-        segment.userData = {
-          originalY: -i * segmentHeight * 0.9,
-          swayPhase: i * 0.3,
-          segmentIndex: i
-        };
-        
-        this.lanyardSegments.push(segment);
-        this.lanyardGroup.add(segment);
-      }
+    loadLanyardModel() {
+      const loader = new GLTFLoader();
+      loader.load(
+        '/assets/kort.glb',
+        (gltf) => {
+          this.lanyardModel = gltf.scene;
+          
+          // Center the model at origin
+          const box = new THREE.Box3().setFromObject(this.lanyardModel);
+          const center = box.getCenter(new THREE.Vector3());
+          this.lanyardModel.position.copy(center).multiplyScalar(-1);
 
-      // Create the ID card at the end
-      this.createIDCard();
-      
-      // Position lanyard more prominently in view
-      this.lanyardGroup.position.set(1.5, 1.5, 0);
-      this.scene.add(this.lanyardGroup);
+          // Scale and position
+          const size = box.getSize(new THREE.Vector3()).length();
+          const scaleFactor = 3 / size; // try to fit roughly within 3 units
+          this.lanyardModel.scale.setScalar(scaleFactor);
 
-      // Initial bounce animation
-      this.startBounceAnimation();
+          this.scene.add(this.lanyardModel);
+
+          // Add floating objects
+          this.createFloatingObjects();
+
+          // Reposition camera to frame the model
+          this.camera.position.set(0, 0, 5);
+          this.camera.lookAt(0, 0, 0);
+
+          this.startBounceAnimation();
+        },
+        undefined,
+        (error) => {
+          console.error('An error happened while loading kort.glb.', error);
+        }
+      );
     },
 
-    createIDCard() {
-      // Card geometry (rounded rectangle) - made larger for visibility
-      const cardWidth = 1.2;
-      const cardHeight = 0.75;
-      const cardDepth = 0.05;
-      
-      // Create rounded rectangle shape
-      const shape = new THREE.Shape();
-      const radius = 0.05;
-      const x = -cardWidth / 2;
-      const y = -cardHeight / 2;
-      const width = cardWidth;
-      const height = cardHeight;
-      
-      shape.moveTo(x, y + radius);
-      shape.lineTo(x, y + height - radius);
-      shape.quadraticCurveTo(x, y + height, x + radius, y + height);
-      shape.lineTo(x + width - radius, y + height);
-      shape.quadraticCurveTo(x + width, y + height, x + width, y + height - radius);
-      shape.lineTo(x + width, y + radius);
-      shape.quadraticCurveTo(x + width, y, x + width - radius, y);
-      shape.lineTo(x + radius, y);
-      shape.quadraticCurveTo(x, y, x, y + radius);
-
-      const extrudeSettings = {
-        depth: cardDepth,
-        bevelEnabled: true,
-        bevelSegments: 2,
-        steps: 1,
-        bevelSize: 0.005,
-        bevelThickness: 0.005
-      };
-
-      const cardGeometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-      const cardMaterial = new THREE.MeshStandardMaterial({
-        color: 0xffffff,
-        metalness: 0.0,
-        roughness: 0.2,
-        emissive: new THREE.Color(0x111111) // Subtle glow to make it visible
-      });
-
-      this.idCard = new THREE.Mesh(cardGeometry, cardMaterial);
-      this.idCard.position.y = -this.lanyardSegments.length * 0.135 - 0.3;
-      this.idCard.userData = {
-        originalY: -this.lanyardSegments.length * 0.135 - 0.3,
-        swayPhase: 0
-      };
-
-      this.lanyardGroup.add(this.idCard);
+    createFloatingObjects() {
+      this.floatingObjects = [];
+      const geometries = [
+        new THREE.IcosahedronGeometry(0.25, 0),
+        new THREE.TorusKnotGeometry(0.17, 0.05, 64, 8),
+        new THREE.OctahedronGeometry(0.22),
+        new THREE.BoxGeometry(0.3, 0.3, 0.3)
+      ];
+      const palette = [0xff6b6b, 0x6bc5ff, 0xf7d941, 0x9b59b6];
+      const orbitRadius = 1.8;
+      for (let i = 0; i < 8; i++) {
+        const geom = geometries[i % geometries.length];
+        const mat = new THREE.MeshStandardMaterial({
+          color: palette[i % palette.length],
+          roughness: 0.4,
+          metalness: 0.3,
+          emissive: 0x111111,
+          emissiveIntensity: 0.2
+        });
+        const mesh = new THREE.Mesh(geom, mat);
+        const angle = (i / 8) * Math.PI * 2;
+        mesh.position.set(Math.cos(angle) * orbitRadius, Math.sin(angle) * 0.5, Math.sin(angle) * orbitRadius);
+        mesh.userData = {
+          baseAngle: angle,
+          speed: 0.3 + Math.random() * 0.4,
+          radius: orbitRadius,
+          verticalAmplitude: 0.4 + Math.random() * 0.3
+        };
+        this.scene.add(mesh);
+        this.floatingObjects.push(mesh);
+      }
     },
 
     startBounceAnimation() {
-      // Initial bounce effect
+      if (!this.lanyardModel) return;
+
       const bounceHeight = 1.5;
-      const bounceDelay = 500; // ms delay before starting
+      const bounceDelay = 500;
+      const targetY = this.lanyardModel.position.y;
       
       setTimeout(() => {
-        this.lanyardGroup.position.y = 2 + bounceHeight;
+        this.lanyardModel.position.y = targetY + bounceHeight;
         
-        // Animate down with bounce
         this.bounceAnimation = {
           startTime: Date.now(),
           duration: 2000,
-          startY: 2 + bounceHeight,
-          endY: 2
+          startY: targetY + bounceHeight,
+          endY: targetY
         };
       }, bounceDelay);
     },
@@ -227,11 +202,10 @@ export default {
       const time = Date.now() * 0.001;
       
       // Handle bounce animation
-      if (this.bounceAnimation) {
+      if (this.bounceAnimation && this.lanyardModel) {
         const elapsed = Date.now() - this.bounceAnimation.startTime;
         const progress = Math.min(elapsed / this.bounceAnimation.duration, 1);
         
-        // Bounce easing
         const easeOutBounce = (t) => {
           if (t < 1 / 2.75) {
             return 7.5625 * t * t;
@@ -245,7 +219,7 @@ export default {
         };
         
         const easedProgress = easeOutBounce(progress);
-        this.lanyardGroup.position.y = this.bounceAnimation.startY + 
+        this.lanyardModel.position.y = this.bounceAnimation.startY + 
           (this.bounceAnimation.endY - this.bounceAnimation.startY) * easedProgress;
         
         if (progress >= 1) {
@@ -254,24 +228,24 @@ export default {
       }
       
       // Gentle swaying animation after bounce
-      if (!this.bounceAnimation && this.lanyardSegments) {
+      if (!this.bounceAnimation && this.lanyardModel) {
         const swayIntensity = 0.1;
-        const windEffect = Math.sin(time * 0.5) * 0.05;
-        
-        this.lanyardSegments.forEach((segment, index) => {
-          const phase = segment.userData.swayPhase;
-          const sway = Math.sin(time * 1.2 + phase) * swayIntensity * (index / this.lanyardSegments.length);
-          segment.position.x = sway + windEffect;
-          segment.rotation.z = sway * 0.5;
+        this.lanyardModel.rotation.y = Math.sin(time * 0.7) * (swayIntensity * 1.5);
+        this.lanyardModel.rotation.z = Math.sin(time * 1.2) * swayIntensity;
+        this.lanyardModel.rotation.x = Math.sin(time * 0.8) * swayIntensity * 0.5;
+      }
+
+      // Update floating objects
+      if (this.floatingObjects) {
+        this.floatingObjects.forEach((obj) => {
+          const { baseAngle, speed, radius, verticalAmplitude } = obj.userData;
+          const t = time * speed + baseAngle;
+          obj.position.x = Math.cos(t) * radius;
+          obj.position.z = Math.sin(t) * radius;
+          obj.position.y = Math.sin(time * speed * 2 + baseAngle) * verticalAmplitude;
+          obj.rotation.x += 0.01;
+          obj.rotation.y += 0.015;
         });
-        
-        // Card sway
-        if (this.idCard) {
-          const cardSway = Math.sin(time * 1.2) * swayIntensity * 1.2 + windEffect;
-          this.idCard.position.x = cardSway;
-          this.idCard.rotation.z = cardSway * 0.3;
-          this.idCard.rotation.x = Math.sin(time * 0.8) * 0.1;
-        }
       }
       
       // Render
@@ -306,8 +280,13 @@ export default {
           if (child.geometry) child.geometry.dispose();
           if (child.material) {
             if (Array.isArray(child.material)) {
-              child.material.forEach(material => material.dispose());
+              child.material.forEach(material => {
+                // Also dispose textures
+                if (material.map) material.map.dispose();
+                material.dispose();
+              });
             } else {
+              if (child.material.map) child.material.map.dispose();
               child.material.dispose();
             }
           }
@@ -366,7 +345,7 @@ export default {
   .description {
     font-size: 0.8rem;
     line-height: 1.4;
-    color: rgba(255, 255, 255, 0.8);
+    color: rgba(0, 0, 0, 0.8);
     margin: 0;
     max-width: 250px;
   }
@@ -375,14 +354,14 @@ export default {
     position: relative;
     display: inline-flex;
     padding: 16px 35px;
-    color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
     font-weight: 600;
     font-size: 14px;
     line-height: 100%;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    background: linear-gradient(182.51deg, rgba(255, 255, 255, 0.02) 27.09%, rgba(90, 90, 90, 0.02) 58.59%, rgba(0, 0, 0, 0.02) 92.75%);
+    background: rgba(105, 105, 105, 0.04);
     box-shadow: rgba(0, 0, 0, 0.12) 0px 30.0444px 16.2444px, rgba(0, 0, 0, 0.07) 0px 15.6px 8.2875px, rgba(0, 0, 0, 0.04) 0px 6.35556px 4.15556px;
     will-change: transform;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -415,7 +394,7 @@ export default {
       inset: 0px;
       border-radius: inherit;
       transition: opacity 0.2s;
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(0, 0, 0, 0.1);
       opacity: 0;
       will-change: opacity;
     }
