@@ -154,24 +154,10 @@ export const cards: Card[] = [
     }
   },
   {
-    id: 'other',
-    title: 'Other Large Card',
-    content: 'Content for the third large card...',
-    component: 'OtherLarge',
-    position: { span: 1 }
-  },
-  {
     id: 'resume',
     title: 'Download Resume',
     content: 'Link to download your resume...',
     component: 'DownloadResume',
     position: { span: 1 }
   },
-  {
-    id: 'extra',
-    title: 'Extra Card',
-    content: 'Content for the extra small card...',
-    component: 'ExtraCard',
-    position: { span: 3 }
-  }
 ];
