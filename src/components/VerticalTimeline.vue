@@ -54,6 +54,25 @@ export default {
   padding: 0 5px 25px 5px;
   scrollbar-width: thin;
   scrollbar-color: rgba($text-color, 0.2) transparent;
+  background: rgba(255, 255, 255, 0.02);
+
+  // Add gradient overlay at the top for smooth scroll fade
+  &::before {
+    content: '';
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background: linear-gradient(to bottom, 
+      rgba(255, 255, 255, 1) 0%, 
+      rgba(255, 255, 255, 0.8) 30%,
+      rgba(255, 255, 255, 0.4) 70%,
+      rgba(255, 255, 255, 0) 100%);
+    z-index: 10;
+    pointer-events: none;
+    margin-bottom: -40px; /* Pull content up so it goes under the gradient */
+  }
 
   &::-webkit-scrollbar {
     width: 6px;

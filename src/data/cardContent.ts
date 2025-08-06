@@ -64,7 +64,7 @@ export const cards: Card[] = [
   },
   {
     id: 'contact',
-    title: 'Contact',
+    title: '',
     content: 'Connect with me on social media or send me an email.',
     component: 'ContactSocial',
     position: { span: 1 },
@@ -91,6 +91,9 @@ export const cards: Card[] = [
       cssVariables: {
         '--card-bg': '#000000', // Solid black background
         '--text-primary': '#ffffff', // White text for contrast
+        '--text-secondary': '#ffffff', // White text for secondary elements
+        '--text-tertiary': '#ffffff', // White text for tertiary elements
+        '--text-color': '#ffffff', // White text for card title
         '--box-shadow': '0 20px 68px #00000040, 0 1px 2px #0000004d, 0 0 #000, inset 0 2px 1px #ffffff80, inset 1px 1px .25px #ffffff4d', // Complete shadow effect
         '--card-border': '1px solid #000', // Black border
         '--backdrop-filter': 'none' // Remove blur that might interfere
@@ -139,14 +142,15 @@ export const cards: Card[] = [
   },
   {
     id: 'status',
-    title: 'Current Status',
+    title: '',
     content: 'What you are currently working on or learning...',
     component: 'CurrentStatus',
     position: { span: 1 },
     customStyle: {
       cssVariables: {
-        '--card-bg': '#0813ff',
+        '--card-bg': 'url("/wavy.png"), #0813ff',
         '--text-primary': '#ffffff',
+        '--text-color': '#ffffff',
         '--box-shadow': '0 20px 68px #00000040, 0 1px 2px #0000004d, 0 0 #000, inset 1px 1px .2px #ffffff9e',
         '--card-border': '1px solid #0813ff',
         '--backdrop-filter': 'none'
@@ -155,7 +159,7 @@ export const cards: Card[] = [
   },
   {
     id: 'resume',
-    title: 'Download Resume',
+    title: '',
     content: 'Link to download your resume...',
     component: 'DownloadResume',
     position: { span: 1 }

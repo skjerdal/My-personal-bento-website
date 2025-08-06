@@ -156,8 +156,8 @@ export default {
   */
 
   .card-title {
-    font-size: 1.2rem;
-    margin-top: 0;
+    font-size: 1.4rem;
+    margin: 0.8rem 0.5rem 0.5rem;
     margin-bottom: 0;
     line-height: 1.2;
     display: flex;

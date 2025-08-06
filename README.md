@@ -203,6 +203,125 @@ Add a `customStyle` property to any card in `cardContent.ts`:
 }
 ```
 
+#### Text Color Customization
+
+The system uses a hierarchy of CSS variables for text colors. When customizing cards, you'll often need to override multiple text color variables to ensure proper visibility:
+
+**Text Color Variables:**
+- `--text-color`: Card title/header text
+- `--text-primary`: Main content text
+- `--text-secondary`: Secondary text (button labels, descriptions)
+- `--text-tertiary`: Tertiary text (icons, subtle elements)
+
+**Example - White Text on Colored Background:**
+```typescript
+{
+  id: 'contact',
+  title: 'Contact & Social',
+  component: 'ContactSocial',
+  customStyle: {
+    cssVariables: {
+      '--card-bg': '#000000',           // Black background
+      '--text-color': '#ffffff',        // White card title
+      '--text-primary': '#ffffff',      // White main text
+      '--text-secondary': '#ffffff',    // White button text
+      '--text-tertiary': '#ffffff',     // White icons
+      '--card-border': '1px solid #000',
+      '--backdrop-filter': 'none'
+    }
+  }
+}
+```
+
+#### Real-World Examples from This Project
+
+**CurrentStatus Card - Blue Background with Wavy Image:**
+```typescript
+{
+  id: 'status',
+  title: 'Current Status',
+  component: 'CurrentStatus',
+  customStyle: {
+    cssVariables: {
+      '--card-bg': 'url("/wavy.png"), #0813ff',  // Image + blue fallback
+      '--text-primary': '#ffffff',                // White content text
+      '--text-color': '#ffffff',                  // White card title
+      '--box-shadow': '0 20px 68px #00000040, 0 1px 2px #0000004d, 0 0 #000, inset 1px 1px .2px #ffffff9e',
+      '--card-border': '1px solid #0813ff',
+      '--backdrop-filter': 'none'
+    }
+  }
+}
+```
+
+**ContactSocial Card - Black Background with 3D Elements:**
+```typescript
+{
+  id: 'contact',
+  title: 'Contact & Social',
+  component: 'ContactSocial',
+  customStyle: {
+    cssVariables: {
+      '--card-bg': '#000000',                     // Solid black
+      '--text-primary': '#ffffff',                // White main text
+      '--text-secondary': '#ffffff',              // White button labels
+      '--text-tertiary': '#ffffff',               // White icons
+      '--text-color': '#ffffff',                  // White card title
+      '--box-shadow': '0 20px 68px #00000040, 0 1px 2px #0000004d, 0 0 #000, inset 0 2px 1px #ffffff80, inset 1px 1px .25px #ffffff4d',
+      '--card-border': '1px solid #000',
+      '--backdrop-filter': 'none'
+    }
+  }
+}
+```
+
+#### Common Styling Patterns
+
+**Pattern 1: High Contrast Cards**
+```typescript
+// Dark background with white text
+cssVariables: {
+  '--card-bg': '#1a1a1a',
+  '--text-color': '#ffffff',
+  '--text-primary': '#ffffff',
+  '--text-secondary': '#e0e0e0',
+  '--text-tertiary': '#cccccc'
+}
+```
+
+**Pattern 2: Colorful Background with Image**
+```typescript
+// Background image with color fallback
+cssVariables: {
+  '--card-bg': 'url("/your-image.png"), #your-fallback-color',
+  '--text-color': '#ffffff',
+  '--text-primary': '#ffffff',
+  '--backdrop-filter': 'none'  // Disable blur for images
+}
+```
+
+**Pattern 3: Gradient with Custom Effects**
+```typescript
+// Gradient background with enhanced shadows
+cssVariables: {
+  '--card-bg': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+  '--text-color': '#ffffff',
+  '--box-shadow': '0 20px 40px rgba(102, 126, 234, 0.3)',
+  '--card-border': '1px solid rgba(255, 255, 255, 0.2)'
+}
+```
+
+#### Troubleshooting Text Visibility
+
+If text isn't visible after applying custom styling:
+
+1. **Check all text color variables** - Don't forget `--text-secondary` and `--text-tertiary`
+2. **Test contrast** - Ensure sufficient contrast between background and text
+3. **Disable backdrop-filter** - Set `'--backdrop-filter': 'none'` for solid backgrounds
+4. **Override component-specific colors** - Some components may have hardcoded colors
+
+**Dark Theme Card:**
+
 #### Styling Options
 
 1. **CSS Variables** (`cssVariables`)

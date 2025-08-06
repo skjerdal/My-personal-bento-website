@@ -4,15 +4,23 @@
     <!-- 3D background extracted from DownloadResume -->
     <LanyardBackground />
 
-    <div class="social-links">
-      <a 
-      v-for="(social, index) in contactData.social" 
-      :key="index" 
-      :href="social.url" 
-      target="_blank" 
-      rel="noopener noreferrer"
-      class="social-link"
-      >
+    <!-- Contact header moved inside component -->
+    <div class="header-section">
+      <h1 class="contact-title">Contact</h1>
+      <div class="divider"></div>
+    </div>
+
+    <div class="buttons-container">
+      <div class="social-links animate-item" style="animation-delay: 0.1s;">
+        <a 
+        v-for="(social, index) in contactData.social" 
+        :key="index" 
+        :href="social.url" 
+        target="_blank" 
+        rel="noopener noreferrer"
+        class="social-link"
+        :style="`animation-delay: ${0.2 + index * 0.1}s;`"
+        >
         <div class="social-link__inner">
           <div class="social-icon-container">
             <!-- LinkedIn Icon -->
@@ -29,28 +37,32 @@
           </div>
           <span class="social-name">{{ social.name }}</span>
         </div>
-      </a>
-    </div>
-    <div class="email-section" @click="handleEmailClick" @mousedown="handleEmailMouseDown" @mouseup="handleEmailMouseUp" @mouseleave="handleEmailMouseUp" :class="{ 'is-pressed': emailPressed }">
-      <div class="email-section__inner">
-        <div class="icon-container">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="email-icon">
-            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-            <polyline points="22,6 12,13 2,6"></polyline>
-          </svg>
+              </a>
+      </div>
+      <div class="email-section animate-item" style="animation-delay: 0.4s;" @click="handleEmailClick" @mousedown="handleEmailMouseDown" @mouseup="handleEmailMouseUp" @mouseleave="handleEmailMouseUp" :class="{ 'is-pressed': emailPressed }">
+        <div class="email-section__inner">
+          <div class="icon-container">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="email-icon">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+              <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+          </div>
+          <span class="email-text">{{ contactData.email }}</span>
+          <button class="copy-button" @click.stop="copyEmail" :class="{ 'copied': copied }">
+            <span class="tooltip">{{ copied ? 'Copied!' : 'Copy' }}</span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="copy-icon">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2 2v1"></path>
+            </svg>
+          </button>
         </div>
-        <span class="email-text">{{ contactData.email }}</span>
-        <button class="copy-button" @click.stop="copyEmail" :class="{ 'copied': copied }">
-          <span class="tooltip">{{ copied ? 'Copied!' : 'Copy' }}</span>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="copy-icon">
-            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-          </svg>
-        </button>
+      </div>
+      
+      <!-- Small note at the bottom -->
+      <div class="contact-note">
+        <span>Always happy to chat</span>
       </div>
     </div>
-    <!-- <BottleWave @bottle-click="handleBottleClick" /> -->
-    <!-- <PaperAirplane /> -->
   </div>
 </template>
 
@@ -58,12 +70,11 @@
 import { ref } from 'vue';
 import { cards } from '../../data/cardContent';
 import LanyardBackground from './LanyardBackground.vue';
-import BottleWave from './BottleWave.vue';
 import PaperAirplane from './PaperAirplane.vue';
 
 export default {
   name: 'ContactSocial',
-  components: { BottleWave, PaperAirplane, LanyardBackground },
+  components: { PaperAirplane, LanyardBackground },
   setup() {
     const contactData = ref(cards.find(card => card.id === 'contact').data);
     const copied = ref(false);
@@ -124,20 +135,70 @@ export default {
   height: 100%;
   width: 100%;
   box-sizing: border-box;
-  padding: 0.6rem;
+  padding: 0 0 0.6rem 0.6rem;
+  margin-right: -0.5rem;
   gap: 0.6rem;
   overflow: visible;
   
   // Ensure we inherit CSS variables from parent card
   color: var(--text-primary, #ffffff);
+
+  .header-section {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    opacity: 0;
+    animation: flyInUp 0.6s ease-out forwards;
+    animation-delay: 0.1s;
+    margin-top: 0.5rem;
+    
+    .contact-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin: 0;
+      line-height: 1.2;
+      padding: 0.2rem 0 0.8rem 0;
+      color: var(--text-primary, #ffffff);
+      letter-spacing: -0.02em;
+    }
+    
+    .divider {
+      width: 60%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      margin: 0 auto 0.8rem auto;
+      opacity: 0.6;
+    }
+  }
   
   // Make sure content sits above the 3D canvas
-  .social-links { z-index: 2; }
-  .email-section { z-index: 2; }
+  .social-links { 
+    z-index: 10; 
+    position: relative;
+    
+    .social-link {
+      position: relative;
+      z-index: 1; // Lower z-index to avoid stacking context issues
+    }
+  }
+  .email-section { 
+    z-index: 10; 
+    position: relative;
+  }
 
-  .social-links {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+  .buttons-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+    gap: 0.6rem;
+    position: relative;
+    z-index: 5;
+    margin-top: -1.7rem;
+  }
+
+    .social-links {
+    display: flex;
     gap: 0.6rem;
     width: 100%;
     min-width: 0;
@@ -152,18 +213,20 @@ export default {
       line-height: 28px;
       letter-spacing: -0.01em;
       text-align: center;
-      color: var(--text-primary, #333333);
-      position: relative;
-      backdrop-filter: blur(1px);
-      box-shadow: rgba(0, 0, 0, 0.1) 0px 78px 51px 0px, rgba(0, 0, 0, 0.07) 0px 50px 30px 0px, rgba(0, 0, 0, 0.06) 0px 30px 16px 0px, rgba(0, 0, 0, 0.04) 0px 16px 8px, rgba(0, 0, 0, 0.04) 0px 6px 4px, rgba(0, 0, 0, 0.02) 0px 2px 2px;
+      color: var(--text-primary, #ffffff);
+      backdrop-filter: blur(8px) saturate(180%);
+      -webkit-backdrop-filter: blur(8px) saturate(180%);
       --gradientBorder-size: 1px;
-      --gradientBorder-gradient: linear-gradient(to bottom, rgba(255, 255, 255, 0.94), #797979 26%, #a4a4a4 63%, #fff 100%);
+      --gradientBorder-gradient: linear-gradient(to bottom, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2) 26%, rgba(255, 255, 255, 0.1) 63%, rgba(255, 255, 255, 0.4) 100%);
       border-radius: 50px;
-      transition: box-shadow 150ms, transform 150ms;
-      background: rgba(105, 105, 105, 0.04);
+      transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+      background: rgba(255, 255, 255, 0.08);
       text-decoration: none;
-      overflow: hidden;
+      overflow: visible;
       min-width: 0;
+      flex: 1;
+      opacity: 0;
+      animation: flyInUp 0.6s ease-out forwards;
       
       &::before {
         content: "";
@@ -181,9 +244,13 @@ export default {
       }
       
       &:hover {
+        backdrop-filter: blur(12px) saturate(200%);
+        -webkit-backdrop-filter: blur(12px) saturate(200%);
+        background: rgba(255, 255, 255, 0.12);
+        
         .social-icon-container {
           transform: scale(1.05);
-          background: rgba(128, 128, 128, 0.08);
+          background: rgba(255, 255, 255, 0.15);
           
           .social-icon {
             color: var(--text-primary, #ffffff);
@@ -194,7 +261,6 @@ export default {
 
       &:active {
         transform: scale(0.95);
-        box-shadow: none;
       }
       
       @for $i from 1 through 2 {
@@ -263,16 +329,24 @@ export default {
     line-height: 28px;
     letter-spacing: -0.01em;
     text-align: center;
-          color: var(--text-primary, #ffffff);
-      position: relative;
-      z-index: 10;
-    backdrop-filter: blur(1px);
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 78px 51px 0px, rgba(0, 0, 0, 0.07) 0px 50px 30px 0px, rgba(0, 0, 0, 0.06) 0px 30px 16px 0px, rgba(0, 0, 0, 0.04) 0px 16px 8px, rgba(0, 0, 0, 0.04) 0px 6px 4px, rgba(0, 0, 0, 0.02) 0px 2px 2px;
+        color: var(--text-primary, #ffffff);
+    position: relative;
+    z-index: 15;
+  backdrop-filter: blur(8px) saturate(180%);
+  -webkit-backdrop-filter: blur(8px) saturate(180%);
+  box-shadow: 
+    rgba(255, 255, 255, 0.1) 0px 1px 0px inset,
+    rgba(0, 0, 0, 0.1) 0px 78px 51px 0px, 
+    rgba(0, 0, 0, 0.07) 0px 50px 30px 0px, 
+    rgba(0, 0, 0, 0.06) 0px 30px 16px 0px, 
+    rgba(0, 0, 0, 0.04) 0px 16px 8px, 
+    rgba(0, 0, 0, 0.04) 0px 6px 4px, 
+    rgba(0, 0, 0, 0.02) 0px 2px 2px;
     --gradientBorder-size: 1px;
-    --gradientBorder-gradient: linear-gradient(to bottom, rgba(255, 255, 255, 0.94), #797979 26%, #a4a4a4 63%, #fff 100%);
+    --gradientBorder-gradient: linear-gradient(to bottom, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2) 26%, rgba(255, 255, 255, 0.1) 63%, rgba(255, 255, 255, 0.4) 100%);
     border-radius: 50px;
-    transition: box-shadow 150ms, transform 150ms;
-    background: rgba(105, 105, 105, 0.04);
+    transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    background: rgba(255, 255, 255, 0.08);
     overflow: visible;
     min-width: 0;
     
@@ -292,10 +366,22 @@ export default {
     }
     
     &:hover {
+      backdrop-filter: blur(12px) saturate(200%);
+      -webkit-backdrop-filter: blur(12px) saturate(200%);
+      background: rgba(255, 255, 255, 0.12);
+      box-shadow: 
+        rgba(255, 255, 255, 0.15) 0px 1px 0px inset,
+        rgba(0, 0, 0, 0.15) 0px 78px 51px 0px, 
+        rgba(0, 0, 0, 0.1) 0px 50px 30px 0px, 
+        rgba(0, 0, 0, 0.08) 0px 30px 16px 0px, 
+        rgba(0, 0, 0, 0.06) 0px 16px 8px, 
+        rgba(0, 0, 0, 0.06) 0px 6px 4px, 
+        rgba(0, 0, 0, 0.04) 0px 2px 2px;
+        
       .email-section__inner {
         .icon-container {
           transform: scale(1.05);
-          background: rgba(128, 128, 128, 0.08);
+          background: rgba(255, 255, 255, 0.15);
           
           .email-icon {
             color: var(--text-primary, #ffffff);
@@ -455,9 +541,22 @@ export default {
     }
   }
 
-  :deep(.bottle-wave) {
-    flex-grow: 1;
-    min-height: 0;
+  .contact-note {
+    text-align: center;
+    margin-top: 0.8rem;
+    position: relative;
+    z-index: 10;
+    opacity: 0;
+    animation: flyInUp 0.6s ease-out forwards;
+    animation-delay: 0.6s;
+    
+    span {
+      font-size: 0.75rem;
+      color: var(--text-tertiary, rgba(255, 255, 255, 0.5));
+      font-weight: 100;
+      letter-spacing: 0.02em;
+      font-style: italic;
+    }
   }
 }
 
@@ -470,5 +569,32 @@ export default {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+@keyframes flyInUp {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes flyInLeft {
+  0% {
+    transform: translateX(-30px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-item {
+  opacity: 0;
+  animation: flyInLeft 0.6s ease-out forwards;
 }
 </style>
