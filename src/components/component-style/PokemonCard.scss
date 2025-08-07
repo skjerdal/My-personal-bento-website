@@ -115,12 +115,12 @@
     right: 0;
     bottom: 0;
     z-index: 2;
-    background-image: radial-gradient(farthest-corner circle at var(--pointer-x, 50%) var(--pointer-y, 50%), hsl(0, 0%, 100%) 0%, hsla(210, 3%, 54%, 0.33) 45%, hsla(0, 0%, 20%, 0.9) 130%);
+    background-image: radial-gradient(farthest-corner circle at var(--glare-x, 50%) var(--glare-y, 50%), hsl(0, 0%, 100%) 0%, hsla(210, 3%, 54%, 0.33) 45%, hsla(0, 0%, 20%, 0.9) 130%);
     mix-blend-mode: overlay;
     background-position: center;
     background-size: 200% 200%;
     pointer-events: none;
-    opacity: var(--card-opacity, 0);
+    opacity: calc(var(--card-opacity, 0) * var(--glare-opacity, 0));
     transition: opacity 0.5s ease-out;
   }
 

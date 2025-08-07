@@ -21,9 +21,17 @@ const PokemonCard = ({ title = '', content = '', className, style, componentName
     const pointerY = yNorm * 100;
     const bgX = adjust(pointerX, 0, 100, 37, 63);
     const bgY = adjust(pointerY, 0, 100, 33, 67);
-    const rotateY = (xNorm - 0.5) * 20;   // -10° → +10°
-    const rotateX = (yNorm - 0.5) * -20;  // +10° → -10°
+    // Reverse the rotation calculations for opposite effect
+    const rotateY = (xNorm - 0.5) * -20;   // Reversed: was +20, now -20
+    const rotateX = (yNorm - 0.5) * 20;    // Reversed: was -20, now +20
     const distance = Math.hypot(xNorm - 0.5, yNorm - 0.5);
+
+    // Calculate opposite glare position (inverted from center)
+    const glareX = (1 - xNorm) * 100; // Opposite X position
+    const glareY = (1 - yNorm) * 100; // Opposite Y position
+    
+    // Calculate glare opacity based on distance from center (more visible at edges)
+    const glareOpacity = Math.min(distance * 1.5, 1); // Scale and cap at 1
 
     // Update CSS custom properties directly – no React re-render
     const style = cardRef.current.style;
@@ -34,6 +42,10 @@ const PokemonCard = ({ title = '', content = '', className, style, componentName
     style.setProperty('--rotate-x', `${rotateX}deg`);
     style.setProperty('--rotate-y', `${rotateY}deg`);
     style.setProperty('--hyp', distance);
+    // Add glare-specific properties
+    style.setProperty('--glare-x', `${glareX}%`);
+    style.setProperty('--glare-y', `${glareY}%`);
+    style.setProperty('--glare-opacity', glareOpacity);
   };
 
   const adjust = (value, fromMin, fromMax, toMin, toMax) => {
@@ -48,9 +60,9 @@ const PokemonCard = ({ title = '', content = '', className, style, componentName
       const x = (e.clientX - rect.left) / rect.width;
       const y = (e.clientY - rect.top) / rect.height;
       
-      // Set initial rotation based on entry point to prevent jumping
-      const rotateY = (x - 0.5) * 20;
-      const rotateX = (y - 0.5) * -20;
+      // Set initial rotation based on entry point to prevent jumping (reversed)
+      const rotateY = (x - 0.5) * -20;  // Reversed: was +20, now -20
+      const rotateX = (y - 0.5) * 20;   // Reversed: was -20, now +20
       const style = cardRef.current.style;
       style.setProperty('--rotate-x', `${rotateX}deg`);
       style.setProperty('--rotate-y', `${rotateY}deg`);
@@ -70,6 +82,14 @@ const PokemonCard = ({ title = '', content = '', className, style, componentName
       const centerY = 0.5;
       const distance = Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2));
       cardRef.current.style.setProperty('--hyp', distance);
+      
+      // Calculate opposite glare position and opacity
+      const glareX = (1 - x) * 100;
+      const glareY = (1 - y) * 100;
+      const glareOpacity = Math.min(distance * 1.5, 1);
+      style.setProperty('--glare-x', `${glareX}%`);
+      style.setProperty('--glare-y', `${glareY}%`);
+      style.setProperty('--glare-opacity', glareOpacity);
     }
     
     setIsHovered(true);
@@ -91,6 +111,10 @@ const PokemonCard = ({ title = '', content = '', className, style, componentName
         style.setProperty('--rotate-x', '0deg');
         style.setProperty('--rotate-y', '0deg');
         style.setProperty('--hyp', '0');
+        // Reset glare properties
+        style.setProperty('--glare-x', '50%');
+        style.setProperty('--glare-y', '50%');
+        style.setProperty('--glare-opacity', '0');
       }
     }
   };
@@ -130,6 +154,10 @@ const PokemonCard = ({ title = '', content = '', className, style, componentName
     '--rotate-x': '0deg',
     '--rotate-y': '0deg',
     '--scale-factor': 1,
+    // Add glare properties
+    '--glare-x': '50%',
+    '--glare-y': '50%',
+    '--glare-opacity': 0,
   };
 
   // Skills data with progress values

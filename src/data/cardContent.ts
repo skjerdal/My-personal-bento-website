@@ -32,33 +32,51 @@ export const cards: Card[] = [
   {
     id: 'work',
     title: 'Work Experience',
-    content: 'My professional journey as a developer',
+    content: 'My professional journey in development and IT',
     component: 'WorkExperience',
     position: { span: 2 },
     data: [
       {
-        company: 'Tech Innovators',
-        title: 'Senior Frontend Developer',
-        period: 'Jan 2021 - Present',
-        description: 'Leading the frontend development team in creating responsive and accessible web applications. Implemented modern UI/UX patterns and improved performance by 40%.'
+        company: 'Omega 365',
+        title: 'Utvikler (Developer)',
+        period: 'Sep 2024 - Present',
+        description: 'Part-time developer role at Bergen-based software company, working with modern web technologies and software solutions.'
       },
       {
-        company: 'Digital Solutions Inc.',
-        title: 'Full-Stack Developer',
-        period: 'Mar 2019 - Dec 2020',
-        description: 'Developed and maintained web applications using Vue.js, Node.js, and MongoDB. Led the migration from legacy systems to modern frameworks.'
+        company: 'Omega 365',
+        title: 'Summer Internship',
+        period: 'Jun 2024 - Aug 2024',
+        description: '6 weeks of SQL training plus project work developing a complete web application using SQL, Vue.js, and related technologies.'
       },
       {
-        company: 'StartUp Studios',
-        title: 'Junior Developer',
-        period: 'Jun 2017 - Feb 2019',
-        description: 'Assisted in the development of mobile apps using React Native and Firebase. Implemented key features that increased user engagement by 25%.'
+        company: 'Høgskulen på Vestlandet (HVL)',
+        title: 'Studentassistent - DAT108',
+        period: 'Jul 2024 - Dec 2024',
+        description: 'Teaching assistant for Programming and Web Applications course. Grading assignments and helping students with Java streams, lambda expressions, functional programming, Java Spring MVC, JavaScript, and web development.'
       },
       {
-        company: 'TechLabs',
-        title: 'Intern',
-        period: 'Jan 2017 - May 2017',
-        description: 'Gained hands-on experience in web development technologies and contributed to small-scale projects. Learned agile methodologies and version control.'
+        company: 'Høgskulen på Vestlandet (HVL)',
+        title: 'Studentassistent - DAT107',
+        period: 'Jan 2024 - Jul 2024',
+        description: 'Teaching assistant for Database course. Grading assignments and helping students with SQL, ERD, Java ORM, and document databases.'
+      },
+      {
+        company: 'Studvest',
+        title: 'Webutvikler (Web Developer)',
+        period: 'Jan 2023 - May 2023',
+        description: 'Volunteer web developer creating modern and engaging news articles online for the student newspaper.'
+      },
+      {
+        company: "Norway's Best",
+        title: 'IT-medarbeider',
+        period: 'Jun 2023 - Aug 2023',
+        description: 'Summer job providing technical user support, IT operations, and system maintenance.'
+      },
+      {
+        company: "Norway's Best",
+        title: 'Dataelektroniker',
+        period: 'Aug 2019 - Mar 2021',
+        description: 'Apprenticeship managing all IT-related operations including payment systems, hotel systems, networks, servers, and user support across multiple locations.'
       }
     ]
   },
@@ -69,7 +87,7 @@ export const cards: Card[] = [
     component: 'ContactSocial',
     position: { span: 1 },
     data: {
-      email: 'thomas@skjerdal.com',
+      email: 'thomas@skjerdal.me',
       availability: {
         status: 'available', // can be 'available', 'busy', or 'away'
         message: 'Available for opportunities'
@@ -103,39 +121,29 @@ export const cards: Card[] = [
   {
     id: 'education',
     title: 'Education',
-    content: 'My academic background and achievements',
+    content: 'My academic journey in computer engineering',
     component: 'Education',
     position: { span: 2 },
     videoPath: '/videos/education-loop.mp4',
     data: [
       {
-        degree: 'Master of Computer Science',
-        institution: 'Stanford University',
-        period: '2018 - 2020',
+        degree: 'Bachelor, Dataingeniør (Computer Engineering)',
+        institution: 'Høgskulen på Vestlandet (HVL)',
+        period: '2022 - 2025',
         achievements: [
-          'Specialized in Artificial Intelligence and Machine Learning',
-          'Thesis: "Deep Learning Approaches for Natural Language Processing"',
-          'GPA: 3.9/4.0'
+          'Currently pursuing degree in Computer Engineering',
+          'Focus on software development and system architecture',
+          'Hands-on experience with modern programming languages and frameworks'
         ]
       },
       {
-        degree: 'Bachelor of Science in Computer Engineering',
-        institution: 'Massachusetts Institute of Technology',
-        period: '2014 - 2018',
+        degree: 'Ingeniør forkurs (Engineering Foundation Course)',
+        institution: 'Høgskulen på Vestlandet (HVL)',
+        period: '2021 - 2022',
         achievements: [
-          'Minor in Data Science',
-          'Capstone Project: Developed a predictive maintenance system for IoT devices',
-          'Dean\'s List for all semesters'
-        ]
-      },
-      {
-        degree: 'High School Diploma',
-        institution: 'Thomas Jefferson High School for Science and Technology',
-        period: '2010 - 2014',
-        achievements: [
-          'Valedictorian',
-          'President of the Computer Science Club',
-          'First place in State Mathematics Olympiad'
+          'One-year preparatory course for engineering education',
+          'Mathematics, physics, and technical foundations',
+          'Successfully qualified for Computer Engineering program'
         ]
       }
     ]

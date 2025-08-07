@@ -17,7 +17,7 @@
       v-html="customStyle.customCSS"
     />
     
-    <h1 v-if="componentName !== 'PokemonCard'" class="card-title">
+    <h1 v-if="componentName !== 'PokemonCard' && title && title.trim()" class="card-title">
       <span>{{ title }}</span>
     </h1>
     <div class="dynamic-component-wrapper" v-if="isMounted && resolvedComponent && componentName !== 'PokemonCard'">

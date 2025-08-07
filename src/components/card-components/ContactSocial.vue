@@ -135,9 +135,8 @@ export default {
   height: 100%;
   width: 100%;
   box-sizing: border-box;
-  padding: 0 0 0.6rem 0.6rem;
-  margin-right: -0.5rem;
-  gap: 0.6rem;
+  padding: 0.8rem 1rem 1rem 1rem; // Proper padding to fill card space
+  gap: 0.8rem;
   overflow: visible;
   
   // Ensure we inherit CSS variables from parent card
@@ -150,14 +149,13 @@ export default {
     opacity: 0;
     animation: flyInUp 0.6s ease-out forwards;
     animation-delay: 0.1s;
-    margin-top: 0.5rem;
     
     .contact-title {
       font-size: 1.4rem;
       font-weight: 600;
       margin: 0;
       line-height: 1.2;
-      padding: 0.2rem 0 0.8rem 0;
+      padding: 0 0 0.8rem 0; // Remove top padding since we're at the top of card
       color: var(--text-primary, #ffffff);
       letter-spacing: -0.02em;
     }
@@ -191,10 +189,10 @@ export default {
     flex-direction: column;
     justify-content: center;
     flex: 1;
-    gap: 0.6rem;
+    gap: 0.8rem;
     position: relative;
     z-index: 5;
-    margin-top: -1.7rem;
+    // Remove negative margin that was causing spacing issues
   }
 
     .social-links {
@@ -543,7 +541,7 @@ export default {
 
   .contact-note {
     text-align: center;
-    margin-top: 0.8rem;
+    margin-top: auto; // Push to bottom of flex container
     position: relative;
     z-index: 10;
     opacity: 0;
