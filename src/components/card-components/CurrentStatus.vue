@@ -76,7 +76,7 @@ export default {
 .current-status {
   height: 100%;
   width: 100%;
-  padding: 0rem 0 0.6rem 0.6rem;
+  padding: 0.8rem 0 0.6rem 0.6rem;
   margin-right: -0.5rem;
   display: flex;
   flex-direction: column;

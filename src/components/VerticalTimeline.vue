@@ -29,8 +29,6 @@ export default {
     }
   },
   setup() {
-    // No setup logic needed for a simple presentational component.
-    // Props are automatically passed to the template.
     return {};
   }
 };
@@ -38,6 +36,9 @@ export default {
 
 <style lang="scss" scoped>
 @import '../styles/variables';
+
+$dot-pop-duration: 0.35s;
+$line-grow-duration: 0.6s;
 
 .vertical-timeline {
   position: relative;
@@ -56,7 +57,6 @@ export default {
   scrollbar-color: rgba($text-color, 0.2) transparent;
   background: rgba(255, 255, 255, 0.02);
 
-  // Add gradient overlay at the top for smooth scroll fade
   &::before {
     content: '';
     position: sticky;
@@ -71,59 +71,35 @@ export default {
       rgba(255, 255, 255, 0) 100%);
     z-index: 10;
     pointer-events: none;
-    margin-bottom: -40px; /* Pull content up so it goes under the gradient */
+    margin-bottom: -40px;
   }
 
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
+  &::-webkit-scrollbar { width: 6px; }
+  &::-webkit-scrollbar-track { background: transparent; }
   &::-webkit-scrollbar-thumb {
     background-color: rgba($text-color, 0.3);
     border-radius: 3px;
     border: 1px solid transparent;
     transition: background-color 0.2s ease;
   }
-
-  &::-webkit-scrollbar-thumb:hover {
-    background-color: rgba($text-color, 0.5);
-  }
+  &::-webkit-scrollbar-thumb:hover { background-color: rgba($text-color, 0.5); }
 }
 
-.timeline {
-  position: relative;
-  padding: 20px 0 0;
-}
+.timeline { position: relative; padding: 20px 0 0; }
 
 .timeline-entry {
   position: relative;
   padding-left: 40px;
   margin-bottom: 30px;
-  opacity: 0;
-  transform: translateX(-10px);
-  animation: fadeSlideIn 0.5s ease forwards;
-  
-  @for $i from 1 through 10 {
-    &:nth-child(#{$i}) {
-      animation-delay: #{$i * 0.1}s;
-    }
-  }
 
-  &:last-child {
-    margin-bottom: 0;
-  }
+  &:last-child { margin-bottom: 0; }
 
   &:hover {
     .timeline-dot {
-      transform: scale(1.3);
+      transform: scale(1.15);
       opacity: 1;
       box-shadow: 0 0 10px rgba($text-color, 0.3);
     }
-
     .timeline-line {
       opacity: 0.5;
       background: linear-gradient(to bottom, $text-color 0%, rgba($text-color, 0.2) 100%);
@@ -142,6 +118,10 @@ export default {
   border-radius: 50%;
   z-index: 1;
   transition: all 0.3s ease;
+
+  /* pop-in sequence */
+  transform: scale(0);
+  animation: dotPop $dot-pop-duration ease-out forwards;
   
   &::before {
     content: '';
@@ -157,10 +137,7 @@ export default {
     transition: all 0.3s ease;
   }
 
-  &:hover::before {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1.2);
-  }
+  &:hover::before { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
 }
 
 .timeline-line {
@@ -173,51 +150,56 @@ export default {
   z-index: 0;
   bottom: -30px;
   transition: all 0.3s ease;
+
+  /* grow-down sequence */
+  transform-origin: top;
+  transform: scaleY(0);
+  animation: lineGrow $line-grow-duration ease-out forwards;
 }
 
 .timeline-content {
   transition: transform 0.3s ease;
-  
-  &:hover {
-    transform: translateX(5px);
+
+  /* reveal with the dot pop */
+  opacity: 0;
+  transform: translateY(4px);
+  animation: contentReveal 0.35s ease-out forwards;
+
+  &:hover { transform: translateX(5px); }
+}
+
+/* Per-item sequential delays: dot/content first, then line to next */
+@for $i from 1 through 20 {
+  .timeline-entry:nth-child(#{$i}) {
+    .timeline-dot { animation-delay: (($i - 1) * ($dot-pop-duration + $line-grow-duration)); }
+    .timeline-content { animation-delay: (($i - 1) * ($dot-pop-duration + $line-grow-duration)); }
+    .timeline-line { animation-delay: (($i - 1) * ($dot-pop-duration + $line-grow-duration) + $dot-pop-duration); }
   }
 }
 
-@keyframes fadeSlideIn {
-  from {
-    opacity: 0;
-    transform: translateX(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+@keyframes dotPop {
+  0% { transform: scale(0); opacity: 0; }
+  60% { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes lineGrow {
+  0% { transform: scaleY(0); }
+  100% { transform: scaleY(1); }
+}
+
+@keyframes contentReveal {
+  0% { opacity: 0; transform: translateY(6px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-  .timeline {
-    width: 95%;
+  .timeline { width: 95%; }
+  .timeline-entry { padding-left: 30px; margin-bottom: 25px; }
+  .timeline-dot { left: 5px; 
+    &::before { width: 16px; height: 16px; }
   }
-
-  .timeline-entry {
-    padding-left: 30px;
-    margin-bottom: 25px;
-  }
-
-  .timeline-dot {
-    left: 5px;
-    
-    &::before {
-      width: 16px;
-      height: 16px;
-    }
-  }
-
-  .timeline-line {
-    left: calc(5px + (10px / 2) - (1px / 2));
-    top: calc(5px + 10px + 4px);
-    bottom: -25px;
-  }
+  .timeline-line { left: calc(5px + (10px / 2) - (1px / 2)); top: calc(5px + 10px + 4px); bottom: -25px; }
 }
 </style> 

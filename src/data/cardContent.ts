@@ -115,6 +115,16 @@ export const cards: Card[] = [
     videoPath: '/videos/education-loop.mp4',
     data: [
       {
+        degree: 'Master, Datateknologi – Kunstig intelligens (AI)',
+        institution: 'Norges teknisk-naturvitenskapelige universitet (NTNU)',
+        period: '2025 - Present',
+        logo: '/ntnu.png',
+        achievements: [
+          'Currently studying Datateknologi (Computer Science) with specialization in Artificial Intelligence at NTNU.',
+          'Focus areas include machine learning, deep learning, data science, and intelligent systems.'
+        ]
+      },
+      {
         degree: 'Master of Science in Computer Science, Artificial Intelligence',
         institution: 'Norwegian University of Science and Technology (NTNU)',
         location: 'Trondheim, Norway',

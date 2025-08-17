@@ -5,7 +5,10 @@
         <div class="job-item" :class="{ active }">
           <div class="job-header">
             <h2>{{ job.title }}</h2>
-            <div class="company">{{ job.company }}</div>
+            <div class="company">
+              <img v-if="job.logo" :src="job.logo" :alt="job.company + ' logo'" class="company-logo"/>
+              <span>{{ job.company }}</span>
+            </div>
           </div>
           <div class="job-meta">
             <div class="period">{{ job.period }}</div>
@@ -69,6 +72,16 @@ export default {
         font-size: 0.95rem;
         font-weight: 500;
         color: var(--text-secondary);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        .company-logo {
+          width: 20px;
+          height: 20px;
+          object-fit: contain;
+          border-radius: 4px;
+        }
       }
     }
     

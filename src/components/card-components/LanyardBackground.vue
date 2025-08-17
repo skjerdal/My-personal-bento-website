@@ -9,6 +9,20 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 export default {
   name: 'LanyardBackground',
   mounted() {
+    // Bind methods used as callbacks to preserve `this`
+    this.animate = this.animate.bind(this);
+    this.onWindowResize = this.onWindowResize.bind(this);
+    this.onVisibilityChange = this.onVisibilityChange.bind(this);
+
+    // Initial flags
+    this.isInView = true;
+    this.isAnimating = false;
+    this.rafId = null;
+    this.lastRenderTime = 0;
+    this.maxFPS = 30; // Cap FPS to reduce thermal load
+    this.frameDuration = 1000 / this.maxFPS;
+
+    this.setupVisibilityHandlers();
     this.initThreeJS();
   },
   beforeUnmount() {
@@ -39,18 +53,88 @@ export default {
         precision: 'mediump'
       });
       this.renderer.setSize(container.clientWidth, container.clientHeight);
-      this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      // Lower pixel ratio to reduce GPU load on high-DPI displays
+      const targetDpr = Math.min(window.devicePixelRatio || 1, 1.25);
+      this.renderer.setPixelRatio(targetDpr);
       this.renderer.outputColorSpace = THREE.SRGBColorSpace;
       container.appendChild(this.renderer.domElement);
 
       // Lighting - simplified to just ambient light for paper airplanes
-      const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+      const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
       this.scene.add(ambientLight);
+
+      // Choose airplane count based on device hints
+      this.numAirplanes = this.calculateAirplaneCount();
 
       // Load model & start
       this.loadModel();
-      this.animate();
+      this.startNaturalFlight();
+
       window.addEventListener('resize', this.onWindowResize);
+      // Start loop only when visible and in view
+      this.startLoop();
+    },
+
+    // Reduce instance count on mobile/high-DPI or with reduced motion preference
+    calculateAirplaneCount() {
+      const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+      const highDPI = (window.devicePixelRatio || 1) > 1.5;
+      if (prefersReducedMotion) return 3;
+      let count = 8;
+      if (isMobile) count -= 3;
+      if (highDPI) count -= 1;
+      return Math.max(4, count);
+    },
+
+    setupVisibilityHandlers() {
+      // Pause when tab hidden
+      document.addEventListener('visibilitychange', this.onVisibilityChange);
+      // Pause when component not in viewport
+      if ('IntersectionObserver' in window) {
+        this.intersectionObserver = new IntersectionObserver(this.handleIntersection.bind(this), {
+          root: null,
+          threshold: 0.05,
+        });
+        if (this.$refs.threeContainer) {
+          this.intersectionObserver.observe(this.$refs.threeContainer);
+        }
+      }
+    },
+
+    onVisibilityChange() {
+      if (document.hidden) {
+        this.stopLoop();
+      } else if (this.isInView) {
+        this.startLoop();
+      }
+    },
+
+    handleIntersection(entries) {
+      const entry = entries[0];
+      const nowInView = !!entry && entry.isIntersecting;
+      this.isInView = nowInView;
+      if (nowInView && !document.hidden) {
+        this.startLoop();
+      } else {
+        this.stopLoop();
+      }
+    },
+
+    startLoop() {
+      if (this.isAnimating) return;
+      this.isAnimating = true;
+      this.lastRenderTime = 0;
+      this.startTime = performance.now();
+      this.rafId = requestAnimationFrame(this.animate);
+    },
+
+    stopLoop() {
+      this.isAnimating = false;
+      if (this.rafId) {
+        cancelAnimationFrame(this.rafId);
+        this.rafId = null;
+      }
     },
 
     loadModel() {
@@ -58,12 +142,11 @@ export default {
       this.createFloatingObjects();
       this.camera.position.set(0, 0, 5);
       this.camera.lookAt(0, 0, 0);
-      this.startNaturalFlight();
     },
 
     createFloatingObjects() {
       this.floating = [];
-      this.numAirplanes = 8;
+      // this.numAirplanes is set in initThreeJS via calculateAirplaneCount()
       
       // Load paper airplane model and create instanced mesh
       const loader = new GLTFLoader();
@@ -152,7 +235,7 @@ export default {
     createFallbackAirplanes() {
       // Fallback: create simple geometric paper airplane shapes using InstancedMesh
       this.floating = [];
-      this.numAirplanes = 8;
+      // this.numAirplanes is set in initThreeJS via calculateAirplaneCount()
       
       // Create a simple paper airplane shape using basic geometry
       const airplaneGroup = new THREE.Group();
@@ -224,14 +307,21 @@ export default {
 
     startNaturalFlight() {
       // Start the natural flight animation instead of bounce
-      this.startTime = Date.now();
+      this.startTime = performance.now();
     },
 
-    animate() {
-      if (!this.renderer) return;
-      
-      const currentTime = Date.now();
-      const elapsed = (currentTime - (this.startTime || currentTime)) * 0.001; // seconds
+    animate(timestamp) {
+      if (!this.renderer || !this.isAnimating) return;
+
+      // Throttle to maxFPS
+      if (!this.lastRenderTime) this.lastRenderTime = timestamp;
+      const deltaMs = timestamp - this.lastRenderTime;
+      if (deltaMs < this.frameDuration) {
+        this.rafId = requestAnimationFrame(this.animate);
+        return;
+      }
+
+      const elapsed = (timestamp - (this.startTime || timestamp)) * 0.001; // seconds
       
       // Animate paper airplanes with natural flight patterns
       if (this.floating && this.floating.length > 0) {
@@ -327,7 +417,10 @@ export default {
       }
       
       this.renderer.render(this.scene, this.camera);
-      requestAnimationFrame(this.animate);
+      this.lastRenderTime = timestamp;
+      if (this.isAnimating) {
+        this.rafId = requestAnimationFrame(this.animate);
+      }
     },
 
     onWindowResize() {
@@ -337,9 +430,19 @@ export default {
       this.camera.aspect = w / h;
       this.camera.updateProjectionMatrix();
       this.renderer.setSize(w, h);
+      const targetDpr = Math.min(window.devicePixelRatio || 1, 1.25);
+      this.renderer.setPixelRatio(targetDpr);
     },
 
     cleanup() {
+      // Stop RAF and observers/listeners first
+      this.stopLoop();
+      document.removeEventListener('visibilitychange', this.onVisibilityChange);
+      if (this.intersectionObserver) {
+        try { this.intersectionObserver.disconnect(); } catch (_) {}
+        this.intersectionObserver = null;
+      }
+
       if (this.renderer) {
         // Force WebGL context loss for better cleanup
         this.renderer.forceContextLoss();
