@@ -1,28 +1,71 @@
+// Import fonts at the top of the file
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@700&display=swap');
+
 .pokemon-card {
+  color: #333; // Set a default text color to override theme
+  * {
+    color: inherit; // Ensure all children inherit the card's color
+  }
   --space: 5%;
   --angle: 133deg;
-  --imgsize:50%;
+  --imgsize: 50%;
+  width: 310px;
   aspect-ratio: 65/90;
-  //height: 459px;
-  //width: 310px;
   position: relative;
-  border-radius: 2.4rem;
+  border-radius: 1.5rem;
   overflow: hidden;
   will-change: transform;
   transform-style: preserve-3d;
-  transition: transform 0.1s ease-out, box-shadow 0.1s ease-out;
-  background: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
+  transition: transform 0.8s ease-out, box-shadow 0.3s ease-out;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
   -webkit-font-smoothing: antialiased;
+  z-index: 1;
 
+  // Initial transform state
   transform: 
-  perspective(1000px)
-  rotateX(var(--rotate-x))
-  rotateY(var(--rotate-y));
+    perspective(1000px)
+    scale(var(--zoom, 1))
+    rotateX(var(--rotate-x, 0deg))
+    rotateY(var(--rotate-y, 0deg));
+  
+  // Apply a default transition to all properties
+  &.initialized {
+    transition: transform 0.8s ease-out, box-shadow 0.3s ease-out;
+  }
   
   &.hovered {
     box-shadow: 0 20px 30px rgba(0, 0, 0, 0.3);
+    transition: transform 0.1s ease-out, box-shadow 0.3s ease-out;
+  }
+
+  // Mobile-specific styles
+  @media (max-width: 768px) {
+    // Reduce transform intensity for mobile
+    transform: 
+      perspective(1000px)
+      scale(var(--zoom, 1))
+      rotateX(calc(var(--rotate-x, 0deg) * 0.7))
+      rotateY(calc(var(--rotate-y, 0deg) * 0.7));
+
+    // Enhance touch feedback
+    &.hovered {
+      box-shadow: 0 25px 40px rgba(0, 0, 0, 0.4);
+      transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+    }
+
+    // Allow scrolling while keeping some touch optimizations
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  
+  &.is-flipped {
+    .card-inner {
+      transform: rotateY(180deg);
+    }
   }
 
   .card__shine,
@@ -54,7 +97,7 @@
         #0e152e 12%
       ),
       radial-gradient(
-        farthest-corner circle at var(--pointer-x) var(--pointer-y),
+        farthest-corner circle at var(--pointer-x, 50%) var(--pointer-y, 50%),
         rgba(0, 0, 0, 0.1) 12%,
         rgba(0, 0, 0, 0.15) 20%,
         rgba(0, 0, 0, 0.25) 120%
@@ -62,44 +105,62 @@
 
     background-blend-mode: exclusion, hue, hard-light;
     background-size: var(--imgsize), 200% 700%, 300%, 200%;
-    background-position: center, 0% var(--background-y), var(--background-x) var(--background-y), var(--background-x) var(--background-y);
-    filter: brightness(calc((var(--hyp) * 0.3) + 0.5)) contrast(2) saturate(1.5);
-
+    background-position: center, 0% var(--background-y, 50%), var(--background-x, 50%) var(--background-y, 50%), var(--background-x, 50%) var(--background-y, 50%);
+    filter: brightness(calc((var(--hyp, 0) * 0.3) + 0.5)) contrast(2) saturate(1.5);
   }
 
   .card__shine {
+    will-change: opacity, filter;
     z-index: 3;
     mix-blend-mode: color-dodge;
-    opacity: var(--card-opacity);
+    opacity: var(--card-opacity, 0);
+    transition: opacity 0.5s ease-out;
+
+    // Mobile-specific adjustments
+    @media (max-width: 768px) {
+      // Make lighting effects more visible on mobile
+      opacity: calc(var(--card-opacity, 0) * 1.2);
+      transition: opacity 0.3s ease-out;
+    }
   }
 
   .card__shine:after {
     content: "";
+    will-change: filter;
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     background-size: var(--imgsize), 200% 400%, 195%, 200%;
-    background-position: center, 0% var(--background-y), calc(var(--background-x) *-1) calc(var(--background-y) * -1), var(--background-x) var(--background-y);
-
-    filter: brightness(calc((var(--hyp) * 0.5) + 0.8)) contrast(1.6) saturate(1.4);
+    background-position: center, 0% var(--background-y, 50%), calc(var(--background-x, 50%) *-1) calc(var(--background-y, 50%) * -1), var(--background-x, 50%) var(--background-y, 50%);
+    filter: brightness(calc((var(--hyp, 0) * 0.5) + 0.8)) contrast(1.6) saturate(1.4);
     mix-blend-mode: exclusion;
   }
 
-  .card__glare  {
+  .card__glare {
+    will-change: opacity;
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     z-index: 2;
-    background-image: radial-gradient(farthest-corner circle at var(--pointer-x) var(--pointer-y), hsl(0, 0%, 100%) 0%, hsla(210, 3%, 54%, 0.33) 45%, hsla(0, 0%, 20%, 0.9) 130%);
+    background-image: radial-gradient(farthest-corner circle at var(--glare-x, 50%) var(--glare-y, 50%), hsl(0, 0%, 100%) 0%, hsla(210, 3%, 54%, 0.33) 45%, hsla(0, 0%, 20%, 0.9) 130%);
     mix-blend-mode: overlay;
     background-position: center;
     background-size: 200% 200%;
     pointer-events: none;
-    opacity: calc(var(--o)*0.5);
+    opacity: calc(var(--card-opacity, 0) * var(--glare-opacity, 0));
+    transition: opacity 0.5s ease-out;
+
+    // Mobile-specific adjustments
+    @media (max-width: 768px) {
+      // Enhance glare effect on mobile
+      opacity: calc(var(--card-opacity, 0) * var(--glare-opacity, 0) * 1.3);
+      transition: opacity 0.3s ease-out;
+      background-size: 250% 250%; // Larger glare area for mobile
+    }
   }
 
   .card-content {
@@ -108,143 +169,710 @@
     left: 0;
     bottom: 0;
     right: 0;
-    background: rgba(158, 16, 16, 0.9);
-    display: grid;
     display: flex;
     flex-direction: column;
-    color: black;
+    color: #333;
     z-index: 1;
-    font-size: 13px;
-    line-height: 1;
+    font-size: 11px; // Base font smaller
+    line-height: 1.2;
+    padding: 8px; // Slightly reduce padding to fit more content
+    overflow: hidden; // Prevent content overflow
+    backface-visibility: hidden; // <-- add this so it disappears when flipped
+    -webkit-backface-visibility: hidden;
 
     &::before {
       content: '';
       position: absolute;
       inset: 0px;
-      border: 11px solid rgb(131, 40, 40);
-      border-radius: 2.4rem;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      background: linear-gradient(135deg, 
+        #e8e8e8 0%,     // Light silver
+        #c0c0c0 15%,    // Medium silver
+        #f5f5f5 30%,    // Bright highlight
+        #a8a8a8 45%,    // Dark silver
+        #d4d4d4 60%,    // Medium-light silver
+        #f8f8f8 75%,    // Bright highlight
+        #b8b8b8 90%,    // Medium-dark silver
+        #e0e0e0 100%    // Light silver
+      );
+      border: 5px solid #ffcb05; // Honey-colored border
+      border-radius: 1.5rem;
+      padding: 5px; // Reduced padding to account for border
       pointer-events: none;
       z-index: -1;
+      box-shadow: 
+        inset 0 2px 4px rgba(255, 255, 255, 0.8),  // Inner highlight
+        inset 0 -2px 4px rgba(0, 0, 0, 0.3),       // Inner shadow
+        0 0 0 1px rgba(0, 0, 0, 0.1),              // Subtle outer edge
+        0 2px 8px rgba(0, 0, 0, 0.15);             // Drop shadow
+      
+      // Create the inner content area
+      &::after {
+        content: '';
+        position: absolute;
+        inset: 5px; // Keep the same inset to maintain the border width
+        background: var(--card-bg, #faf7f0);
+        border-radius: calc(1.5rem - 5px);
+        z-index: -1; // Pushed behind the new bg layer
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+      }
+      
     }
   }
 
+  // Hide the front-side content completely when the card has been flipped
+  // &.is-flipped {
+  //   .card-content {
+  //     opacity: 0;
+  //     transition: opacity 0.2s ease;
+  //   }
+  //   .card-front {
+  //     display: none !important;
+  //   }
+  // }
+
+  // Card Header
   .card-header {
     display: flex;
-    position: relative;
-    width: 100%;
-    margin-top: 12px;
-    align-items: center;
-    h2 {
-      font-size: 20px;
-      margin-top: 0;
-      margin-bottom: 0;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 6px; // Reduce margin
+    
+    .name-type-container {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      max-width: 70%;  // Limit width to prevent overlap
     }
-  }
 
-  .type {
-    background: rgb(123,124,121);
-    background: linear-gradient(0deg, 
-      rgba(123,124,121,1) 0%, 
-      rgba(123,124,121,1) 20%, 
-      rgba(255,255,255,1) 50%, 
-      rgba(255,255,255,1) 74%, 
-      rgba(167,170,169,1) 80%, 
-      rgba(167,170,169,1) 85%, 
-      rgba(213,212,211,1) 90%
-    );
-    color: #1a1a1a;
-    padding: 3px 5px;
-    border-radius: 12px 2px 12px 2px;
-    font-size: 12px;
-    font-weight: bold;
-    font-style: italic;
-
-    margin: 3px 0px 0px 8px;
-    z-index: 1;
-    box-shadow: 
-      0 1px 3px rgba(0, 0, 0, 0.3), 
-      inset 0 1px 1px rgba(255, 255, 255, 0.6),
-      inset 0 -1px 2px rgba(0, 0, 0, 0.3);
-    text-transform: uppercase;
-
-    text-shadow: 
-    -1px -1px 0 white,  
-     1px -1px 0 white,
-    -1px  1px 0 white,
-     1px  1px 0 white;
-     
-    overflow: hidden;
-  }
-
-  .card-title {
-    margin-left: 10px;
-  }
-
-  .card-image {
-    text-align: center;
-    margin-bottom: 15px;
-    img {
-      width: 150px;
-      height: 150px;
-      border-radius: 50%;
-      border: 3px solid #4a90e2;
-    }
-  }
-
-  .card-body {
-    flex-grow: 1;
-    margin-bottom: 15px;
-    padding-left: 12px;
-    padding-right: 12px;
-  }
-
-  .card-stats {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    padding-left: 12px;
-    padding-right: 12px;
-  }
-
-  .stat {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 0.9em;
-  }
-
-  .card-skills {
-    padding-left: 12px;
-    padding-right: 12px;
-    h3 {
-      font-size: 1.2em;
-      margin-bottom: 5px;
-      color: #ffcb05; // Pokémon yellow
-    }
-    ul {
-      list-style-type: none;
-      padding: 0;
+    .card-title {
+      font-size: 16px;  // Slightly smaller font size
+      font-weight: bold;
       margin: 0;
-      li {
-        background: rgba(255, 255, 255, 0.1);
-        margin: 2px 0;
-        padding: 2px 5px;
-        border-radius: 3px;
-        font-size: 0.9em;
+      margin-right: 8px;
+      line-height: 1.1;  // Tighter line height
+      word-break: break-word;  // Allow word breaks for long titles
+    }
+
+    .hp-container {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+
+      .type-icon {
+        width: 25px;
+        height: 25px;
+        object-fit: contain;
+        order: 1; // Move to the right side
+      }
+
+      .hp {
+        // font-weight: 900;
+        font-size: 16px;
+        color: #212121;
+        display: flex;
+        align-items: baseline;
+        position: relative;
+        letter-spacing: -1px;
+
+        .hp-text {
+          font-size: 9px;
+          color: rgb(0, 0, 0);
+          margin-right: 2px;
+          position: relative;
+          font-weight: 900;
+          letter-spacing: 0;
+        }
+
+
       }
     }
   }
 
-  .card-experience {
-    h3 {
-      font-size: 1.2em;
-      margin-bottom: 5px;
-      color: #ffcb05; // Pokémon yellow
+  // Type badge
+  // .type {
+    
+  //   background: linear-gradient(0deg, 
+  //     rgba(123,124,121,1) 0%, 
+  //     rgba(123,124,121,1) 20%, 
+  //     rgba(255,255,255,1) 50%, 
+  //     rgba(255,255,255,1) 74%, 
+  //     rgba(167,170,169,1) 80%, 
+  //     rgba(167,170,169,1) 85%, 
+  //     rgba(213,212,211,1) 90%
+  //   );
+  //   color: #1a1a1a;
+  //   padding: 2px 6px;
+  //   border-radius: 10px 2px 10px 2px;
+  //   font-size: 9px;  // Slightly smaller
+  //   font-weight: bold;
+  //   font-style: italic;
+  //   margin-top: 2px;
+  //   box-shadow: 
+  //     0 1px 2px rgba(0, 0, 0, 0.3), 
+  //     inset 0 1px 1px rgba(255, 255, 255, 0.6),
+  //     inset 0 -1px 1px rgba(0, 0, 0, 0.3);
+  //   text-transform: uppercase;
+  //   text-shadow: 
+  //     -1px -1px 0 white,  
+  //      1px -1px 0 white,
+  //     -1px  1px 0 white,
+  //      1px  1px 0 white;
+  //   display: inline-block;  // Better alignment
+  // }
+
+  // Card Image Container
+  .card-image-container {
+    background: linear-gradient(to bottom, #e0f7fa, #80deea);
+    border-radius: 8px;
+    padding: 6px 6px 0px 6px; // Reduce
+    margin-bottom: 6px; // Reduce
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid #b2ebf2;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+    
+    .card-image {
+      text-align: center;
+
+      img {
+        width: 80px; // Slightly smaller for better fit
+        height: 80px;
+        border-radius: 50%;
+        border: 2px solid #ffcb05;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        object-fit: cover;  // Ensure proper image scaling
+      }
     }
-    p {
-      font-size: 0.9em;
-      margin: 2px 0;
+    
+    .card-subtitle {
+      background: rgba(255, 255, 255, 0.7);
+      padding: 1px 6px; // Slightly smaller padding
+      border-radius: 10px;
+      font-size: 8px; // Slightly smaller font size
+      font-weight: bold;
+      color: #333;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      text-align: center;  // Center text
+      max-width: 90%;  // Prevent overflow
+      white-space: nowrap;  // Keep on one line
+      overflow: hidden;  // Hide overflow
+      text-overflow: ellipsis;  // Show ellipsis for overflow
     }
   }
 
+  // Card Description
+  .card-description {
+    background: #fff;
+    border-radius: 6px;
+    padding: 6px;
+    margin-bottom: 8px;
+    font-size: 9px;  // Slightly smaller font
+    border: 1px solid #ddd;
+    box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.05);
+    max-height: 40px;  // Limit height to prevent overflow
+    overflow-y: auto;  // Add scrolling if needed
+    
+    p {
+      margin: 0;
+      font-style: italic;
+      line-height: 1.3;  // Better line spacing
+      display: -webkit-box;
+      -webkit-line-clamp: 3;  // Limit to 3 lines
+      line-clamp: 3;  // Standard property for compatibility
+      -webkit-box-orient: vertical;
+      overflow: hidden;  // Hide overflow
+    }
+  }
+
+  // Skills Section
+  .card-skills {
+    display: none; // Temporarily hide skills to fit new content; can adjust if space allows
+  }
+
+  // Ability section
+  .card-ability {
+    background: #f7f7f7;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 8px 10px; // Increased padding
+    margin-bottom: 10px; // Increased margin
+    box-shadow: inset 0 0 4px rgba(0,0,0,0.05);
+
+    .ability-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .ability-badge {
+      background: linear-gradient(130deg, #c0392b, #e74c3c, #c0392b);
+      color: white;
+      font-size: 9px; // Slightly larger
+      font-weight: bold;
+      font-style: italic;
+      padding: 4px 7px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
+
+    .ability-name {
+      font-size: 14px; // Slightly larger
+      font-weight: bold;
+      color: #c0392b;
+      margin-left: 6px;
+    }
+    
+    p {
+      font-size: 10px; // Slightly larger
+      margin: 0;
+      line-height: 1.3; // Increased line height
+      font-style: italic;
+    }
+  }
+
+  // Attacks section
+  .card-attacks {
+    display: flex;
+    flex-direction: column;
+    gap: 6px; // Increased gap between attacks
+    margin-bottom: 8px;
+    
+    .attack {
+      background: #f5f5f5;
+      padding: 6px 8px; // Increased padding
+      border-radius: 4px;
+      border: 1px solid #ddd;
+      
+      .attack-header {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        margin-bottom: 3px;
+      }
+
+      .attack-cost {
+        display: flex;
+        align-items: center;
+        gap: 2px; // Reduced space between icons
+        margin-right: 10px; // Increased space after icons
+        
+        img {
+          width: 14px; // Made icons larger
+          height: 14px; // Made icons larger
+          filter: invert(1);
+        }
+      }
+      
+      .attack-name {
+        flex-grow: 1; // Allow the name to take up all available space
+        text-align: center; // Center the name within its space
+        font-size: 12px; // Slightly larger
+        font-weight: bold;
+        color: #2c3e50;
+        padding: 0 8px; // Add some horizontal padding
+      }
+      
+      .attack-damage {
+        font-size: 15px; // Slightly larger
+        font-weight: bold;
+        color: #e74c3c;
+        flex-shrink: 0; // Prevent the damage from shrinking
+      }
+      
+      p {
+        font-size: 9px; // Slightly larger
+        margin: 2px 0 0 0;
+        line-height: 1.3; // Increased line height
+      }
+    }
+  }
+
+  // Weakness section
+  .card-weakness {
+    display: flex;
+    justify-content: space-between;
+    font-size: 8px;
+    gap: 4px;
+    margin-top: auto; // Pushes it to the bottom
+    position: relative;
+    padding-top: 8px; // Space for the top line
+    padding-bottom: 8px; // Space for the bottom line
+    margin-bottom: 0; // Remove bottom margin to be close to footer
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(0deg,
+        rgba(123,124,121,1) 0%,
+        rgba(123,124,121,1) 20%,
+        rgba(255,255,255,1) 50%,
+        rgba(255,255,255,1) 74%,
+        rgba(167,170,169,1) 80%,
+        rgba(167,170,169,1) 85%,
+        rgba(213,212,211,1) 90%
+      );
+      clip-path: polygon(5% 0%, 95% 0%, 100% 100%, 0% 100%);
+    }
+
+    &::before {
+      top: 2px;
+    }
+    
+    &::after {
+      bottom: 2px;
+    }
+    
+    div {
+      text-align: center;
+      flex: 1;
+      
+      span:first-child {
+        display: block;
+        font-weight: bold;
+        color: #666;
+      }
+      
+      .weakness-type {
+        color: #c00;
+      }
+      
+      .resistance-type {
+        color: #060;
+      }
+      
+      .retreat-cost {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 2px;
+        
+        img {
+          width: 12px;
+          height: 12px;
+        }
+      }
+    }
+  }
+
+  .card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d; /* enable 3d for children */
+    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .card-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    border-radius: 1.5rem;
+    overflow: hidden;
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    -ms-backface-visibility: hidden;
+  }
+
+  .card-front {
+    background: linear-gradient(45deg, #ffcb05 0%, #ffde5a 99%, #ffde5a 100%);
+    transform: rotateY(0deg);
+  }
+
+  .card-back {
+    transform: rotateY(180deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+
+    .card-back-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .card-bg-layer {
+    position: absolute;
+    inset: 5px;
+    background-color: #e2e2e2; 
+    clip-path: polygon(
+      0% 0%,
+      73% 0%,
+      62% 14%,
+      1% 14%,
+      1% 85%,
+      100% 85%,
+      100% 100%,
+      0% 100%
+    );
+    z-index: 0;
+    border-radius: calc(1.5rem - 5px);
+  }
+}
+
+.card-header,
+.card-image-container,
+.card-ability,
+.card-attacks,
+.card-weakness,
+.card-footer {
+  position: relative;
+  z-index: 1;
+}
+
+// Adjust image container
+.card-image-container {
+  background: linear-gradient(to bottom, #e0f7fa, #80deea);
+  border-radius: 8px;
+  padding: 6px;
+  margin-bottom: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid #b2ebf2;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+  height: 100px;
+  
+  .card-image {
+    text-align: center;
+    margin-bottom: 4px;
+    
+    img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: 2px solid #ffcb05;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      object-fit: cover;
+      margin-top: 10px;
+    }
+  }
+  
+  .card-subtitle {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 9px;
+    font-weight: bold;
+    color: #333;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+}
+
+// Update the header again to reduce overlap
+.card-header {
+  margin-bottom: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: relative;
+  padding: 0 4px;
+  z-index: 2;
+  height: 22px;
+
+  .name-type-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: 68%;
+    padding-top: 6px; // give space for badge overlap
+    padding-bottom: 10px; // reserve space for evolution bar
+
+    .evolution {
+      position: absolute;
+      top: 29px; // fixed position below title
+      left: -3px; // fixed left position
+      width: 195px; // fixed width
+      height: 12px; // fixed height
+      display: flex;
+      align-items: center;
+      // justify-content: center;
+      padding-left: 6px;
+      font-size: 8px;
+      font-style: italic;
+      font-weight: 600;
+      line-height: 1;
+      color: #000000;
+      // text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
+      background: linear-gradient(0deg,
+        rgb(180, 182, 176) 0%,
+        rgb(157, 158, 154) 20%,
+        rgba(255,255,255,1) 50%,
+        rgba(255,255,255,1) 74%,
+        rgb(185, 189, 187) 80%,
+        rgb(194, 199, 197) 85%,
+        rgba(213,212,211,1) 90%
+      );
+      border-radius: 12px 3px 12px 3px;
+      box-shadow: 
+        0 2px 4px rgba(0, 0, 0, 0.4), 
+        inset 0 1px 1px rgba(255, 255, 255, 0.6), 
+        inset 0 -1px 1px rgba(0, 0, 0, 0.3);
+      text-transform: uppercase;
+      border: 1px solid rgba(0,0,0,0.2);
+    }
+  }
+
+  .hp-container {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: auto;
+    padding-left: 6px;
+    transform: none; // reset transform to avoid overlap
+  }
+
+  .type-icon {
+    width: 20px;
+    height: 20px;
+    margin-left: 2px;
+  }
+
+  .evolution {
+    margin-left: 2px; // small indent
+  }
+
+  .type {
+    top: -10px; // slight adjust
+    left: -6px;
+  }
+
+  .name-type-container {
+
+    .card-title {
+      position: absolute;
+      top: 5px;
+      left: 80px;
+      font-family: 'Roboto Condensed', 'Gill Sans', 'Arial Black', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      margin: 0;
+      line-height: 1;
+      letter-spacing: -0.5px;
+      // text-transform: uppercase;
+      color: #1a1a1a;
+      text-shadow: 1px 1px 1px rgba(255,255,255,0.5);
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .type {
+      position: absolute;
+      top: -2px;
+      left: -4px;
+      background: linear-gradient(0deg,
+        rgba(123,124,121,1) 0%,
+        rgba(123,124,121,1) 20%,
+        rgba(255,255,255,1) 50%,
+        rgba(255,255,255,1) 74%,
+        rgba(167,170,169,1) 80%,
+        rgba(167,170,169,1) 85%,
+        rgba(213,212,211,1) 90%
+      );
+      color: #1a1a1a;
+      padding: 3px 8px;
+      border-radius: 12px 3px 12px 3px;
+      font-size: 9px;
+      font-weight: bold;
+      font-style: italic;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.6), inset 0 -1px 1px rgba(0, 0, 0, 0.3);
+      text-transform: uppercase;
+      text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;
+      border: 1px solid rgba(0,0,0,0.2);
+    }
+  }
+
+  .hp-container {
+    .hp-value {
+      font-size: 20px;
+      font-weight: 900;
+    }
+  }
+}
+
+.card-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 7px;
+  color: #333;
+  // margin-top: auto; // No longer needed here
+  padding: 2px 5px;
+
+  .card-set-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; // gather on left
+    font-weight: bold;
+    gap: 4px; // spacing between items
+
+    .set-number {
+      font-family: 'Roboto Condensed', sans-serif;
+    }
+
+    .rarity-symbol {
+      position: relative;
+      width: 12px;
+      height: 12px;
+      margin: 0 4px;
+
+      .star,
+      &::before,
+      &::after {
+        content: '★';
+        position: absolute;
+        color: #e8b200;
+        font-size: 8px;
+        line-height: 1;
+      }
+
+      .star {
+        top: 2px;
+        left: 2px;
+      }
+
+      &::before {
+        top: -1px;
+        left: -2px;
+      }
+      
+      &::after {
+        top: -1px;
+        right: -2px;
+      }
+    }
+
+    .set-icon {
+      width: 12px;
+      height: 12px;
+      margin-left: 2px;
+    }
+  }
+
+  .card-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .illus {
+      font-style: italic;
+    }
+
+    copyright {
+      font-size: 6px;
+    }
+  }
 }

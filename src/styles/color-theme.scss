@@ -1,0 +1,58 @@
+// Color Theme Variables
+:root {
+  // Primary accent colors
+  --accent-color: #ffcb05;  // Main accent color (yellow)
+  --accent-color-light: rgba(255, 207, 5, 0.8);
+  --accent-color-dark: #e6b700;
+  --accent-glow: rgba(255, 207, 5, 0.5);
+  
+  // Secondary accent color 
+  --secondary-accent: #1e88e5;  // Blue
+  --secondary-accent-light: rgba(30, 136, 229, 0.8);
+  --secondary-accent-dark: #1565c0;
+  --secondary-glow: rgba(30, 136, 229, 0.5);
+  
+  // Default light mode text colors
+  --text-primary: #333333;
+  --text-secondary: #555555;
+  --text-tertiary: #777777;
+  
+  // Timeline specific
+  --timeline-dot-color: rgba(0, 0, 0, 0.4);
+  --timeline-line-color: rgba(0, 0, 0, 0.2);
+  --timeline-line-fade: rgba(0, 0, 0, 0.05);
+  
+  // Card backgrounds
+  --card-bg: #fefdf8;
+  --card-border: rgba(200, 200, 200, 0.5);
+  
+  // Fade gradients
+  --fade-top: linear-gradient(to bottom, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0) 100%);
+  --fade-bottom: linear-gradient(to top, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0) 100%);
+}
+
+// Dark theme
+.theme-dark {
+  // Text colors
+  --text-primary: #f0f0f0;
+  --text-secondary: #d0d0d0;
+  --text-tertiary: #b0b0b0;
+  
+  // Timeline specific
+  --timeline-dot-color: rgba(255, 255, 255, 0.4);
+  --timeline-line-color: rgba(255, 255, 255, 0.2);
+  --timeline-line-fade: rgba(255, 255, 255, 0.05);
+  
+  // Card backgrounds
+  --card-bg: rgba(30, 30, 30, 0.7);
+  --card-border: rgba(60, 60, 60, 0.5);
+  
+  // Fade gradients
+  --fade-top: linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0) 100%);
+  --fade-bottom: linear-gradient(to top, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0) 100%);
+}
+
+// Light theme overrides (if needed)
+.theme-light {
+  // Light theme is set as root defaults
+} 
