@@ -37,46 +37,34 @@ export const cards: Card[] = [
     position: { span: 2 },
     data: [
       {
-        company: 'Omega 365',
-        title: 'Utvikler (Developer)',
+        company: 'Omega 365 Solutions',
+        title: 'Developer (Part-time)',
         period: 'Sep 2024 - Present',
-        description: 'Part-time developer role at Bergen-based software company, working with modern web technologies and software solutions.'
+        description: 'Developing and maintaining web applications using Vue.js, SQL, and company frameworks. Supporting ongoing projects as part of an agile team.'
       },
       {
-        company: 'Omega 365',
-        title: 'Summer Internship',
+        company: 'Omega 365 Solutions',
+        title: 'Summer Intern',
         period: 'Jun 2024 - Aug 2024',
-        description: '6 weeks of SQL training plus project work developing a complete web application using SQL, Vue.js, and related technologies.'
+        description: 'Completed 6-week training in SQL and developed a fully functional web application. Built features with SQL, Vue.js, and JavaScript.'
       },
       {
-        company: 'Høgskulen på Vestlandet (HVL)',
-        title: 'Studentassistent - DAT108',
-        period: 'Jul 2024 - Dec 2024',
-        description: 'Teaching assistant for Programming and Web Applications course. Grading assignments and helping students with Java streams, lambda expressions, functional programming, Java Spring MVC, JavaScript, and web development.'
-      },
-      {
-        company: 'Høgskulen på Vestlandet (HVL)',
-        title: 'Studentassistent - DAT107',
-        period: 'Jan 2024 - Jul 2024',
-        description: 'Teaching assistant for Database course. Grading assignments and helping students with SQL, ERD, Java ORM, and document databases.'
+        company: "Norway's Best",
+        title: 'IT Technician (Apprentice & Seasonal Work)',
+        period: 'Aug 2019 - Aug 2023',
+        description: 'Maintained IT infrastructure including payment systems, hotel systems, networks, servers. Provided technical support and troubleshooting across multiple locations.'
       },
       {
         company: 'Studvest',
-        title: 'Webutvikler (Web Developer)',
-        period: 'Jan 2023 - May 2023',
-        description: 'Volunteer web developer creating modern and engaging news articles online for the student newspaper.'
+        title: 'Voluntary Web Developer',
+        period: 'Jan 2023 - Jun 2023',
+        description: 'Developed interactive web-based articles for the student newspaper.'
       },
       {
-        company: "Norway's Best",
-        title: 'IT-medarbeider',
-        period: 'Jun 2023 - Aug 2023',
-        description: 'Summer job providing technical user support, IT operations, and system maintenance.'
-      },
-      {
-        company: "Norway's Best",
-        title: 'Dataelektroniker',
-        period: 'Aug 2019 - Mar 2021',
-        description: 'Apprenticeship managing all IT-related operations including payment systems, hotel systems, networks, servers, and user support across multiple locations.'
+        company: 'Skjerdal landskapspleie',
+        title: 'Seasonal Gardener',
+        period: 'Summers 2016 - 2018',
+        description: 'Performed general maintenance tasks including grass cutting, street sweeping, and trash collection.'
       }
     ]
   },
@@ -121,29 +109,42 @@ export const cards: Card[] = [
   {
     id: 'education',
     title: 'Education',
-    content: 'My academic journey in computer engineering',
+    content: 'My academic journey in computer science and engineering',
     component: 'Education',
     position: { span: 2 },
     videoPath: '/videos/education-loop.mp4',
     data: [
       {
-        degree: 'Bachelor, Dataingeniør (Computer Engineering)',
-        institution: 'Høgskulen på Vestlandet (HVL)',
-        period: '2022 - 2025',
+        degree: 'Master of Science in Computer Science, Artificial Intelligence',
+        institution: 'Norwegian University of Science and Technology (NTNU)',
+        location: 'Trondheim, Norway',
+        period: 'Aug 2025 - Jun 2027 (expected)',
         achievements: [
-          'Currently pursuing degree in Computer Engineering',
+          'Specializing in Artificial Intelligence',
+          'Advanced studies in machine learning and AI systems',
+          'Research-focused program at Norway\'s leading technical university'
+        ]
+      },
+      {
+        degree: 'Bachelor of Engineering, Computer Engineering',
+        institution: 'Western Norway University of Applied Sciences (HVL)',
+        location: 'Bergen, Norway',
+        period: 'Aug 2022 - Jun 2025',
+        achievements: [
+          'Thesis: "Videreutvikling og analyse av B Connected – En digital samhandlingsplattform"',
           'Focus on software development and system architecture',
           'Hands-on experience with modern programming languages and frameworks'
         ]
       },
       {
-        degree: 'Ingeniør forkurs (Engineering Foundation Course)',
-        institution: 'Høgskulen på Vestlandet (HVL)',
-        period: '2021 - 2022',
+        degree: 'Trade School, Computer Electronics (3 years) + Apprenticeship (1.5 years)',
+        institution: 'Sogndal Upper Secondary School',
+        location: 'Sogndal, Norway',
+        period: 'Aug 2016 - Mar 2021',
         achievements: [
-          'One-year preparatory course for engineering education',
-          'Mathematics, physics, and technical foundations',
-          'Successfully qualified for Computer Engineering program'
+          'Comprehensive training in computer electronics and IT systems',
+          'Practical apprenticeship experience in real-world IT environments',
+          'Foundation in hardware and software systems integration'
         ]
       }
     ]
