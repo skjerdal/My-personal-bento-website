@@ -51,18 +51,18 @@ export const cards: Card[] = [
         description: 'Completed 6-week training in SQL and developed a fully functional web application. Built features with SQL, Vue.js, and JavaScript.'
       },
       {
-        company: "Norway's Best",
-        title: 'IT Technician (Apprentice & Seasonal Work)',
-        period: 'Aug 2019 - Aug 2023',
-        logo: '/norways best.jpg',
-        description: 'Maintained IT infrastructure including payment systems, hotel systems, networks, servers. Provided technical support and troubleshooting across multiple locations.'
-      },
-      {
         company: 'Studvest',
         title: 'Voluntary Web Developer',
         period: 'Jan 2023 - Jun 2023',
         logo: '/studvestlogo.jpg',
         description: 'Developed interactive web-based articles for the student newspaper.'
+      },
+      {
+        company: "Norway's Best",
+        title: 'IT Technician (Apprentice & Seasonal Work)',
+        period: 'Aug 2019 - Aug 2023',
+        logo: '/norways best.jpg',
+        description: 'Maintained IT infrastructure including payment systems, hotel systems, networks, servers. Provided technical support and troubleshooting across multiple locations.'
       },
       {
         company: 'Skjerdal landskapspleie',
