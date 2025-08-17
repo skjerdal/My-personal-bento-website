@@ -37,6 +37,30 @@
     box-shadow: 0 20px 30px rgba(0, 0, 0, 0.3);
     transition: transform 0.1s ease-out, box-shadow 0.3s ease-out;
   }
+
+  // Mobile-specific styles
+  @media (max-width: 768px) {
+    // Reduce transform intensity for mobile
+    transform: 
+      perspective(1000px)
+      scale(var(--zoom, 1))
+      rotateX(calc(var(--rotate-x, 0deg) * 0.7))
+      rotateY(calc(var(--rotate-y, 0deg) * 0.7));
+
+    // Enhance touch feedback
+    &.hovered {
+      box-shadow: 0 25px 40px rgba(0, 0, 0, 0.4);
+      transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+    }
+
+    // Allow scrolling while keeping some touch optimizations
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
   
   &.is-flipped {
     .card-inner {
@@ -91,6 +115,13 @@
     mix-blend-mode: color-dodge;
     opacity: var(--card-opacity, 0);
     transition: opacity 0.5s ease-out;
+
+    // Mobile-specific adjustments
+    @media (max-width: 768px) {
+      // Make lighting effects more visible on mobile
+      opacity: calc(var(--card-opacity, 0) * 1.2);
+      transition: opacity 0.3s ease-out;
+    }
   }
 
   .card__shine:after {
@@ -122,6 +153,14 @@
     pointer-events: none;
     opacity: calc(var(--card-opacity, 0) * var(--glare-opacity, 0));
     transition: opacity 0.5s ease-out;
+
+    // Mobile-specific adjustments
+    @media (max-width: 768px) {
+      // Enhance glare effect on mobile
+      opacity: calc(var(--card-opacity, 0) * var(--glare-opacity, 0) * 1.3);
+      transition: opacity 0.3s ease-out;
+      background-size: 250% 250%; // Larger glare area for mobile
+    }
   }
 
   .card-content {
@@ -343,6 +382,7 @@
       line-height: 1.3;  // Better line spacing
       display: -webkit-box;
       -webkit-line-clamp: 3;  // Limit to 3 lines
+      line-clamp: 3;  // Standard property for compatibility
       -webkit-box-orient: vertical;
       overflow: hidden;  // Hide overflow
     }

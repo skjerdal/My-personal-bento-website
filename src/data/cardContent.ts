@@ -37,15 +37,15 @@ export const cards: Card[] = [
     position: { span: 2 },
     data: [
       {
-        company: 'Omega 365',
-        title: 'Utvikler (Developer)',
+        company: 'Omega 365 Solutions',
+        title: 'Developer (Part-time)',
         period: 'Sep 2024 - Present',
         description: 'Part-time developer role at Bergen-based software company, working with modern web technologies and software solutions.',
         logo: '/Omega365_Icon_Primary_RGB.png'
       },
       {
-        company: 'Omega 365',
-        title: 'Summer Internship',
+        company: 'Omega 365 Solutions',
+        title: 'Summer Intern',
         period: 'Jun 2024 - Aug 2024',
         description: '6 weeks of SQL training plus project work developing a complete web application using SQL, Vue.js, and related technologies.',
         logo: '/Omega365_Icon_Primary_RGB.png'
@@ -128,7 +128,7 @@ export const cards: Card[] = [
   {
     id: 'education',
     title: 'Education',
-    content: 'My academic journey in computer engineering',
+    content: 'My academic journey in computer science and engineering',
     component: 'Education',
     position: { span: 2 },
     videoPath: '/videos/education-loop.mp4',
@@ -149,7 +149,7 @@ export const cards: Card[] = [
         period: '2022 - 2025',
         logo: '/hvl-logo-vert-rgb.png',
         achievements: [
-          'Currently pursuing degree in Computer Engineering',
+          'Thesis: "Videreutvikling og analyse av B Connected – En digital samhandlingsplattform"',
           'Focus on software development and system architecture',
           'Hands-on experience with modern programming languages and frameworks'
         ]
@@ -160,9 +160,9 @@ export const cards: Card[] = [
         period: '2021 - 2022',
         logo: '/hvl-logo-vert-rgb.png',
         achievements: [
-          'One-year preparatory course for engineering education',
-          'Mathematics, physics, and technical foundations',
-          'Successfully qualified for Computer Engineering program'
+          'Comprehensive training in computer electronics and IT systems',
+          'Practical apprenticeship experience in real-world IT environments',
+          'Foundation in hardware and software systems integration'
         ]
       }
     ]
@@ -189,6 +189,10 @@ export const cards: Card[] = [
     title: '',
     content: 'Link to download your resume...',
     component: 'DownloadResume',
-    position: { span: 1 }
+    position: { span: 1 },
+    data: {
+      resumeUrl: '/resume.pdf',
+      downloadName: 'Thomas_Skjerdal_Resume.pdf'
+    }
   },
 ];
