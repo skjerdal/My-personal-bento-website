@@ -1,5 +1,6 @@
 ---
 import '../styles/global.scss'
+import '../styles/main.scss'
 
 interface Props {
 	title: string;
@@ -12,19 +13,85 @@ const { title } = Astro.props;
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/computertype.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
     <title>{title}</title>
   </head>
 
   <script>
-    
-    let name = 'world';
+    // Initialize with light theme by default
+    document.body.classList.add('theme-light');
   </script>
 
-  <body>
-
-    <slot />
+  <body class="theme-light">
+    <div class="page-container">
+      <div class="background-card"></div>
+      <div class="theme-container">
+        <!-- <div class="theme-toggle-wrapper">
+          <ThemeToggle client:load />
+        </div> -->
+        <slot />
+      </div>
+    </div>
   </body>
 
 </html>
+
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+  }
+  
+  .page-container {
+    position: relative;
+    min-height: 100vh;
+    width: 100%;
+    padding: 2px;
+    box-sizing: border-box;
+  }
+
+  .theme-toggle-wrapper {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    z-index: 1000;
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+  }
+  
+  .theme-toggle-wrapper:hover {
+    opacity: 1;
+  }
+
+  .background-card {
+    position: absolute;
+    top: 4px;
+    left: 6px;
+    right: 6px;
+    bottom: 6px;
+    background-color: rgba(240, 240, 240, 0.5);
+    border-radius: 40px;
+    border: 1px solid rgba(200, 200, 200, 0.3);
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.05);
+    z-index: -1;
+    backdrop-filter: blur(5px);
+  }
+
+  /* Dark theme version of the background card */
+  .theme-dark .background-card {
+    background-color: rgba(40, 40, 45, 0.5);
+    border: 1px solid rgba(60, 60, 65, 0.3);
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.2);
+  }
+
+  .theme-container {
+    min-height: 100%;
+    position: relative;
+    padding: 25px 0 39px 0;
+  }
+</style>
 

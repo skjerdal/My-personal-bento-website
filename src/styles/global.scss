@@ -3,10 +3,21 @@
 
 body {
   background-color: $background-color;
-  color: $text-color;
-  font-family: 'Montserrat', sans-serif;
+  color: var(--text-primary, $text-color);
+  font-family: 'Inter', sans-serif;
   line-height: 1.5;
   margin: 0;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+// Apply text colors based on theme
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-primary, $text-color);
+  font-family: 'Satoshi', 'Inter', sans-serif;
+}
+
+p {
+  color: var(--text-secondary, $text-color);
 }
 
 .container {
@@ -14,4 +25,12 @@ body {
   max-width: map-get($breakpoints, large);
   margin: 0 auto;
   padding: 14px 0 0 0;
+}
+
+/* Airplane flight layer - sits above cards but below overlays */
+.airplane-sky {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 999; /* Higher than cards (10), lower than theme toggle (1000) */
 }

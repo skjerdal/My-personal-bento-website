@@ -1,28 +1,39 @@
 <template>
   <div class="work-experience">
-    <Carousel :items="jobs">
-      <template #default="{ item: job }">
-        <div class="job-card">
-          <h3>{{ job.title }} at {{ job.company }}</h3>
-          <p class="period">{{ job.period }}</p>
-          <p class="description">{{ job.description }}</p>
+    <VerticalTimeline :items="jobs">
+      <template #item="{ item: job, active }">
+        <div class="job-item" :class="{ active }">
+          <div class="job-header">
+            <h2>{{ job.title }}</h2>
+            <div class="company">
+              <img v-if="job.logo" :src="job.logo" :alt="job.company + ' logo'" class="company-logo"/>
+              <span>{{ job.company }}</span>
+            </div>
+          </div>
+          <div class="job-meta">
+            <div class="period">{{ job.period }}</div>
+          </div>
+          <div class="job-description">
+            <p>{{ job.description }}</p>
+          </div>
         </div>
       </template>
-    </Carousel>
+    </VerticalTimeline>
   </div>
 </template>
 
 <script>
-import { ref } from 'vue';
-import Carousel from '../Carousel.vue';
+import { ref, onMounted } from 'vue';
+import VerticalTimeline from '../VerticalTimeline.vue';
 import { cards } from '../../data/cardContent';
 
 export default {
   components: {
-    Carousel
+    VerticalTimeline
   },
   setup() {
-    const jobs = ref(cards.find(card => card.id === 'work').data);
+    // Get data in a way that works with SSR
+    const jobs = ref(cards.find(card => card.id === 'work')?.data || []);
 
     return { jobs };
   }
@@ -30,28 +41,67 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.work-experience {
-  height: 100%;  // Ensure the carousel takes full height of the card
+@import '../../styles/color-theme.scss';
 
-  .job-card {
-    padding: 20px;
-    height: 100%;
+.work-experience {
+  height: 100%;
+  
+  .job-item {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-
-    h3 {
-      font-size: 1.2em;
-      margin-bottom: 10px;
+    transition: all 0.3s ease;
+    
+    &.active {
+      .job-header h2 {
+        color: var(--accent-color);
+      }
     }
+    
+    .job-header {
+      margin-bottom: 4px;
+      
+      h2 {
+        font-size: 1rem;
+        margin: 0 0 2px 0;
+        color: var(--text-primary);
+        transition: color 0.3s ease;
+        font-weight: 600;
+      }
+      
+      .company {
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: var(--text-secondary);
+        display: flex;
+        align-items: center;
+        gap: 8px;
 
-    .period {
-      font-style: italic;
-      margin-bottom: 10px;
+        .company-logo {
+          width: 20px;
+          height: 20px;
+          object-fit: contain;
+          border-radius: 4px;
+        }
+      }
     }
-
-    .description {
-      font-size: 0.9em;
+    
+    .job-meta {
+      margin-bottom: 8px;
+      
+      .period {
+        font-size: 0.8rem;
+        font-style: italic;
+        color: var(--text-tertiary);
+      }
+    }
+    
+    .job-description {
+      p {
+        margin: 0;
+        font-size: 0.85rem;
+        line-height: 1.4;
+        color: var(--text-secondary);
+      }
     }
   }
 }
