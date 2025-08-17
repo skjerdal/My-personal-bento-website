@@ -40,24 +40,28 @@ export const cards: Card[] = [
         company: 'Omega 365 Solutions',
         title: 'Developer (Part-time)',
         period: 'Sep 2024 - Present',
+        logo: '/Omega365_Icon_Primary_RGB.png',
         description: 'Developing and maintaining web applications using Vue.js, SQL, and company frameworks. Supporting ongoing projects as part of an agile team.'
       },
       {
         company: 'Omega 365 Solutions',
         title: 'Summer Intern',
         period: 'Jun 2024 - Aug 2024',
+        logo: '/Omega365_Icon_Primary_RGB.png',
         description: 'Completed 6-week training in SQL and developed a fully functional web application. Built features with SQL, Vue.js, and JavaScript.'
       },
       {
         company: "Norway's Best",
         title: 'IT Technician (Apprentice & Seasonal Work)',
         period: 'Aug 2019 - Aug 2023',
+        logo: '/norways best.jpg',
         description: 'Maintained IT infrastructure including payment systems, hotel systems, networks, servers. Provided technical support and troubleshooting across multiple locations.'
       },
       {
         company: 'Studvest',
         title: 'Voluntary Web Developer',
         period: 'Jan 2023 - Jun 2023',
+        logo: '/studvestlogo.jpg',
         description: 'Developed interactive web-based articles for the student newspaper.'
       },
       {
@@ -115,20 +119,11 @@ export const cards: Card[] = [
     videoPath: '/videos/education-loop.mp4',
     data: [
       {
-        degree: 'Master, Datateknologi – Kunstig intelligens (AI)',
-        institution: 'Norges teknisk-naturvitenskapelige universitet (NTNU)',
-        period: '2025 - Present',
-        logo: '/ntnu.png',
-        achievements: [
-          'Currently studying Datateknologi (Computer Science) with specialization in Artificial Intelligence at NTNU.',
-          'Focus areas include machine learning, deep learning, data science, and intelligent systems.'
-        ]
-      },
-      {
         degree: 'Master of Science in Computer Science, Artificial Intelligence',
         institution: 'Norwegian University of Science and Technology (NTNU)',
         location: 'Trondheim, Norway',
         period: 'Aug 2025 - Jun 2027 (expected)',
+        logo: '/ntnu.png',
         achievements: [
           'Specializing in Artificial Intelligence',
           'Advanced studies in machine learning and AI systems',
@@ -140,6 +135,7 @@ export const cards: Card[] = [
         institution: 'Western Norway University of Applied Sciences (HVL)',
         location: 'Bergen, Norway',
         period: 'Aug 2022 - Jun 2025',
+        logo: '/hvl-logo-vert-rgb.png',
         achievements: [
           'Thesis: "Videreutvikling og analyse av B Connected – En digital samhandlingsplattform"',
           'Focus on software development and system architecture',
