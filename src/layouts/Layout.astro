@@ -1,6 +1,7 @@
 ---
 import '../styles/global.scss'
 import '../styles/main.scss'
+import { Analytics } from '@vercel/analytics/astro';
 
 interface Props {
 	title: string;
@@ -36,6 +37,7 @@ const { title } = Astro.props;
         <slot />
       </div>
     </div>
+    <Analytics />
   </body>
 
 </html>
