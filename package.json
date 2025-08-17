@@ -22,5 +22,8 @@
   },
   "devDependencies": {
     "sass": "^1.77.8"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-win32-x64-msvc": "^4.46.2"
   }
 }
