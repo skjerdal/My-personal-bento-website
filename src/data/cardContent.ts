@@ -170,6 +170,10 @@ export const cards: Card[] = [
     title: '',
     content: 'Link to download your resume...',
     component: 'DownloadResume',
-    position: { span: 1 }
+    position: { span: 1 },
+    data: {
+      resumeUrl: '/resume.pdf',
+      downloadName: 'Thomas_Skjerdal_Resume.pdf'
+    }
   },
 ];

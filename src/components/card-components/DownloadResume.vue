@@ -24,15 +24,24 @@
 <script>
 export default {
   name: 'DownloadResume',
+  props: {
+    data: {
+      type: Object,
+      default: () => ({
+        resumeUrl: '/resume.pdf',
+        downloadName: 'Thomas_Skjerdal_Resume.pdf'
+      })
+    }
+  },
   methods: {
     downloadResume() {
-      // You can replace this with your actual resume file path
-      const resumeUrl = '/resume.pdf'; // Place your resume.pdf in the public folder
+      const resumeUrl = this.data?.resumeUrl || '/resume.pdf';
+      const downloadName = this.data?.downloadName || 'Thomas_Skjerdal_Resume.pdf';
       
       // Create a temporary link element and trigger download
       const link = document.createElement('a');
       link.href = resumeUrl;
-      link.download = 'Thomas_Skjerdal_Resume.pdf';
+      link.download = downloadName;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);

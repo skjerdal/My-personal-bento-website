@@ -13,18 +13,12 @@
     "@astrojs/react": "^3.6.2",
     "@astrojs/vercel": "^8.2.2",
     "@astrojs/vue": "^5.1.0",
-    "@dimforge/rapier3d-compat": "^0.18.0-beta.0",
-    "@tweenjs/tween.js": "^25.0.0",
     "astro": "^5.10.1",
-    "cannon-es": "^0.20.0",
     "lucide-react": "^0.427.0",
-    "lucide-vue-next": "^0.428.0",
-    "postprocessing": "^6.37.6",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "three": "^0.178.0",
-    "vue": "^3.4.35",
-    "vue3-carousel": "^0.15.0"
+    "vue": "^3.4.35"
   },
   "devDependencies": {
     "sass": "^1.77.8"

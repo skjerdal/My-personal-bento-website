@@ -7,14 +7,16 @@ const iconComponents = { Code, Database, Cpu, Globe, Palette };
 const PokemonCard = ({ title = '', content = '', className, style, componentName, position, ...otherProps }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const cardRef = useRef(null);
 
-  const handleMouseMove = (e) => {
+  // Unified function to handle both mouse and touch interactions
+  const updateCardEffects = (clientX, clientY) => {
     if (!cardRef.current) return;
 
     const rect = cardRef.current.getBoundingClientRect();
-    const xNorm = (e.clientX - rect.left) / rect.width; // 0–1
-    const yNorm = (e.clientY - rect.top) / rect.height; // 0–1
+    const xNorm = (clientX - rect.left) / rect.width; // 0–1
+    const yNorm = (clientY - rect.top) / rect.height; // 0–1
 
     // Pre-compute frequently used values
     const pointerX = xNorm * 100;
@@ -48,62 +50,36 @@ const PokemonCard = ({ title = '', content = '', className, style, componentName
     style.setProperty('--glare-opacity', glareOpacity);
   };
 
+  const handleMouseMove = (e) => {
+    if (isMobile) return; // Skip mouse events on mobile
+    updateCardEffects(e.clientX, e.clientY);
+  };
+
   const adjust = (value, fromMin, fromMax, toMin, toMax) => {
     return toMin + (toMax - toMin) * ((value - fromMin) / (fromMax - fromMin));
   };
 
   const handleMouseEnter = (e) => {
+    if (isMobile) return; // Skip mouse events on mobile
     
     // Calculate initial position based on where the mouse entered
     if (cardRef.current) {
-      const rect = cardRef.current.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width;
-      const y = (e.clientY - rect.top) / rect.height;
-      
-      // Set initial rotation based on entry point to prevent jumping (reversed)
-      const rotateY = (x - 0.5) * -20;  // Reversed: was +20, now -20
-      const rotateX = (y - 0.5) * 20;   // Reversed: was -20, now +20
-      const style = cardRef.current.style;
-      style.setProperty('--rotate-x', `${rotateX}deg`);
-      style.setProperty('--rotate-y', `${rotateY}deg`);
-      
-      // Set pointer position
-      const pointerX = x * 100;
-      const pointerY = y * 100;
-      const bgX = adjust(pointerX, 0, 100, 37, 63);
-      const bgY = adjust(pointerY, 0, 100, 33, 67);
-      style.setProperty('--pointer-x', `${pointerX}%`);
-      style.setProperty('--pointer-y', `${pointerY}%`);
-      style.setProperty('--background-x', `${bgX}%`);
-      style.setProperty('--background-y', `${bgY}%`);
-      
-      // Calculate distance from center
-      const centerX = 0.5;
-      const centerY = 0.5;
-      const distance = Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2));
-      cardRef.current.style.setProperty('--hyp', distance);
-      
-      // Calculate opposite glare position and opacity
-      const glareX = (1 - x) * 100;
-      const glareY = (1 - y) * 100;
-      const glareOpacity = Math.min(distance * 1.5, 1);
-      style.setProperty('--glare-x', `${glareX}%`);
-      style.setProperty('--glare-y', `${glareY}%`);
-      style.setProperty('--glare-opacity', glareOpacity);
+      updateCardEffects(e.clientX, e.clientY);
     }
     
     setIsHovered(true);
   };
 
   const handleMouseLeave = () => {
+    if (isMobile) return; // Skip mouse events on mobile
     
     // Smoothly transition back to neutral position
     setIsHovered(false);
     
     // Reset positions after transition completes
-    if (!isHovered) {
+    setTimeout(() => {
       const style = cardRef.current?.style;
-      if (style) {
+      if (style && !isHovered) {
         style.setProperty('--pointer-x', '50%');
         style.setProperty('--pointer-y', '50%');
         style.setProperty('--background-x', '50%');
@@ -116,24 +92,91 @@ const PokemonCard = ({ title = '', content = '', className, style, componentName
         style.setProperty('--glare-y', '50%');
         style.setProperty('--glare-opacity', '0');
       }
-    }
+    }, 100);
+  };
+
+  // Touch event handlers for mobile
+  const handleTouchStart = (e) => {
+    if (!isMobile) return;
+    
+    const touch = e.touches[0];
+    updateCardEffects(touch.clientX, touch.clientY);
+    setIsHovered(true);
+  };
+
+  const handleTouchMove = (e) => {
+    if (!isMobile) return;
+    
+    const touch = e.touches[0];
+    updateCardEffects(touch.clientX, touch.clientY);
+  };
+
+  const handleTouchEnd = (e) => {
+    if (!isMobile) return;
+    
+    // Keep effects active for a moment, then fade out
+    setTimeout(() => {
+      setIsHovered(false);
+      setTimeout(() => {
+        const style = cardRef.current?.style;
+        if (style) {
+          style.setProperty('--pointer-x', '50%');
+          style.setProperty('--pointer-y', '50%');
+          style.setProperty('--background-x', '50%');
+          style.setProperty('--background-y', '50%');
+          style.setProperty('--rotate-x', '0deg');
+          style.setProperty('--rotate-y', '0deg');
+          style.setProperty('--hyp', '0');
+          // Reset glare properties
+          style.setProperty('--glare-x', '50%');
+          style.setProperty('--glare-y', '50%');
+          style.setProperty('--glare-opacity', '0');
+        }
+      }, 100);
+    }, 300); // Reduced from 500ms to 300ms for quicker reset
   };
 
   useEffect(() => {
+    // Detect if device is mobile/touch-enabled
+    const checkMobile = () => {
+      const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+                            'ontouchstart' in window ||
+                            navigator.maxTouchPoints > 0;
+      setIsMobile(isMobileDevice);
+      return isMobileDevice;
+    };
+
+    const isMobileDevice = checkMobile();
     const card = cardRef.current;
+    
     if (card) {
-      card.addEventListener('mousemove', handleMouseMove);
-      card.addEventListener('mouseenter', handleMouseEnter);
-      card.addEventListener('mouseleave', handleMouseLeave);
+      if (isMobileDevice) {
+        // Add touch event listeners for mobile with passive: true to allow scrolling
+        card.addEventListener('touchstart', handleTouchStart, { passive: true });
+        card.addEventListener('touchmove', handleTouchMove, { passive: true });
+        card.addEventListener('touchend', handleTouchEnd, { passive: true });
+      } else {
+        // Add mouse event listeners for desktop
+        card.addEventListener('mousemove', handleMouseMove);
+        card.addEventListener('mouseenter', handleMouseEnter);
+        card.addEventListener('mouseleave', handleMouseLeave);
+      }
       
       // Set initialized after first render
       setIsInitialized(true);
     }
+
     return () => {
       if (card) {
-        card.removeEventListener('mousemove', handleMouseMove);
-        card.removeEventListener('mouseenter', handleMouseEnter);
-        card.removeEventListener('mouseleave', handleMouseLeave);
+        if (isMobileDevice) {
+          card.removeEventListener('touchstart', handleTouchStart);
+          card.removeEventListener('touchmove', handleTouchMove);
+          card.removeEventListener('touchend', handleTouchEnd);
+        } else {
+          card.removeEventListener('mousemove', handleMouseMove);
+          card.removeEventListener('mouseenter', handleMouseEnter);
+          card.removeEventListener('mouseleave', handleMouseLeave);
+        }
       }
     };
   }, []);
