@@ -40,43 +40,50 @@ export const cards: Card[] = [
         company: 'Omega 365',
         title: 'Utvikler (Developer)',
         period: 'Sep 2024 - Present',
-        description: 'Part-time developer role at Bergen-based software company, working with modern web technologies and software solutions.'
+        description: 'Part-time developer role at Bergen-based software company, working with modern web technologies and software solutions.',
+        logo: '/Omega365_Icon_Primary_RGB.png'
       },
       {
         company: 'Omega 365',
         title: 'Summer Internship',
         period: 'Jun 2024 - Aug 2024',
-        description: '6 weeks of SQL training plus project work developing a complete web application using SQL, Vue.js, and related technologies.'
+        description: '6 weeks of SQL training plus project work developing a complete web application using SQL, Vue.js, and related technologies.',
+        logo: '/Omega365_Icon_Primary_RGB.png'
       },
       {
         company: 'Høgskulen på Vestlandet (HVL)',
         title: 'Studentassistent - DAT108',
         period: 'Jul 2024 - Dec 2024',
-        description: 'Teaching assistant for Programming and Web Applications course. Grading assignments and helping students with Java streams, lambda expressions, functional programming, Java Spring MVC, JavaScript, and web development.'
+        description: 'Teaching assistant for Programming and Web Applications course. Grading assignments and helping students with Java streams, lambda expressions, functional programming, Java Spring MVC, JavaScript, and web development.',
+        logo: '/hvl-logo-vert-rgb.png'
       },
       {
         company: 'Høgskulen på Vestlandet (HVL)',
         title: 'Studentassistent - DAT107',
         period: 'Jan 2024 - Jul 2024',
-        description: 'Teaching assistant for Database course. Grading assignments and helping students with SQL, ERD, Java ORM, and document databases.'
+        description: 'Teaching assistant for Database course. Grading assignments and helping students with SQL, ERD, Java ORM, and document databases.',
+        logo: '/hvl-logo-vert-rgb.png'
       },
       {
         company: 'Studvest',
         title: 'Webutvikler (Web Developer)',
         period: 'Jan 2023 - May 2023',
-        description: 'Volunteer web developer creating modern and engaging news articles online for the student newspaper.'
+        description: 'Volunteer web developer creating modern and engaging news articles online for the student newspaper.',
+        logo: '/studvestlogo.jpg'
       },
       {
         company: "Norway's Best",
         title: 'IT-medarbeider',
         period: 'Jun 2023 - Aug 2023',
-        description: 'Summer job providing technical user support, IT operations, and system maintenance.'
+        description: 'Summer job providing technical user support, IT operations, and system maintenance.',
+        logo: '/norways best.jpg'
       },
       {
         company: "Norway's Best",
         title: 'Dataelektroniker',
         period: 'Aug 2019 - Mar 2021',
-        description: 'Apprenticeship managing all IT-related operations including payment systems, hotel systems, networks, servers, and user support across multiple locations.'
+        description: 'Apprenticeship managing all IT-related operations including payment systems, hotel systems, networks, servers, and user support across multiple locations.',
+        logo: '/norways best.jpg'
       }
     ]
   },
@@ -127,9 +134,20 @@ export const cards: Card[] = [
     videoPath: '/videos/education-loop.mp4',
     data: [
       {
+        degree: 'Master, Datateknologi – Kunstig intelligens (AI)',
+        institution: 'Norges teknisk-naturvitenskapelige universitet (NTNU)',
+        period: '2025 - Present',
+        logo: '/ntnu.png',
+        achievements: [
+          'Currently studying Datateknologi (Computer Science) with specialization in Artificial Intelligence at NTNU.',
+          'Focus areas include machine learning, deep learning, data science, and intelligent systems.'
+        ]
+      },
+      {
         degree: 'Bachelor, Dataingeniør (Computer Engineering)',
         institution: 'Høgskulen på Vestlandet (HVL)',
         period: '2022 - 2025',
+        logo: '/hvl-logo-vert-rgb.png',
         achievements: [
           'Currently pursuing degree in Computer Engineering',
           'Focus on software development and system architecture',
@@ -140,6 +158,7 @@ export const cards: Card[] = [
         degree: 'Ingeniør forkurs (Engineering Foundation Course)',
         institution: 'Høgskulen på Vestlandet (HVL)',
         period: '2021 - 2022',
+        logo: '/hvl-logo-vert-rgb.png',
         achievements: [
           'One-year preparatory course for engineering education',
           'Mathematics, physics, and technical foundations',

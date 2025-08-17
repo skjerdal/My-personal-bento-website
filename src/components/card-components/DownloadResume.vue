@@ -61,7 +61,7 @@ export default {
     gap: 1rem;
     flex: 1;
     justify-content: flex-start;
-    padding-top: 2rem;
+    padding-top: 4rem;
     position: relative;
     z-index: 2;
   }

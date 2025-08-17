@@ -5,7 +5,10 @@
         <div class="education-item" :class="{ active }">
           <div class="education-header">
             <h2>{{ edu.degree }}</h2>
-            <div class="institution">{{ edu.institution }}</div>
+            <div class="institution">
+              <img v-if="edu.logo" :src="edu.logo" :alt="edu.institution + ' logo'" class="institution-logo"/>
+              <span>{{ edu.institution }}</span>
+            </div>
           </div>
           <div class="education-meta">
             <div class="period">{{ edu.period }}</div>
@@ -99,6 +102,16 @@ export default {
         font-size: 0.95rem;
         font-weight: 500;
         color: var(--text-secondary);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        .institution-logo {
+          width: 20px;
+          height: 20px;
+          object-fit: contain;
+          border-radius: 4px;
+        }
       }
     }
     

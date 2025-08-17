@@ -135,7 +135,7 @@ export default {
   height: 100%;
   width: 100%;
   box-sizing: border-box;
-  padding: 0.8rem 1rem 1rem 1rem; // Proper padding to fill card space
+  padding: 1.2rem 1rem 1rem 1rem; // Proper padding to fill card space
   gap: 0.8rem;
   overflow: visible;
   
