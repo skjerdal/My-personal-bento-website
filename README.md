@@ -12,7 +12,6 @@ A modern, responsive personal website built with Astro and Vue.js that features 
 - **Flexible Positioning**: Cards can span multiple grid columns
 - **Unique Card Support**: Special wrapper for custom, non-template cards
 - **Responsive Design**: Automatically adjusts grid layout for different screen sizes
-- **Video Hover Effects**: Animated 3D video loops that play on card hover
 
 ## 🏗️ Architecture Overview
 
@@ -320,25 +319,6 @@ If text isn't visible after applying custom styling:
 3. **Disable backdrop-filter** - Set `'--backdrop-filter': 'none'` for solid backgrounds
 4. **Override component-specific colors** - Some components may have hardcoded colors
 
-**Dark Theme Card:**
-
-#### Styling Options
-
-1. **CSS Variables** (`cssVariables`)
-   - Cleanest approach for theming
-   - Inherits all base functionality
-   - Easy to maintain and modify
-
-2. **CSS Classes** (`cssClasses`)
-   - Perfect for reusable themes
-   - Define classes in your global styles
-   - Can be combined with CSS variables
-
-3. **Custom CSS** (`customCSS`)
-   - Most flexible for unique designs
-   - Injected directly into the component
-   - Use for complex animations or layouts
-
 #### Styling Examples
 
 **Gradient Background Card:**
@@ -370,22 +350,6 @@ If text isn't visible after applying custom styling:
         background: #001122;
       }
     `
-  }
-}
-```
-
-**Dark Theme Card:**
-```typescript
-{
-  id: 'dark-education',
-  component: 'Education',
-  customStyle: {
-    cssVariables: {
-      '--card-bg': '#1a1a1a',
-      '--text-color': '#e0e0e0',
-      '--accent-color': '#bb86fc',
-      '--shadow-intensity': '0.3'
-    }
   }
 }
 ```
@@ -473,9 +437,6 @@ type Card = {
 
 ## 🔧 Customization
 
-### Themes
-
-The website supports theme customization through CSS variables. Modify `src/styles/color-theme.scss` to change the color scheme.
 
 ### Grid Layout
 
@@ -500,50 +461,9 @@ The project is configured for deployment on Vercel:
 2. Vercel will automatically detect the Astro configuration
 3. Deploy with `npm run build`
 
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
 ## 📄 License
 
 This project is open source and available under the [MIT License](LICENSE).
-
-## 🆘 Support
-
-If you encounter any issues or have questions:
-
-1. Check the existing issues in the repository
-2. Create a new issue with detailed information
-3. Include steps to reproduce the problem
-4. Provide your environment details (OS, Node.js version, etc.)
-
-## 🎬 Video Hover Effects
-
-The website supports animated video icons that appear next to card headlines and play on hover, creating engaging 3D object effects. **Videos are completely optional** - cards work perfectly without them.
-
-### Adding Videos to Cards
-
-1. **Place your MP4 videos in `public/videos/`** with the naming convention:
-   - `work-loop.mp4` for Work Experience card
-   - `contact-loop.mp4` for Contact & Social card
-   - `education-loop.mp4` for Education card
-   - etc.
-
-2. **Add videoPath to card data** in `src/data/cardContent.ts`:
-   ```typescript
-   {
-     id: 'work',
-     title: 'Work Experience',
-     component: 'WorkExperience',
-     position: { span: 2 },
-     videoPath: '/videos/work-loop.mp4' // Optional - only add if you have a video
-   }
-   ```
-
 
 ---
 
