@@ -68,7 +68,7 @@ src/
 1. Clone the repository:
 ```bash
 git clone <your-repo-url>
-cd Meg
+cd My-personal-bento-website
 ```
 
 2. Install dependencies:
@@ -460,10 +460,6 @@ The project is configured for deployment on Vercel:
 1. Connect your repository to Vercel
 2. Vercel will automatically detect the Astro configuration
 3. Deploy with `npm run build`
-
-## 📄 License
-
-This project is open source and available under the [MIT License](LICENSE).
 
 ---
 
