@@ -1,10 +1,15 @@
 <template>
-  <div 
+  <div
     class="paper-airplane-container"
+    role="button"
+    tabindex="0"
+    aria-label="Throw paper airplane"
     @mousedown="startDrag"
     @mousemove="handleMouseMove"
     @mouseup="throwAirplane"
     @mouseleave="throwAirplane"
+    @keydown.enter="throwAirplane"
+    @keydown.space.prevent="throwAirplane"
     ref="container"
   >
     <!-- Slingshot line -->
@@ -16,7 +21,7 @@
       :style="airplaneStyle"
       ref="airplane"
     >
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 16" fill="currentColor" class="airplane-icon" :style="airplaneRotationStyle">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 16" fill="currentColor" class="airplane-icon" aria-hidden="true" focusable="false" :style="airplaneRotationStyle">
         <!-- Paper airplane body -->
         <path d="M2 8 L24 3 L30 8 L24 13 Z" fill="currentColor" opacity="0.9"/>
         <!-- Wing fold lines -->
@@ -45,7 +50,7 @@
         <!-- Trail effect -->
         <div class="airplane-trail" :style="trailStyle"></div>
         
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 16" fill="currentColor" class="airplane-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 16" fill="currentColor" class="airplane-icon" aria-hidden="true" focusable="false">
           <!-- Paper airplane body -->
           <path d="M2 8 L24 3 L30 8 L24 13 Z" fill="currentColor" opacity="0.9"/>
           <!-- Wing fold lines -->

@@ -694,11 +694,12 @@
       top: 29px; // fixed position below title
       left: -3px; // fixed left position
       width: 195px; // fixed width
-      height: 12px; // fixed height
+      height: 16px; // fixed height
       display: flex;
       align-items: center;
       // justify-content: center;
-      padding-left: 6px;
+      padding-left: 4px;
+      gap: 4px;
       font-size: 8px;
       font-style: italic;
       font-weight: 600;
@@ -721,6 +722,34 @@
         inset 0 -1px 1px rgba(0, 0, 0, 0.3);
       text-transform: uppercase;
       border: 1px solid rgba(0,0,0,0.2);
+
+      .pre-evolution-wrapper {
+        display: inline-flex;
+        flex-shrink: 0;
+        padding: 2px;
+        border-radius: 50%;
+        background: linear-gradient(135deg,
+          rgb(120, 121, 118) 0%,
+          rgb(210, 212, 208) 20%,
+          rgba(255, 255, 255, 1) 42%,
+          rgb(225, 226, 223) 55%,
+          rgba(255, 255, 255, 0.85) 65%,
+          rgb(155, 157, 153) 82%,
+          rgb(115, 116, 113) 100%
+        );
+        box-shadow:
+          0 1px 3px rgba(0, 0, 0, 0.45),
+          inset 0 1px 1px rgba(255, 255, 255, 0.7),
+          inset 0 -1px 1px rgba(0, 0, 0, 0.25);
+      }
+
+      .pre-evolution-img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        display: block;
+      }
     }
   }
 

@@ -10,16 +10,9 @@
     :style="computedStyle"
     :data-span="position?.span || 1"
   >
-    <!-- Inject custom CSS if provided -->
-    <component 
-      v-if="customStyle?.customCSS" 
-      :is="'style'" 
-      v-html="customStyle.customCSS"
-    />
-    
-    <h1 v-if="componentName !== 'PokemonCard' && title && title.trim()" class="card-title">
+    <h2 v-if="componentName !== 'PokemonCard' && title && title.trim()" class="card-title">
       <span>{{ title }}</span>
-    </h1>
+    </h2>
     <div class="dynamic-component-wrapper" v-if="isMounted && resolvedComponent && componentName !== 'PokemonCard'">
       <component 
         :is="resolvedComponent" 

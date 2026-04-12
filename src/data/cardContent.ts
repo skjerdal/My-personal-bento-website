@@ -5,7 +5,6 @@ type CardPosition = {
 type CustomStyle = {
   cssVariables?: Record<string, string>;
   cssClasses?: string[];
-  customCSS?: string;
 };
 
 type Card = {
@@ -147,6 +146,7 @@ export const cards: Card[] = [
         institution: 'Sogndal Upper Secondary School',
         location: 'Sogndal, Norway',
         period: 'Aug 2016 - Mar 2021',
+        logo: 'vestland_fylkeskommune.png',
         achievements: [
           'Comprehensive training in computer electronics and IT systems',
           'Practical apprenticeship experience in real-world IT environments',
@@ -182,5 +182,13 @@ export const cards: Card[] = [
       resumeUrl: '/resume.pdf',
       downloadName: 'Thomas_Skjerdal_Resume.pdf'
     }
+  },
+  {
+    id: 'booster-pack',
+    title: '',
+    content: '',
+    component: 'BoosterPackCard',
+    position: { span: 1 },
+    isUnique: true,
   },
 ];

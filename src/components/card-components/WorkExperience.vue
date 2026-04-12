@@ -4,7 +4,7 @@
       <template #item="{ item: job, active }">
         <div class="job-item" :class="{ active }">
           <div class="job-header">
-            <h2>{{ job.title }}</h2>
+            <h3>{{ job.title }}</h3>
             <div class="company">
               <img v-if="job.logo" :src="job.logo" :alt="job.company + ' logo'" class="company-logo"/>
               <span>{{ job.company }}</span>
@@ -52,7 +52,7 @@ export default {
     transition: all 0.3s ease;
     
     &.active {
-      .job-header h2 {
+      .job-header h3 {
         color: var(--accent-color);
       }
     }
@@ -60,7 +60,7 @@ export default {
     .job-header {
       margin-bottom: 4px;
       
-      h2 {
+      h3 {
         font-size: 1rem;
         margin: 0 0 2px 0;
         color: var(--text-primary);

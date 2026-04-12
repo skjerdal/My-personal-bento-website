@@ -4,7 +4,7 @@
       <template #item="{ item: edu, active }">
         <div class="education-item" :class="{ active }">
           <div class="education-header">
-            <h2>{{ edu.degree }}</h2>
+            <h3>{{ edu.degree }}</h3>
             <div class="institution">
               <img v-if="edu.logo" :src="edu.logo" :alt="edu.institution + ' logo'" class="institution-logo"/>
               <span>{{ edu.institution }}</span>
@@ -82,7 +82,7 @@ export default {
     transition: all 0.3s ease;
     
     &.active {
-      .education-header h2 {
+      .education-header h3 {
         color: var(--accent-color);
       }
     }
@@ -90,7 +90,7 @@ export default {
     .education-header {
       margin-bottom: 4px;
       
-      h2 {
+      h3 {
         font-size: 1rem;
         margin: 0 0 2px 0;
         color: var(--text-primary);
