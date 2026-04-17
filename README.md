@@ -475,6 +475,12 @@ The project is configured for deployment on Vercel:
 2. Vercel will automatically detect the Astro configuration
 3. Deploy with `npm run build`
 
+## Credits
+
+The booster pack 3D model used in this project is attributed as required by its license:
+
+This work is based on ["Trading Card Pack"](https://sketchfab.com/3d-models/trading-card-pack-26d1a87e47814d0ea3a710d169e3a671) by [goonmize1](https://sketchfab.com/goonmize1) licensed under [CC-BY-4.0](http://creativecommons.org/licenses/by/4.0/)
+
 ---
 
 Built with ❤️ using [Astro](https://astro.build) and [Vue.js](https://vuejs.org/)

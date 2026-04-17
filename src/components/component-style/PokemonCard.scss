@@ -1,6 +1,46 @@
 // Import fonts at the top of the file
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@700&display=swap');
 
+@keyframes card-expand-in {
+  from {
+    transform:
+      translate(calc(-50% + var(--expand-offset-x, 0px)), calc(-50% + var(--expand-offset-y, 0px)))
+      perspective(1000px)
+      scale(var(--expand-start-scale, 1));
+  }
+  to {
+    transform:
+      translate(-50%, -50%)
+      perspective(1000px)
+      scale(1);
+  }
+}
+
+@keyframes card-collapse-out {
+  from {
+    transform:
+      translate(-50%, -50%)
+      perspective(1000px)
+      scale(1);
+  }
+  to {
+    transform:
+      translate(calc(-50% + var(--expand-offset-x, 0px)), calc(-50% + var(--expand-offset-y, 0px)))
+      perspective(1000px)
+      scale(var(--expand-start-scale, 1));
+  }
+}
+
+@keyframes card-spin-reveal {
+  from { transform: rotateY(0deg); }
+  to   { transform: rotateY(360deg); }
+}
+
+@keyframes card-spin-reverse {
+  from { transform: rotateY(0deg); }
+  to   { transform: rotateY(-360deg); }
+}
+
 .pokemon-card {
   color: #333; // Set a default text color to override theme
   * {
@@ -13,9 +53,7 @@
   aspect-ratio: 65/90;
   position: relative;
   border-radius: 1.5rem;
-  overflow: hidden;
   will-change: transform;
-  transform-style: preserve-3d;
   transition: transform 0.8s ease-out, box-shadow 0.3s ease-out;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
   -webkit-font-smoothing: antialiased;
@@ -36,6 +74,54 @@
   &.hovered {
     box-shadow: 0 20px 30px rgba(0, 0, 0, 0.3);
     transition: transform 0.1s ease-out, box-shadow 0.3s ease-out;
+  }
+
+  &.is-expanded {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    zoom: var(--display-zoom, 1);
+    transform: translate(-50%, -50%) perspective(1000px) scale(var(--expand-scale, 1)) rotateX(var(--rotate-x, 0deg)) rotateY(var(--rotate-y, 0deg));
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1001;
+    cursor: zoom-out;
+    margin: 0;
+    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
+
+    &.hovered {
+      transition: transform 0.1s ease-out;
+    }
+
+    &.is-spinning,
+    &.is-collapsing {
+      box-shadow: none;
+
+      .card__shine,
+      .card__glare {
+        opacity: 0 !important;
+        transition: none;
+      }
+    }
+
+    &.is-spinning {
+      animation: card-expand-in 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      transition: none;
+
+      .card-inner {
+        animation: card-spin-reveal 1s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: none;
+      }
+    }
+
+    &.is-collapsing {
+      animation: card-collapse-out 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      transition: none;
+
+      .card-inner {
+        animation: card-spin-reverse 1s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: none;
+      }
+    }
   }
 
   // Mobile-specific styles
@@ -62,11 +148,6 @@
     user-select: none;
   }
   
-  &.is-flipped {
-    .card-inner {
-      transform: rotateY(180deg);
-    }
-  }
 
   .card__shine,
   .card__shine:after {
@@ -110,11 +191,10 @@
   }
 
   .card__shine {
-    will-change: opacity, filter;
     z-index: 3;
     mix-blend-mode: color-dodge;
     opacity: var(--card-opacity, 0);
-    transition: opacity 0.5s ease-out;
+    transition: opacity 0.8s ease-out;
 
     // Mobile-specific adjustments
     @media (max-width: 768px) {
@@ -152,7 +232,7 @@
     background-size: 200% 200%;
     pointer-events: none;
     opacity: calc(var(--card-opacity, 0) * var(--glare-opacity, 0));
-    transition: opacity 0.5s ease-out;
+    transition: opacity 0.8s ease-out;
 
     // Mobile-specific adjustments
     @media (max-width: 768px) {
@@ -567,19 +647,17 @@
     position: relative;
     width: 100%;
     height: 100%;
-    transform-style: preserve-3d; /* enable 3d for children */
-    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform-style: preserve-3d;
+    transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .card-face {
     position: absolute;
     inset: 0;
-    backface-visibility: hidden;
     border-radius: 1.5rem;
     overflow: hidden;
+    backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
-    -moz-backface-visibility: hidden;
-    -ms-backface-visibility: hidden;
   }
 
   .card-front {
@@ -694,11 +772,12 @@
       top: 29px; // fixed position below title
       left: -3px; // fixed left position
       width: 195px; // fixed width
-      height: 12px; // fixed height
+      height: 16px; // fixed height
       display: flex;
       align-items: center;
       // justify-content: center;
-      padding-left: 6px;
+      padding-left: 4px;
+      gap: 4px;
       font-size: 8px;
       font-style: italic;
       font-weight: 600;
@@ -721,6 +800,34 @@
         inset 0 -1px 1px rgba(0, 0, 0, 0.3);
       text-transform: uppercase;
       border: 1px solid rgba(0,0,0,0.2);
+
+      .pre-evolution-wrapper {
+        display: inline-flex;
+        flex-shrink: 0;
+        padding: 2px;
+        border-radius: 50%;
+        background: linear-gradient(135deg,
+          rgb(120, 121, 118) 0%,
+          rgb(210, 212, 208) 20%,
+          rgba(255, 255, 255, 1) 42%,
+          rgb(225, 226, 223) 55%,
+          rgba(255, 255, 255, 0.85) 65%,
+          rgb(155, 157, 153) 82%,
+          rgb(115, 116, 113) 100%
+        );
+        box-shadow:
+          0 1px 3px rgba(0, 0, 0, 0.45),
+          inset 0 1px 1px rgba(255, 255, 255, 0.7),
+          inset 0 -1px 1px rgba(0, 0, 0, 0.25);
+      }
+
+      .pre-evolution-img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        display: block;
+      }
     }
   }
 
@@ -875,4 +982,26 @@
       font-size: 6px;
     }
   }
+}
+
+.card-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 1000;
+  cursor: zoom-out;
+}
+
+.card-backdrop-enter-active,
+.card-backdrop-leave-active {
+  transition: opacity 0.7s ease, backdrop-filter 0.7s ease, -webkit-backdrop-filter 0.7s ease;
+}
+
+.card-backdrop-enter-from,
+.card-backdrop-leave-to {
+  opacity: 0;
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
 }

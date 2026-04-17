@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Code, Database, Cpu, Globe, Palette } from 'lucide-react';
 import './component-style/PokemonCard.scss';
 
-const iconComponents = { Code, Database, Cpu, Globe, Palette };
 
 const PokemonCard = ({ title = '', content = '', className, style, componentName, position, ...otherProps }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -180,11 +178,6 @@ const PokemonCard = ({ title = '', content = '', className, style, componentName
       }
     };
   }, []);
-
-  const renderIcon = (iconName) => {
-    const IconComponent = iconComponents[iconName];
-    return IconComponent ? <IconComponent size={16} /> : null;
-  };
 
   const cardStyle = {
     ...style,

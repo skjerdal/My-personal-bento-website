@@ -2,13 +2,13 @@
   <div class="download-resume">
     <!-- Content Overlay -->
     <div class="content-wrapper">
-      <h2 class="section-title animate-item" style="animation-delay: 0.1s;">Resume</h2>
-      <p class="description animate-item" style="animation-delay: 0.2s;">Download my latest resume to learn more about my experience and skills.</p>
-      
-      <button class="download-button animate-item" style="animation-delay: 0.3s;" @click="downloadResume">
+      <h2 class="section-title animate-item">Resume</h2>
+      <p class="description animate-item">Download my latest resume to learn more about my experience and skills.</p>
+
+      <button class="download-button animate-item" @click="downloadResume" aria-label="Download resume as PDF">
         <div class="button-bg"></div>
         <span class="button-text">Download Resume</span>
-        <svg class="download-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg class="download-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
           <polyline points="7,10 12,15 17,10"></polyline>
           <line x1="12" y1="15" x2="12" y2="3"></line>
@@ -76,21 +76,24 @@ export default {
   }
   
   .section-title {
+    animation-delay: 0.1s;
     font-size: 1.4rem;
     font-weight: 700;
     margin: 0;
     color: inherit;
   }
-  
+
   .description {
+    animation-delay: 0.2s;
     font-size: 0.8rem;
     line-height: 1.4;
     color: rgba(0, 0, 0, 0.8);
     margin: 0;
     max-width: 250px;
   }
-  
+
   .download-button {
+    animation-delay: 0.3s;
     position: relative;
     display: inline-flex;
     padding: 16px 35px;

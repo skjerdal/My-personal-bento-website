@@ -2,24 +2,25 @@ import { defineConfig } from 'astro/config';
 import vue from "@astrojs/vue";
 import react from "@astrojs/react";
 import vercel from "@astrojs/vercel/serverless";
+import sitemap from "@astrojs/sitemap";
 
 // https://astro.build/config
 export default defineConfig({
-  integrations: [vue(), react()],
+  site: 'https://skjerdal.me',
+  integrations: [vue(), react(), sitemap()],
   vite: {
     ssr: {
-      noExternal: ['lucide-react', 'lucide-vue-next'] // Add lucide-vue-next here
+      noExternal: ['lucide-react']
     },
     optimizeDeps: {
-      include: ['react', 'react-dom', 'lucide-react', 'lucide-vue-next'] // Add lucide-vue-next here
+      include: ['react', 'react-dom', 'lucide-react']
     },
     build: {
       rollupOptions: {
         output: {
           manualChunks: {
             'react-vendor': ['react', 'react-dom'],
-            'vue-vendor': ['vue'],
-            'lucide-vue-next-vendor': ['lucide-vue-next'] // Optionally, separate the chunk for lucide-vue-next
+            'vue-vendor': ['vue']
           }
         }
       }

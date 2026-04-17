@@ -5,21 +5,73 @@ import Analytics from '@vercel/analytics/astro';
 
 interface Props {
 	title: string;
+	description?: string;
 }
 
-const { title } = Astro.props;
+const {
+  title,
+  description = 'Thomas Skjerdal — MSc student in AI at NTNU and part-time developer at Omega 365. Personal portfolio showcasing projects, skills, and experience.'
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, 'https://skjerdal.me');
+const ogImage = 'https://skjerdal.me/profil.jpg';
 ---
 <!DOCTYPE html>
-<html lang="no">
+<html lang="en">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Primary SEO -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content="Thomas Skjerdal" />
+
+    <!-- Open Graph (LinkedIn, Facebook, iMessage previews) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:alt" content="Thomas Skjerdal" />
+    <meta property="og:locale" content="en_GB" />
+
+    <!-- Twitter / X card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
     <link rel="icon" type="image/png" href="/computertype.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;600;700&display=swap" rel="stylesheet">
     <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
-    <title>{title}</title>
+
+    <!-- Structured data: Person -->
+    <script type="application/ld+json" is:inline>
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Thomas Skjerdal",
+        "url": "https://skjerdal.me",
+        "image": "https://skjerdal.me/profil.jpg",
+        "jobTitle": "Software Developer",
+        "alumniOf": {
+          "@type": "CollegeOrUniversity",
+          "name": "NTNU"
+        },
+        "worksFor": {
+          "@type": "Organization",
+          "name": "Omega 365 Solutions"
+        },
+        "sameAs": [
+          "https://github.com/skjerdal",
+          "https://www.linkedin.com/in/thomas-skjerdal"
+        ]
+      }
+    </script>
   </head>
 
   <script>
@@ -31,9 +83,6 @@ const { title } = Astro.props;
     <div class="page-container">
       <div class="background-card"></div>
       <div class="theme-container">
-        <!-- <div class="theme-toggle-wrapper">
-          <ThemeToggle client:load />
-        </div> -->
         <slot />
       </div>
     </div>

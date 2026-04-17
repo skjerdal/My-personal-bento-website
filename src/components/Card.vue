@@ -10,16 +10,9 @@
     :style="computedStyle"
     :data-span="position?.span || 1"
   >
-    <!-- Inject custom CSS if provided -->
-    <component 
-      v-if="customStyle?.customCSS" 
-      :is="'style'" 
-      v-html="customStyle.customCSS"
-    />
-    
-    <h1 v-if="componentName !== 'PokemonCard' && title && title.trim()" class="card-title">
+    <h2 v-if="componentName !== 'PokemonCard' && title && title.trim()" class="card-title">
       <span>{{ title }}</span>
-    </h1>
+    </h2>
     <div class="dynamic-component-wrapper" v-if="isMounted && resolvedComponent && componentName !== 'PokemonCard'">
       <component 
         :is="resolvedComponent" 
@@ -218,6 +211,22 @@ export default {
     flex-direction: column;
     height: 100%;
     overflow: hidden;
+  }
+
+  &.about-me-card {
+    .card-title {
+      position: relative;
+      z-index: 2;
+      margin-bottom: -0.9rem;
+      padding-right: 0.8rem;
+    }
+
+    .dynamic-component-wrapper {
+      overflow: visible;
+      padding-right: 0;
+      margin-top: -0.35rem;
+      padding-top: 0.35rem;
+    }
   }
 
 }

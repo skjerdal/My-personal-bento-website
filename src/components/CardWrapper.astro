@@ -1,21 +1,30 @@
 ---
 import Card from './Card.vue';
-import PokemonCard from './PokemonCard';
+import PokemonCard from './PokemonCard.vue';
+import BoosterPackCard from './BoosterPackCard.vue';
 
 const { isUnique, title, content, componentName, position, className, style, videoPath, customStyle } = Astro.props;
 const span = position?.span || 1;
 ---
 
 <div class={`card ${className || ''}`} data-span={span} style={`grid-column: span ${span}; display: grid; ${style ?? ''}`}>
-  {isUnique ? (
-    <PokemonCard 
-      client:load 
+  {isUnique && componentName === 'PokemonCard' ? (
+    <PokemonCard
+      client:load
       className=""
       componentName={componentName}
       position={position}
       title={title}
       content={content}
       style={style}
+    />
+  ) : isUnique && componentName === 'BoosterPackCard' ? (
+    <BoosterPackCard
+      client:load
+      componentName={componentName}
+      position={position}
+      title={title}
+      content={content}
     />
   ) : (
     <Card 
@@ -64,6 +73,12 @@ const span = position?.span || 1;
     opacity: 0;
     transform: translateY(30px);
     animation: fly-in 0.4s ease-out forwards;
+
+    @for $i from 1 through 8 {
+      &:nth-child(#{$i}) {
+        animation-delay: #{($i - 1) * 100}ms;
+      }
+    }
     
     &[data-span="2"] {
       grid-column: span 2;

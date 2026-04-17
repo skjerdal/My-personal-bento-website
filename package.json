@@ -22,6 +22,7 @@
     "vue": "^3.4.35"
   },
   "devDependencies": {
+    "@astrojs/sitemap": "^3.7.2",
     "sass": "^1.77.8"
   },
   "optionalDependencies": {

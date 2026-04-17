@@ -6,51 +6,69 @@
 
     <!-- Contact header moved inside component -->
     <div class="header-section">
-      <h1 class="contact-title">Contact</h1>
+      <h2 class="contact-title">Contact</h2>
       <div class="divider"></div>
     </div>
 
     <div class="buttons-container">
-      <div class="social-links animate-item" style="animation-delay: 0.1s;">
-        <a 
-        v-for="(social, index) in contactData.social" 
-        :key="index" 
-        :href="social.url" 
-        target="_blank" 
-        rel="noopener noreferrer"
-        class="social-link"
-        :style="`animation-delay: ${0.2 + index * 0.1}s;`"
+      <div class="social-links animate-item">
+        <a
+          v-for="(social, index) in contactData.social"
+          :key="index"
+          :href="social.url"
+          :aria-label="`Visit my ${social.name} profile (opens in new tab)`"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="social-link"
         >
-        <div class="social-link__inner">
-          <div class="social-icon-container">
-            <!-- LinkedIn Icon -->
-            <svg v-if="social.icon === 'linkedin'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="social-icon">
-              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
-              <rect x="2" y="9" width="4" height="12"></rect>
-              <circle cx="4" cy="4" r="2"></circle>
-            </svg>
-            
-            <!-- GitHub Icon -->
-            <svg v-if="social.icon === 'github'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="social-icon">
-              <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
-            </svg>
+          <div class="social-link__inner">
+            <div class="social-icon-container">
+              <!-- LinkedIn Icon -->
+              <svg v-if="social.icon === 'linkedin'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="social-icon" aria-hidden="true" focusable="false">
+                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                <rect x="2" y="9" width="4" height="12"></rect>
+                <circle cx="4" cy="4" r="2"></circle>
+              </svg>
+
+              <!-- GitHub Icon -->
+              <svg v-if="social.icon === 'github'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="social-icon" aria-hidden="true" focusable="false">
+                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+              </svg>
+            </div>
+            <span class="social-name">{{ social.name }}</span>
           </div>
-          <span class="social-name">{{ social.name }}</span>
-        </div>
-              </a>
+        </a>
       </div>
-      <div class="email-section animate-item" style="animation-delay: 0.4s;" @click="handleEmailClick" @mousedown="handleEmailMouseDown" @mouseup="handleEmailMouseUp" @mouseleave="handleEmailMouseUp" :class="{ 'is-pressed': emailPressed }">
+      <div
+        class="email-section animate-item"
+        role="button"
+        tabindex="0"
+        :aria-label="`Send email to ${contactData.email}`"
+        @click="handleEmailClick"
+        @keydown.enter="handleEmailClick"
+        @keydown.space.prevent="handleEmailClick"
+        @mousedown="handleEmailMouseDown"
+        @mouseup="handleEmailMouseUp"
+        @mouseleave="handleEmailMouseUp"
+        :class="{ 'is-pressed': emailPressed }"
+      >
         <div class="email-section__inner">
           <div class="icon-container">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="email-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="email-icon" aria-hidden="true" focusable="false">
               <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
               <polyline points="22,6 12,13 2,6"></polyline>
             </svg>
           </div>
           <span class="email-text">{{ contactData.email }}</span>
-          <button class="copy-button" @click.stop="copyEmail" :class="{ 'copied': copied }">
-            <span class="tooltip">{{ copied ? 'Copied!' : 'Copy' }}</span>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="copy-icon">
+          <button
+            class="copy-button"
+            :aria-label="copied ? 'Email copied to clipboard' : 'Copy email address'"
+            :aria-live="copied ? 'polite' : undefined"
+            @click.stop="copyEmail"
+            :class="{ 'copied': copied }"
+          >
+            <span class="tooltip" aria-hidden="true">{{ copied ? 'Copied!' : 'Copy' }}</span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="copy-icon" aria-hidden="true" focusable="false">
               <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
               <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2 2v1"></path>
             </svg>
@@ -170,17 +188,22 @@ export default {
   }
   
   // Make sure content sits above the 3D canvas
-  .social-links { 
-    z-index: 10; 
+  .social-links {
+    animation-delay: 0.1s;
+    z-index: 10;
     position: relative;
-    
+
     .social-link {
       position: relative;
-      z-index: 1; // Lower z-index to avoid stacking context issues
+      z-index: 1;
+
+      &:nth-child(1) { animation-delay: 0.2s; }
+      &:nth-child(2) { animation-delay: 0.3s; }
     }
   }
-  .email-section { 
-    z-index: 10; 
+  .email-section {
+    animation-delay: 0.4s;
+    z-index: 10;
     position: relative;
   }
 

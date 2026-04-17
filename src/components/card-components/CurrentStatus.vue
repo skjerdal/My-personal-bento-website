@@ -2,22 +2,22 @@
   <div class="current-status">
     <!-- Header section -->
     <div class="header-section">
-      <h1 class="status-title">Current Status</h1>
+      <h2 class="status-title">Current Status</h2>
       <div class="divider"></div>
     </div>
 
-    <div class="status-header animate-item" style="animation-delay: 0.2s;">
+    <div class="status-header animate-item">
       <div class="status-indicator">
         <div class="status-dot"></div>
         <span class="status-text">Active</span>
       </div>
     </div>
-    
+
     <div class="status-content">
-      <div class="info-section animate-item" style="animation-delay: 0.3s;">
-        <a 
-          href="https://www.ntnu.no/studier/midt" 
-          target="_blank" 
+      <div class="info-section animate-item">
+        <a
+          href="https://www.ntnu.no/studier/midt"
+          target="_blank"
           rel="noopener noreferrer"
           class="info-card clickable-card"
         >
@@ -27,9 +27,9 @@
             <div class="card-subtitle">NTNU</div>
           </div>
         </a>
-        <a 
-          href="https://omega365.com/" 
-          target="_blank" 
+        <a
+          href="https://omega365.com/"
+          target="_blank"
           rel="noopener noreferrer"
           class="info-card clickable-card"
         >
@@ -40,20 +40,21 @@
           </div>
         </a>
       </div>
-      
-      <div class="focus-section animate-item" style="animation-delay: 0.5s;">
-        <h4>Current Focus</h4>
+
+      <div class="focus-section animate-item">
+        <h3>Current Focus</h3>
         <div class="focus-tags">
-          <span class="pill focus-pill pill-animate" style="animation-delay: 0.6s;">ML & AI</span>
-          <span class="pill focus-pill pill-animate" style="animation-delay: 0.7s;">Software Engineering</span>
-          <span class="pill focus-pill pill-animate" style="animation-delay: 0.8s;">SQL</span>
-          <span class="pill focus-pill pill-animate" style="animation-delay: 0.9s;">Vue.js</span>
+          <span class="pill focus-pill pill-animate">ML & AI</span>
+          <span class="pill focus-pill pill-animate">Software Engineering</span>
+          <span class="pill focus-pill pill-animate">SQL</span>
+          <span class="pill focus-pill pill-animate">Vue.js</span>
+          <span class="pill focus-pill pill-animate">Typescript</span>
         </div>
       </div>
-      
-      <div class="status-footer animate-item" style="animation-delay: 1.1s;">
+
+      <div class="status-footer animate-item">
         <div class="location">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="location-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="location-icon" aria-hidden="true" focusable="false">
             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
             <circle cx="12" cy="10" r="3"></circle>
           </svg>
@@ -106,6 +107,7 @@ export default {
   }
   
   .status-header {
+    animation-delay: 0.2s;
     margin-bottom: 0.5rem;
     
     .status-indicator {
@@ -141,6 +143,7 @@ export default {
   }
   
   .info-section {
+    animation-delay: 0.3s;
     display: flex;
     flex-direction: column;
     gap: 0.8rem;
@@ -249,10 +252,11 @@ export default {
   }
   
   .focus-section {
+    animation-delay: 0.5s;
     display: flex;
     flex-direction: column;
-    
-    h4 {
+
+    h3 {
       font-size: 0.8rem;
       font-weight: 500;
       color: var(--text-primary, #ffffff);
@@ -266,6 +270,14 @@ export default {
       flex-wrap: wrap;
       gap: 0.4rem;
       align-content: flex-start;
+
+      .focus-pill {
+        &:nth-child(1) { animation-delay: 0.6s; }
+        &:nth-child(2) { animation-delay: 0.7s; }
+        &:nth-child(3) { animation-delay: 0.8s; }
+        &:nth-child(4) { animation-delay: 0.9s; }
+        &:nth-child(5) { animation-delay: 1.0s; }
+      }
     }
   }
   
@@ -291,6 +303,7 @@ export default {
   }
   
   .status-footer {
+    animation-delay: 1.1s;
     margin-top: auto;
     padding-top: 0.6rem;
     

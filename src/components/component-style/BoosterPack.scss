@@ -1,0 +1,531 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@700;900&display=swap');
+
+// ─── Scene: transparent, just centers the pack ────────────────────────────────
+.pack-scene {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  position: relative;
+
+  .open-flash {
+    position: absolute;
+    inset: 0;
+    background: #fff;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 20;
+    border-radius: inherit;
+  }
+
+  &.phase-opening .open-flash {
+    animation: flash 0.75s ease-out forwards;
+  }
+
+  @keyframes flash {
+    0%   { opacity: 0; }
+    38%  { opacity: 0; }
+    52%  { opacity: 0.88; }
+    100% { opacity: 0; }
+  }
+}
+
+// ─── The pack ─────────────────────────────────────────────────────────────────
+.booster-pack {
+  position: relative;
+  width: 175px;
+  height: 295px;
+  cursor: pointer;
+
+  // Shape: waist narrows sides where cards sit; hang hole punched via evenodd.
+  clip-path: path(evenodd, 'M 0,0 H 175 V 26 C 167,90 167,205 175,269 V 295 H 0 V 269 C 8,205 8,90 0,26 Z M 80.5,14 A 7,7 0 1,0 94.5,14 A 7,7 0 1,0 80.5,14 Z');
+
+  // drop-shadow follows the clip-path contour (unlike box-shadow which is clipped)
+  filter:
+    drop-shadow(0 22px 44px rgba(0, 0, 0, 0.82))
+    drop-shadow(0 6px 14px rgba(0, 60, 10, 0.40));
+
+  transform:
+    perspective(900px)
+    rotateX(var(--rotate-x, 0deg))
+    rotateY(var(--rotate-y, 0deg));
+
+  will-change: transform;
+  transition: transform 0.8s ease-out, filter 0.3s ease-out;
+
+  &:hover {
+    filter:
+      drop-shadow(0 30px 58px rgba(0, 0, 0, 0.90))
+      drop-shadow(0 8px 20px rgba(0, 80, 20, 0.50));
+    transition: transform 0.1s ease-out, filter 0.3s ease-out;
+  }
+
+  // Opening: quick shake then shrink/fade
+  &.is-opening {
+    animation: pack-open 0.95s ease-out forwards;
+  }
+
+  @keyframes pack-open {
+    0%   { transform: perspective(900px) scale(1)    rotate(0deg);   opacity: 1; }
+    7%   { transform: perspective(900px) scale(1.04) rotate(-1.2deg); }
+    14%  { transform: perspective(900px) scale(1.04) rotate( 1.2deg); }
+    21%  { transform: perspective(900px) scale(1.04) rotate(-0.6deg); }
+    32%  { transform: perspective(900px) scale(1.02) rotate(0deg); }
+    100% { transform: perspective(900px) scale(0.84) translateY(22px); opacity: 0; }
+  }
+
+  // ── Foil rainbow sheen — angle follows mouse ────────────────────────────
+  .pack-foil {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      var(--foil-angle, 115deg),
+      hsla(0,   100%, 65%, 0.20),
+      hsla(55,  100%, 65%, 0.20),
+      hsla(110, 100%, 65%, 0.20),
+      hsla(165, 100%, 65%, 0.20),
+      hsla(220, 100%, 65%, 0.20),
+      hsla(275, 100%, 65%, 0.20),
+      hsla(330, 100%, 65%, 0.20),
+      hsla(360, 100%, 65%, 0.20)
+    );
+    mix-blend-mode: screen;
+    opacity: calc(var(--hyp, 0) * 0.80 + 0.04);
+    pointer-events: none;
+    z-index: 8;
+  }
+
+  // ── Metallic grain texture — simulates real foil wrapper material ──────
+  .pack-grain {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 7;
+    background:
+      repeating-linear-gradient(
+        0deg,
+        rgba(255, 255, 255, 0.05) 0px,
+        transparent 1px,
+        transparent 2px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.04) 0px,
+        transparent 1px,
+        transparent 3px
+      );
+  }
+
+  // ── Wrapper creases — natural foil wrinkles ─────────────────────────────
+  .pack-creases {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 7;
+    background:
+      // Crease 1 — runs from upper-left area diagonally
+      linear-gradient(138deg,
+        transparent 24%,
+        rgba(255, 255, 255, 0.07) 24.2%,
+        rgba(0,   0,   0,   0.05) 24.5%,
+        transparent 24.8%
+      ),
+      // Crease 2 — subtle crease from the right
+      linear-gradient(158deg,
+        transparent 58%,
+        rgba(255, 255, 255, 0.05) 58.2%,
+        rgba(0,   0,   0,   0.04) 58.5%,
+        transparent 58.8%
+      ),
+      // Crease 3 — faint horizontal crinkle
+      linear-gradient(175deg,
+        transparent 41%,
+        rgba(255, 255, 255, 0.035) 41.15%,
+        rgba(0,   0,   0,   0.025) 41.35%,
+        transparent 41.5%
+      );
+  }
+
+  // ── Directional light glare ─────────────────────────────────────────────
+  .pack-glare {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      farthest-corner circle at var(--glare-x, 50%) var(--glare-y, 50%),
+      rgba(255, 255, 255, 0.55)  0%,
+      rgba(200, 230, 200, 0.12) 40%,
+      rgba(0, 0, 0, 0.42)       120%
+    );
+    mix-blend-mode: overlay;
+    opacity: calc(var(--glare-opacity, 0) * 0.70);
+    pointer-events: none;
+    z-index: 9;
+  }
+
+  // ── TOP CRIMP ───────────────────────────────────────────────────────────
+  // Flat dark sealed area. The hang hole is a real cutout from clip-path above.
+  .pack-top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 38px;
+    z-index: 5;
+
+    background:
+      // Horizontal crimp lines — foil pressed together
+      repeating-linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.13) 0px,  rgba(255, 255, 255, 0.13) 1px,
+        transparent               1px,  transparent               3px,
+        rgba(0, 0, 0, 0.12)       3px,  rgba(0, 0, 0, 0.12)       4px,
+        transparent               4px,  transparent               6px
+      ),
+      // Subtle side-to-side metallic sheen
+      linear-gradient(90deg,
+        rgba(255, 255, 255, 0.04)  0%,
+        rgba(255, 255, 255, 0.12) 30%,
+        rgba(255, 255, 255, 0.05) 50%,
+        rgba(255, 255, 255, 0.12) 70%,
+        rgba(255, 255, 255, 0.04) 100%
+      ),
+      // Base: dark charcoal
+      linear-gradient(180deg, #303030 0%, #1c1c1c 55%, #262626 100%);
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.11);
+
+    // "6+" age badge — top right
+    .age-badge {
+      position: absolute;
+      top: 5px;
+      right: 7px;
+      font-family: 'Roboto Condensed', sans-serif;
+      font-size: 7.5px;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.68);
+      border: 1px solid rgba(255, 255, 255, 0.32);
+      border-radius: 3px;
+      padding: 1px 3px;
+      line-height: 1;
+    }
+
+    // Perforated "OPEN HERE" tear guide at bottom of crimp
+    .rip-line {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      border-top: 1px dashed rgba(255, 255, 255, 0.20);
+
+      .rip-arrow {
+        font-size: 6px;
+        color: rgba(255, 255, 255, 0.32);
+        line-height: 1;
+      }
+
+      .rip-text {
+        font-size: 6px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        color: rgba(255, 255, 255, 0.32);
+        text-transform: uppercase;
+      }
+    }
+  }
+
+  // ── MAIN BODY ───────────────────────────────────────────────────────────
+  .pack-body {
+    position: absolute;
+    top: 38px;
+    left: 0;
+    right: 0;
+    bottom: 36px;
+    overflow: hidden;
+
+    // Background — clean and readable, not competing with the emboss
+    .body-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 75% 55% at 55% 35%, rgba(0, 100, 40, 0.75) 0%, transparent 70%),
+        radial-gradient(ellipse 55% 50% at 30% 72%, rgba(0,  40, 90, 0.50) 0%, transparent 65%),
+        linear-gradient(170deg, #0c1f10 0%, #0f2914 45%, #090f1e 100%);
+    }
+
+    // Left vertical accent band — forest green
+    .side-band--l {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 11px;
+      z-index: 2;
+      background: linear-gradient(180deg,
+        #7dc800 0%,  #5ea000 10%, #8edd00 22%,
+        #4a8800 38%, #6ab800 52%, #3a7800 68%,
+        #7dc800 82%, #5ea000 100%
+      );
+      box-shadow:
+        inset -2px 0 5px rgba(0, 0, 0, 0.52),
+        inset  1px 0 2px rgba(255, 255, 255, 0.26);
+    }
+
+    // Right vertical accent band
+    .side-band--r {
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 11px;
+      z-index: 2;
+      background: linear-gradient(180deg,
+        #7dc800 0%,  #5ea000 10%, #8edd00 22%,
+        #4a8800 38%, #6ab800 52%, #3a7800 68%,
+        #7dc800 82%, #5ea000 100%
+      );
+      box-shadow:
+        inset  2px 0 5px rgba(0, 0, 0, 0.52),
+        inset -1px 0 2px rgba(255, 255, 255, 0.26);
+    }
+
+    // Content: logo → art → set name
+    .body-content {
+      position: relative;
+      z-index: 3;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 0 13px;
+
+      .logo-area {
+        padding-top: 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex-shrink: 0;
+
+        .pokemon-logo {
+          font-family: 'Roboto Condensed', 'Arial Black', sans-serif;
+          font-size: 28px;
+          font-weight: 900;
+          color: #ffcb05;
+          -webkit-text-stroke: 1.5px #1530b0;
+          text-shadow:
+            0 3px 0 #102088,
+            0 0 20px rgba(255, 203, 5, 0.45);
+          line-height: 1;
+          letter-spacing: -0.5px;
+        }
+
+        .tcg-band {
+          margin-top: 5px;
+          width: 100%;
+          background: linear-gradient(90deg, #a80000 0%, #d42020 50%, #a80000 100%);
+          padding: 3px 0;
+          font-family: 'Roboto Condensed', sans-serif;
+          font-size: 7.5px;
+          font-weight: 800;
+          letter-spacing: 0.8px;
+          color: #fff;
+          text-transform: uppercase;
+          text-align: center;
+          box-shadow:
+            0 1px 4px rgba(0, 0, 0, 0.55),
+            inset 0 1px 0 rgba(255, 255, 255, 0.22);
+        }
+      }
+
+      .art-center {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .energy-orb {
+          position: relative;
+          width: 68px;
+          height: 68px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          .orb-ring {
+            position: absolute;
+            border-radius: 50%;
+
+            &--1 {
+              width: 64px;
+              height: 64px;
+              border: 1.5px solid rgba(100, 220, 70, 0.50);
+              animation: spin-cw 9s linear infinite;
+            }
+
+            &--2 {
+              width: 48px;
+              height: 48px;
+              border: 1.5px dashed rgba(60, 200, 90, 0.45);
+              animation: spin-ccw 6s linear infinite;
+            }
+          }
+
+          .orb-core {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%,
+              rgba(220, 255, 200, 1)   0%,
+              rgba(80,  220,  80, 0.95) 45%,
+              rgba(20,  120,  20, 0.80) 100%
+            );
+            box-shadow:
+              0 0 16px rgba(80,  220, 80, 0.90),
+              0 0 38px rgba(40,  180, 40, 0.55),
+              0 0 65px rgba(20,  140, 20, 0.30);
+            animation: orb-pulse 3s ease-in-out infinite;
+          }
+        }
+      }
+
+      .set-name-area {
+        padding-bottom: 8px;
+        text-align: center;
+        flex-shrink: 0;
+
+        .series-sub {
+          font-family: 'Roboto Condensed', sans-serif;
+          font-size: 8.5px;
+          font-weight: 700;
+          letter-spacing: 3px;
+          text-transform: uppercase;
+          color: rgba(160, 230, 80, 0.85);
+          text-shadow: 0 0 10px rgba(80, 200, 40, 0.60);
+        }
+
+        .series-main {
+          font-family: 'Roboto Condensed', sans-serif;
+          font-size: 24px;
+          font-weight: 900;
+          text-transform: uppercase;
+          color: #fff;
+          text-shadow:
+            0 0 16px rgba(80, 220, 40, 0.70),
+            0 2px 4px rgba(0, 0, 0, 0.90);
+          line-height: 1;
+          letter-spacing: -0.5px;
+          -webkit-text-stroke: 0.5px rgba(80, 200, 40, 0.70);
+        }
+      }
+    }
+
+    // Emboss overlay — bright center + dark edges = convex bulge (cards inside)
+    .body-emboss {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 4;
+      background:
+        // Horizontal: dark edges, bright center highlight
+        linear-gradient(90deg,
+          rgba(0, 0, 0, 0.60)     0%,
+          rgba(0, 0, 0, 0.22)    14%,
+          rgba(255, 255, 255, 0.07) 28%,
+          rgba(255, 255, 255, 0.13) 50%,
+          rgba(255, 255, 255, 0.07) 72%,
+          rgba(0, 0, 0, 0.22)    86%,
+          rgba(0, 0, 0, 0.60)   100%
+        ),
+        // Vertical: top highlight, bottom shadow
+        linear-gradient(180deg,
+          rgba(255, 255, 255, 0.10)  0%,
+          transparent               20%,
+          transparent               80%,
+          rgba(0, 0, 0, 0.28)      100%
+        );
+    }
+  }
+
+  // ── BOTTOM CRIMP ────────────────────────────────────────────────────────
+  // Flat dark sealed area + colored barcode stripe at very bottom
+  .pack-bottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 36px;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+
+    .bottom-info {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 6.5px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.62);
+      background:
+        repeating-linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.10) 0px, rgba(255, 255, 255, 0.10) 1px,
+          transparent               1px, transparent               4px,
+          rgba(0, 0, 0, 0.10)       4px, rgba(0, 0, 0, 0.10)       5px,
+          transparent               5px, transparent               7px
+        ),
+        linear-gradient(180deg, #252525 0%, #1a1a1a 100%);
+      border-top: 1px solid rgba(255, 255, 255, 0.10);
+    }
+
+    // Tiny legal/copyright text — like real packs have
+    .bottom-legal {
+      font-family: 'Roboto Condensed', sans-serif;
+      font-size: 4.5px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      color: rgba(255, 255, 255, 0.32);
+      text-align: center;
+      padding: 1px 0;
+      background: #1a1a1a;
+    }
+
+    // Multi-color barcode strip at very bottom (matches reference image)
+    .bottom-stripe {
+      height: 9px;
+      background: repeating-linear-gradient(90deg,
+        #004d00  0px,  #004d00  6px,
+        #006600  6px,  #006600  9px,
+        #003300  9px,  #003300 12px,
+        #111111 12px,  #111111 14px,
+        #006600 14px,  #006600 17px,
+        #004d00 17px,  #004d00 22px,
+        #003300 22px,  #003300 24px,
+        #111111 24px,  #111111 26px
+      );
+    }
+  }
+}
+
+@keyframes spin-cw  { to { transform: rotate(360deg);  } }
+@keyframes spin-ccw { to { transform: rotate(-360deg); } }
+
+@keyframes orb-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 16px rgba(80, 220,  80, 0.90),
+      0 0 38px rgba(40, 180,  40, 0.55);
+  }
+  50% {
+    box-shadow:
+      0 0 26px rgba(120, 255, 100, 1.00),
+      0 0 55px rgba( 60, 210,  60, 0.80);
+  }
+}
