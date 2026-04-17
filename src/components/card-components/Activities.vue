@@ -1,25 +1,30 @@
 <template>
-  <div class="work-experience">
-    <VerticalTimeline :items="jobs">
-      <template #item="{ item: job, active }">
-        <div class="job-item" :class="{ active }">
-          <div class="job-header">
-            <h3>{{ job.title }}</h3>
-            <div class="company">
-              <img v-if="job.logo" :src="job.logo" :alt="job.company + ' logo'" class="company-logo"/>
-              <span>{{ job.company }}</span>
+  <div class="activities">
+    <VerticalTimeline :items="activityItems">
+      <template #item="{ item: activity, active }">
+        <div class="activity-item" :class="{ active }">
+          <div class="activity-header">
+            <h3>{{ activity.title }}</h3>
+            <div class="organization">
+              <img
+                v-if="activity.logo"
+                :src="activity.logo"
+                :alt="activity.organization + ' logo'"
+                class="organization-logo"
+              />
+              <span>{{ activity.organization }}</span>
             </div>
           </div>
-          <div class="job-meta">
-            <div class="period">{{ job.period }}</div>
+          <div class="activity-meta">
+            <div class="period">{{ activity.period }}</div>
           </div>
-          <div class="job-description">
-            <ul v-if="job.highlights?.length" class="job-highlights">
-              <li v-for="(highlight, index) in job.highlights" :key="index">
+          <div class="activity-description">
+            <ul v-if="activity.highlights?.length" class="activity-highlights">
+              <li v-for="(highlight, index) in activity.highlights" :key="index">
                 {{ highlight }}
               </li>
             </ul>
-            <p v-else>{{ job.description }}</p>
+            <p v-else>{{ activity.description }}</p>
           </div>
         </div>
       </template>
@@ -28,7 +33,7 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import VerticalTimeline from '../VerticalTimeline.vue';
 import { cards } from '../../data/cardContent';
 
@@ -37,10 +42,9 @@ export default {
     VerticalTimeline
   },
   setup() {
-    // Get data in a way that works with SSR
-    const jobs = ref(cards.find(card => card.id === 'work')?.data || []);
+    const activityItems = ref(cards.find(card => card.id === 'activities')?.data || []);
 
-    return { jobs };
+    return { activityItems };
   }
 };
 </script>
@@ -48,23 +52,23 @@ export default {
 <style lang="scss" scoped>
 @import '../../styles/color-theme.scss';
 
-.work-experience {
+.activities {
   height: 100%;
-  
-  .job-item {
+
+  .activity-item {
     display: flex;
     flex-direction: column;
     transition: all 0.3s ease;
-    
+
     &.active {
-      .job-header h3 {
+      .activity-header h3 {
         color: var(--accent-color);
       }
     }
-    
-    .job-header {
+
+    .activity-header {
       margin-bottom: 4px;
-      
+
       h3 {
         font-size: 1rem;
         margin: 0 0 2px 0;
@@ -72,8 +76,8 @@ export default {
         transition: color 0.3s ease;
         font-weight: 600;
       }
-      
-      .company {
+
+      .organization {
         font-size: 0.95rem;
         font-weight: 500;
         color: var(--text-secondary);
@@ -81,7 +85,7 @@ export default {
         align-items: center;
         gap: 8px;
 
-        .company-logo {
+        .organization-logo {
           width: 20px;
           height: 20px;
           object-fit: contain;
@@ -89,18 +93,18 @@ export default {
         }
       }
     }
-    
-    .job-meta {
+
+    .activity-meta {
       margin-bottom: 8px;
-      
+
       .period {
         font-size: 0.8rem;
         font-style: italic;
         color: var(--text-tertiary);
       }
     }
-    
-    .job-description {
+
+    .activity-description {
       p {
         margin: 0;
         font-size: 0.85rem;
@@ -108,12 +112,12 @@ export default {
         color: var(--text-secondary);
       }
 
-      .job-highlights {
+      .activity-highlights {
         margin: 0;
         padding-left: 1rem;
 
         li {
-          font-size: 0.83rem;
+          font-size: 0.82rem;
           line-height: 1.35;
           color: var(--text-secondary);
           margin-bottom: 0.28rem;

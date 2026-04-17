@@ -1,10 +1,16 @@
 <template>
-  <div
-    ref="cardRef"
-    :class="`pokemon-card ${className || ''} ${isHovered ? 'hovered' : ''} ${isInitialized ? 'initialized' : ''}`"
-    :style="cardStyle"
-  >
+  <Teleport to="body" :disabled="!isExpanded">
+    <div
+      ref="cardRef"
+      :class="`pokemon-card ${className || ''} ${isHovered ? 'hovered' : ''} ${isInitialized ? 'initialized' : ''} ${isExpanded ? 'is-expanded' : ''} ${isSpinning ? 'is-spinning' : ''} ${isCollapsing ? 'is-collapsing' : ''}`"
+      :style="cardStyle"
+      @click.stop="handleClick"
+    >
     <div class="card-inner">
+      <!-- BACK -->
+      <div class="card-face card-back">
+        <img src="/ok_devs_back_card.png" alt="Card back" class="card-back-image" />
+      </div>
       <!-- FRONT -->
       <div class="card-face card-front">
         <div class="card__shine"></div>
@@ -110,14 +116,22 @@
         </div>
       </div>
     </div><!-- end card-inner -->
-  </div>
+    </div>
+  </Teleport>
+  <Teleport v-if="isMounted" to="body">
+    <Transition name="card-backdrop">
+      <div v-if="isExpanded" class="card-backdrop" @click="collapseCard" />
+    </Transition>
+  </Teleport>
 </template>
 
 <script>
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue';
 import './component-style/PokemonCard.scss';
 
 export default {
+  inheritAttrs: false,
+  emits: ['collapse'],
   props: {
     title: String,
     content: String,
@@ -125,12 +139,20 @@ export default {
     style: [String, Object],
     componentName: String,
     position: Object,
+    forceExpanded: { type: Boolean, default: false },
   },
-  setup(props) {
+  setup(props, { emit }) {
     const cardRef = ref(null);
     const isHovered = ref(false);
     const isInitialized = ref(false);
     const isMobile = ref(false);
+    const isExpanded = ref(false);
+    const isSpinning = ref(false);
+    const isCollapsing = ref(false);
+    const expandScale = ref(1);
+    let spinTimeout = null;
+    const displayZoom = ref(1);
+    const isMounted = ref(false);
 
     const adjust = (value, fromMin, fromMax, toMin, toMax) => {
       return toMin + (toMax - toMin) * ((value - fromMin) / (fromMax - fromMin));
@@ -159,12 +181,12 @@ export default {
       s.setProperty('--pointer-y', `${pointerY}%`);
       s.setProperty('--background-x', `${bgX}%`);
       s.setProperty('--background-y', `${bgY}%`);
-      s.setProperty('--rotate-x', `${rotateX}deg`);
-      s.setProperty('--rotate-y', `${rotateY}deg`);
       s.setProperty('--hyp', distance);
       s.setProperty('--glare-x', `${glareX}%`);
       s.setProperty('--glare-y', `${glareY}%`);
       s.setProperty('--glare-opacity', glareOpacity);
+      s.setProperty('--rotate-x', `${rotateX}deg`);
+      s.setProperty('--rotate-y', `${rotateY}deg`);
     };
 
     const handleMouseMove = (e) => {
@@ -181,21 +203,124 @@ export default {
     const handleMouseLeave = () => {
       if (isMobile.value) return;
       isHovered.value = false;
+
+      if (!cardRef.value) return;
+      const s = cardRef.value.style;
+
+      const parsePercent = (val) => parseFloat(val) || 50;
+      const parseNum = (val) => parseFloat(val) || 0;
+
+      const startPointerX = parsePercent(s.getPropertyValue('--pointer-x'));
+      const startPointerY = parsePercent(s.getPropertyValue('--pointer-y'));
+      const startBgX = parsePercent(s.getPropertyValue('--background-x'));
+      const startBgY = parsePercent(s.getPropertyValue('--background-y'));
+      const startGlareX = parsePercent(s.getPropertyValue('--glare-x'));
+      const startGlareY = parsePercent(s.getPropertyValue('--glare-y'));
+      const startHyp = parseNum(s.getPropertyValue('--hyp'));
+      const startGlareOpacity = parseNum(s.getPropertyValue('--glare-opacity'));
+
+      const duration = 800;
+      const startTime = performance.now();
+      const lerp = (from, to, t) => from + (to - from) * t;
+
+      const animate = (now) => {
+        if (isHovered.value) return;
+        const elapsed = now - startTime;
+        const t = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic, matches CSS ease-out
+
+        s.setProperty('--pointer-x', `${lerp(startPointerX, 50, eased)}%`);
+        s.setProperty('--pointer-y', `${lerp(startPointerY, 50, eased)}%`);
+        s.setProperty('--background-x', `${lerp(startBgX, 50, eased)}%`);
+        s.setProperty('--background-y', `${lerp(startBgY, 50, eased)}%`);
+        s.setProperty('--glare-x', `${lerp(startGlareX, 50, eased)}%`);
+        s.setProperty('--glare-y', `${lerp(startGlareY, 50, eased)}%`);
+        s.setProperty('--hyp', lerp(startHyp, 0, eased));
+        s.setProperty('--glare-opacity', lerp(startGlareOpacity, 0, eased));
+
+        if (t < 1) requestAnimationFrame(animate);
+      };
+
+      requestAnimationFrame(animate);
+    };
+
+    const setExpandedInstantly = async () => {
+      if (!cardRef.value) return;
+      const rect = cardRef.value.getBoundingClientRect();
+      const scale = Math.min(
+        (window.innerWidth * 0.9) / rect.width,
+        (window.innerHeight * 0.9) / rect.height
+      );
+
+      displayZoom.value = scale;
+      expandScale.value = 1;
+      isExpanded.value = true;
+      isHovered.value = false;
+      isSpinning.value = false;
+      isCollapsing.value = false;
+
+      await nextTick();
+      if (cardRef.value) {
+        cardRef.value.style.setProperty('--expand-offset-x', '0px');
+        cardRef.value.style.setProperty('--expand-offset-y', '0px');
+        cardRef.value.style.setProperty('--expand-start-scale', '1');
+      }
+    };
+
+    const expandCard = async () => {
+      if (!cardRef.value) return;
+      const rect = cardRef.value.getBoundingClientRect();
+      const scale = Math.min(
+        (window.innerWidth * 0.9) / rect.width,
+        (window.innerHeight * 0.9) / rect.height
+      );
+      const deltaX = (rect.left + rect.width / 2) - window.innerWidth / 2;
+      const deltaY = (rect.top + rect.height / 2) - window.innerHeight / 2;
+
+      displayZoom.value = scale;
+      expandScale.value = 1;
+      isExpanded.value = true;
+      isHovered.value = false;
+
+      await nextTick();
+      if (cardRef.value) {
+        cardRef.value.style.setProperty('--expand-offset-x', `${deltaX / scale}px`);
+        cardRef.value.style.setProperty('--expand-offset-y', `${deltaY / scale}px`);
+        cardRef.value.style.setProperty('--expand-start-scale', `${1 / scale}`);
+      }
+      void cardRef.value?.offsetHeight;
+      isSpinning.value = true;
+      spinTimeout = setTimeout(() => { isSpinning.value = false; }, 1000);
+    };
+
+    const collapseCard = () => {
+      clearTimeout(spinTimeout);
+      if (props.forceExpanded) {
+        isSpinning.value = false;
+        isCollapsing.value = false;
+        isExpanded.value = false;
+        displayZoom.value = 1;
+        emit('collapse');
+        return;
+      }
+
+      isSpinning.value = false;
+      isCollapsing.value = true;
       setTimeout(() => {
-        const s = cardRef.value?.style;
-        if (s && !isHovered.value) {
-          s.setProperty('--pointer-x', '50%');
-          s.setProperty('--pointer-y', '50%');
-          s.setProperty('--background-x', '50%');
-          s.setProperty('--background-y', '50%');
-          s.setProperty('--rotate-x', '0deg');
-          s.setProperty('--rotate-y', '0deg');
-          s.setProperty('--hyp', '0');
-          s.setProperty('--glare-x', '50%');
-          s.setProperty('--glare-y', '50%');
-          s.setProperty('--glare-opacity', '0');
-        }
-      }, 100);
+        isCollapsing.value = false;
+        isExpanded.value = false;
+        displayZoom.value = 1;
+        emit('collapse');
+      }, 1000);
+    };
+
+    const handleClick = () => {
+      if (isExpanded.value) collapseCard();
+      else expandCard();
+    };
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && isExpanded.value) collapseCard();
     };
 
     const handleTouchStart = (e) => {
@@ -254,6 +379,11 @@ export default {
         }
         isInitialized.value = true;
       }
+      window.addEventListener('keydown', handleKeyDown);
+      isMounted.value = true;
+      if (props.forceExpanded) {
+        nextTick(() => setExpandedInstantly());
+      }
     });
 
     onUnmounted(() => {
@@ -269,6 +399,7 @@ export default {
           card.removeEventListener('mouseleave', handleMouseLeave);
         }
       }
+      window.removeEventListener('keydown', handleKeyDown);
     });
 
     const cardStyle = computed(() => ({
@@ -277,7 +408,7 @@ export default {
       '--pointer-y': '50%',
       '--background-x': '50%',
       '--background-y': '50%',
-      '--card-opacity': isHovered.value ? 1 : 0,
+      '--card-opacity': (isHovered.value || isExpanded.value) ? 1 : 0,
       '--hyp': 0,
       '--rotate-x': '0deg',
       '--rotate-y': '0deg',
@@ -285,9 +416,11 @@ export default {
       '--glare-x': '50%',
       '--glare-y': '50%',
       '--glare-opacity': 0,
+      '--expand-scale': expandScale.value,
+      '--display-zoom': displayZoom.value,
     }));
 
-    return { cardRef, isHovered, isInitialized, cardStyle };
+    return { cardRef, isHovered, isInitialized, isExpanded, isSpinning, isCollapsing, isMounted, cardStyle, handleClick, collapseCard };
   }
 };
 </script>

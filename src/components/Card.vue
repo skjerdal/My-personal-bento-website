@@ -213,5 +213,21 @@ export default {
     overflow: hidden;
   }
 
+  &.about-me-card {
+    .card-title {
+      position: relative;
+      z-index: 2;
+      margin-bottom: -0.9rem;
+      padding-right: 0.8rem;
+    }
+
+    .dynamic-component-wrapper {
+      overflow: visible;
+      padding-right: 0;
+      margin-top: -0.35rem;
+      padding-top: 0.35rem;
+    }
+  }
+
 }
 </style>
