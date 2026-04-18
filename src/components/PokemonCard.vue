@@ -323,41 +323,6 @@ export default {
       if (e.key === 'Escape' && isExpanded.value) collapseCard();
     };
 
-    const handleTouchStart = (e) => {
-      if (!isMobile.value) return;
-      const touch = e.touches[0];
-      updateCardEffects(touch.clientX, touch.clientY);
-      isHovered.value = true;
-    };
-
-    const handleTouchMove = (e) => {
-      if (!isMobile.value) return;
-      const touch = e.touches[0];
-      updateCardEffects(touch.clientX, touch.clientY);
-    };
-
-    const handleTouchEnd = () => {
-      if (!isMobile.value) return;
-      setTimeout(() => {
-        isHovered.value = false;
-        setTimeout(() => {
-          const s = cardRef.value?.style;
-          if (s) {
-            s.setProperty('--pointer-x', '50%');
-            s.setProperty('--pointer-y', '50%');
-            s.setProperty('--background-x', '50%');
-            s.setProperty('--background-y', '50%');
-            s.setProperty('--rotate-x', '0deg');
-            s.setProperty('--rotate-y', '0deg');
-            s.setProperty('--hyp', '0');
-            s.setProperty('--glare-x', '50%');
-            s.setProperty('--glare-y', '50%');
-            s.setProperty('--glare-opacity', '0');
-          }
-        }, 100);
-      }, 300);
-    };
-
     onMounted(() => {
       const isMobileDevice =
         /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
@@ -367,16 +332,12 @@ export default {
       isMobile.value = isMobileDevice;
       const card = cardRef.value;
 
-      if (card) {
-        if (isMobileDevice) {
-          card.addEventListener('touchstart', handleTouchStart, { passive: true });
-          card.addEventListener('touchmove', handleTouchMove, { passive: true });
-          card.addEventListener('touchend', handleTouchEnd, { passive: true });
-        } else {
-          card.addEventListener('mousemove', handleMouseMove);
-          card.addEventListener('mouseenter', handleMouseEnter);
-          card.addEventListener('mouseleave', handleMouseLeave);
-        }
+      if (card && !isMobileDevice) {
+        card.addEventListener('mousemove', handleMouseMove);
+        card.addEventListener('mouseenter', handleMouseEnter);
+        card.addEventListener('mouseleave', handleMouseLeave);
+        isInitialized.value = true;
+      } else if (card) {
         isInitialized.value = true;
       }
       window.addEventListener('keydown', handleKeyDown);
@@ -388,16 +349,10 @@ export default {
 
     onUnmounted(() => {
       const card = cardRef.value;
-      if (card) {
-        if (isMobile.value) {
-          card.removeEventListener('touchstart', handleTouchStart);
-          card.removeEventListener('touchmove', handleTouchMove);
-          card.removeEventListener('touchend', handleTouchEnd);
-        } else {
-          card.removeEventListener('mousemove', handleMouseMove);
-          card.removeEventListener('mouseenter', handleMouseEnter);
-          card.removeEventListener('mouseleave', handleMouseLeave);
-        }
+      if (card && !isMobile.value) {
+        card.removeEventListener('mousemove', handleMouseMove);
+        card.removeEventListener('mouseenter', handleMouseEnter);
+        card.removeEventListener('mouseleave', handleMouseLeave);
       }
       window.removeEventListener('keydown', handleKeyDown);
     });
