@@ -10,8 +10,8 @@
     :style="computedStyle"
     :data-span="position?.span || 1"
   >
-    <h2 v-if="componentName !== 'PokemonCard' && title && title.trim()" class="card-title">
-      <span>{{ title }}</span>
+    <h2 v-if="componentName !== 'PokemonCard' && translatedTitle && translatedTitle.trim()" class="card-title">
+      <span>{{ translatedTitle }}</span>
     </h2>
     <div class="dynamic-component-wrapper" v-if="isMounted && resolvedComponent && componentName !== 'PokemonCard'">
       <component 
@@ -25,10 +25,13 @@
 
 <script>
 import { defineAsyncComponent, computed, ref, onMounted } from 'vue';
+import { currentLang, initLang } from '../stores/language';
+import { translations } from '../i18n/translations';
 
 export default {
   components: {},
   props: {
+    cardId: String,
     title: String,
     content: String,
     componentName: String,
@@ -36,11 +39,18 @@ export default {
     className: String,
     style: [String, Object],
     videoPath: String,
-    customStyle: Object // Add customStyle prop
+    customStyle: Object
   },
   setup(props) {
+    initLang();
     const isMounted = ref(false);
     const cardElement = ref(null);
+
+    const translatedTitle = computed(() => {
+      if (!props.cardId) return props.title;
+      const t = translations[currentLang.value];
+      return t.cardTitles[props.cardId] ?? props.title;
+    });
 
     const resolvedComponent = computed(() => {
       if (!isMounted.value) return null;
@@ -84,7 +94,8 @@ export default {
       cardElement,
       resolvedComponent,
       computedStyle,
-      isMounted
+      isMounted,
+      translatedTitle,
     };
   }
 }

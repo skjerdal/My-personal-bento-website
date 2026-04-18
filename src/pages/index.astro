@@ -9,6 +9,7 @@ import { cards } from '../data/cardContent';
     <div class="card-grid">
       {cards.map((card) => (
         <CardWrapper
+          cardId={card.id}
           isUnique={card.isUnique}
           title={card.title}
           content={card.content}

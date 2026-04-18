@@ -27,16 +27,18 @@
 </template>
 
 <script>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import VerticalTimeline from '../VerticalTimeline.vue';
-import { cards } from '../../data/cardContent';
+import { currentLang, initLang } from '../../stores/language';
+import { translations } from '../../i18n/translations';
 
 export default {
   components: {
     VerticalTimeline
   },
   setup() {
-    const educationItems = ref(cards.find(card => card.id === 'education').data);
+    initLang();
+    const educationItems = computed(() => translations[currentLang.value].education);
     const windowWidth = ref(0); // Initialize with a default value
     const isMounted = ref(false); // Track if component is mounted
 

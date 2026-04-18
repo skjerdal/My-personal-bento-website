@@ -2,6 +2,7 @@
 import '../styles/global.scss'
 import '../styles/main.scss'
 import Analytics from '@vercel/analytics/astro';
+import LanguageSwitcher from '../components/LanguageSwitcher.vue';
 
 interface Props {
 	title: string;
@@ -80,6 +81,9 @@ const ogImage = 'https://skjerdal.me/profil.jpg';
   </script>
 
   <body class="theme-light">
+    <div class="lang-switcher-wrapper">
+      <LanguageSwitcher client:load />
+    </div>
     <div class="page-container">
       <div class="background-card"></div>
       <div class="theme-container">
@@ -105,16 +109,16 @@ const ogImage = 'https://skjerdal.me/profil.jpg';
     box-sizing: border-box;
   }
 
-  .theme-toggle-wrapper {
+  .lang-switcher-wrapper {
     position: fixed;
     top: 15px;
     right: 15px;
     z-index: 1000;
-    opacity: 0.8;
+    opacity: 0.85;
     transition: opacity 0.2s ease;
   }
-  
-  .theme-toggle-wrapper:hover {
+
+  .lang-switcher-wrapper:hover {
     opacity: 1;
   }
 

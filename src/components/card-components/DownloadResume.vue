@@ -2,12 +2,12 @@
   <div class="download-resume">
     <!-- Content Overlay -->
     <div class="content-wrapper">
-      <h2 class="section-title animate-item">Resume</h2>
-      <p class="description animate-item">Download my latest resume to learn more about my experience and skills.</p>
+      <h2 class="section-title animate-item">{{ t.title }}</h2>
+      <p class="description animate-item">{{ t.description }}</p>
 
       <button class="download-button animate-item" @click="downloadResume" aria-label="Download resume as PDF">
         <div class="button-bg"></div>
-        <span class="button-text">Download Resume</span>
+        <span class="button-text">{{ t.button }}</span>
         <svg class="download-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
           <polyline points="7,10 12,15 17,10"></polyline>
@@ -22,6 +22,10 @@
 </template>
 
 <script>
+import { computed } from 'vue';
+import { currentLang, initLang } from '../../stores/language';
+import { translations } from '../../i18n/translations';
+
 export default {
   name: 'DownloadResume',
   props: {
@@ -32,6 +36,11 @@ export default {
         downloadName: 'Thomas_Skjerdal_Resume.pdf'
       })
     }
+  },
+  setup() {
+    initLang();
+    const t = computed(() => translations[currentLang.value].downloadResume);
+    return { t };
   },
   methods: {
     downloadResume() {

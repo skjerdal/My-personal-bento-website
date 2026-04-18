@@ -6,7 +6,7 @@
 
     <!-- Contact header moved inside component -->
     <div class="header-section">
-      <h2 class="contact-title">Contact</h2>
+      <h2 class="contact-title">{{ t.title }}</h2>
       <div class="divider"></div>
     </div>
 
@@ -39,14 +39,11 @@
           </div>
         </a>
       </div>
-      <div
+      <button
+        type="button"
         class="email-section animate-item"
-        role="button"
-        tabindex="0"
         :aria-label="`Send email to ${contactData.email}`"
         @click="handleEmailClick"
-        @keydown.enter="handleEmailClick"
-        @keydown.space.prevent="handleEmailClick"
         @mousedown="handleEmailMouseDown"
         @mouseup="handleEmailMouseUp"
         @mouseleave="handleEmailMouseUp"
@@ -60,40 +57,47 @@
             </svg>
           </div>
           <span class="email-text">{{ contactData.email }}</span>
-          <button
+          <span
+            role="button"
+            tabindex="0"
             class="copy-button"
             :aria-label="copied ? 'Email copied to clipboard' : 'Copy email address'"
-            :aria-live="copied ? 'polite' : undefined"
             @click.stop="copyEmail"
+            @keydown.enter.stop="copyEmail"
+            @keydown.space.prevent.stop="copyEmail"
             :class="{ 'copied': copied }"
           >
-            <span class="tooltip" aria-hidden="true">{{ copied ? 'Copied!' : 'Copy' }}</span>
+            <span class="tooltip" aria-hidden="true">{{ copied ? t.copied : t.copy }}</span>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="copy-icon" aria-hidden="true" focusable="false">
               <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
               <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2 2v1"></path>
             </svg>
-          </button>
+          </span>
         </div>
-      </div>
-      
+      </button>
+
       <!-- Small note at the bottom -->
       <div class="contact-note">
-        <span>Always happy to chat</span>
+        <span>{{ t.note }}</span>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { cards } from '../../data/cardContent';
 import LanyardBackground from './LanyardBackground.vue';
 import PaperAirplane from './PaperAirplane.vue';
+import { currentLang, initLang } from '../../stores/language';
+import { translations } from '../../i18n/translations';
 
 export default {
   name: 'ContactSocial',
   components: { PaperAirplane, LanyardBackground },
   setup() {
+    initLang();
+    const t = computed(() => translations[currentLang.value].contact);
     const contactData = ref(cards.find(card => card.id === 'contact').data);
     const copied = ref(false);
     const emailPressed = ref(false);
@@ -131,7 +135,8 @@ export default {
       copyEmail();
     };
     
-    return { 
+    return {
+      t,
       contactData,
       copied,
       emailPressed,
@@ -205,6 +210,10 @@ export default {
     animation-delay: 0.4s;
     z-index: 10;
     position: relative;
+    appearance: none;
+    -webkit-appearance: none;
+    font-family: inherit;
+    font-size: inherit;
   }
 
   .buttons-container {

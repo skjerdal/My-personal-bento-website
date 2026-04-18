@@ -27,6 +27,20 @@ p {
   padding: 14px 0 0 0;
 }
 
+:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.85);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 /* Airplane flight layer - sits above cards but below overlays */
 .airplane-sky {
   position: fixed;

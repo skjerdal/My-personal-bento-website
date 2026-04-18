@@ -2,14 +2,14 @@
   <div class="current-status">
     <!-- Header section -->
     <div class="header-section">
-      <h2 class="status-title">Current Status</h2>
+      <h2 class="status-title">{{ t.title }}</h2>
       <div class="divider"></div>
     </div>
 
     <div class="status-header animate-item">
       <div class="status-indicator">
         <div class="status-dot"></div>
-        <span class="status-text">Active</span>
+        <span class="status-text">{{ t.active }}</span>
       </div>
     </div>
 
@@ -21,9 +21,9 @@
           rel="noopener noreferrer"
           class="info-card clickable-card"
         >
-          <div class="card-icon">🎓</div>
+          <div class="card-icon" aria-hidden="true">🎓</div>
           <div class="card-content">
-            <div class="card-title">MSc Student in AI</div>
+            <div class="card-title">{{ t.mscStudent }}</div>
             <div class="card-subtitle">NTNU</div>
           </div>
         </a>
@@ -33,16 +33,16 @@
           rel="noopener noreferrer"
           class="info-card clickable-card"
         >
-          <div class="card-icon">💼</div>
+          <div class="card-icon" aria-hidden="true">💼</div>
           <div class="card-content">
-            <div class="card-title">Part-time Developer</div>
+            <div class="card-title">{{ t.partTimeDev }}</div>
             <div class="card-subtitle">Omega 365 Solutions</div>
           </div>
         </a>
       </div>
 
       <div class="focus-section animate-item">
-        <h3>Current Focus</h3>
+        <h3>{{ t.currentFocus }}</h3>
         <div class="focus-tags">
           <span class="pill focus-pill pill-animate">ML & AI</span>
           <span class="pill focus-pill pill-animate">Software Engineering</span>
@@ -66,8 +66,17 @@
 </template>
 
 <script>
+import { computed } from 'vue';
+import { currentLang, initLang } from '../../stores/language';
+import { translations } from '../../i18n/translations';
+
 export default {
-  name: 'CurrentStatus'
+  name: 'CurrentStatus',
+  setup() {
+    initLang();
+    const t = computed(() => translations[currentLang.value].currentStatus);
+    return { t };
+  }
 }
 </script>
 

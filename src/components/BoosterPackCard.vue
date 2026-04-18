@@ -12,8 +12,9 @@
         :style="{ opacity: canvasOpacity, transition: 'opacity 0.35s ease' }"
       ></canvas>
 
-      <!-- White flash overlay -->
+      <!-- Opening energy burst -->
       <div class="open-flash" :class="{ 'open-flash--active': flashActive }"></div>
+      <div class="open-burst-ring" :class="{ 'open-burst-ring--active': flashActive }"></div>
 
       <!-- Star particles burst -->
       <div class="particles-layer" aria-hidden="true">
@@ -100,11 +101,46 @@ export default {
     let shakeStartTime = 0;
 
     // ── Init THREE ────────────────────────────────────────────────────────────
+    const COLLAPSED_CANVAS_BLEED = 24;
+    const COLLAPSED_MODEL_FIT = 0.82;
+    const EXPANDED_MODEL_FIT = 0.92;
+
+    const getCanvasBleed = () => (isExpanded.value ? 0 : COLLAPSED_CANVAS_BLEED);
+    const getModelFit = () => (isExpanded.value ? EXPANDED_MODEL_FIT : COLLAPSED_MODEL_FIT);
+
+    const getRendererDimensions = () => {
+      const c = containerRef.value;
+      if (!c) return { width: 0, height: 0 };
+      const b = getCanvasBleed() * 2;
+      return { width: c.offsetWidth + b, height: c.offsetHeight + b };
+    };
+
+    const updateModelLayout = () => {
+      if (!model || !camera) return;
+
+      model.rotation.set(deg(BASE_ROT_X), deg(BASE_ROT_Y), deg(BASE_ROT_Z));
+      model.updateMatrixWorld(true);
+
+      const box = new THREE.Box3().setFromObject(model);
+      const center = box.getCenter(new THREE.Vector3());
+      const size = box.getSize(new THREE.Vector3());
+      const fovRad = camera.fov * (Math.PI / 180);
+      const frustumHeight = 2 * Math.tan(fovRad / 2) * camera.position.z;
+      const frustumWidth = frustumHeight * camera.aspect;
+      const fit = getModelFit();
+      const scale = Math.min(
+        (frustumHeight * fit) / size.y,
+        (frustumWidth * fit) / size.x
+      );
+
+      modelScale = scale;
+      model.scale.setScalar(scale);
+      model.position.copy(center).multiplyScalar(-scale);
+    };
+
     const init = () => {
-      const container = containerRef.value;
-      const canvas    = canvasRef.value;
-      const width  = container.offsetWidth;
-      const height = container.offsetHeight;
+      const canvas = canvasRef.value;
+      const { width, height } = getRendererDimensions();
 
       renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
       renderer.setSize(width, height);
@@ -137,20 +173,8 @@ export default {
       const loader = new GLTFLoader();
       loader.load('/assets/trading_card_pack.glb', (gltf) => {
         model = gltf.scene;
-        model.rotation.set(deg(BASE_ROT_X), deg(BASE_ROT_Y), deg(BASE_ROT_Z));
-        model.updateMatrixWorld(true);
-
-        const box   = new THREE.Box3().setFromObject(model);
-        const center = box.getCenter(new THREE.Vector3());
-        const size   = box.getSize(new THREE.Vector3());
-        const fovRad = camera.fov * (Math.PI / 180);
-        const frustumHeight = 2 * Math.tan(fovRad / 2) * camera.position.z;
-        const scale = (frustumHeight * 0.95) / size.y;
-
-        modelScale = scale;
-        model.scale.setScalar(scale);
-        model.position.copy(center).multiplyScalar(-scale);
         scene.add(model);
+        updateModelLayout();
       });
 
       const animate = (time) => {
@@ -271,12 +295,12 @@ export default {
     // ── Resize ────────────────────────────────────────────────────────────────
     const handleResize = () => {
       if (!containerRef.value || !renderer) return;
-      const width  = containerRef.value.offsetWidth;
-      const height = containerRef.value.offsetHeight;
+      const { width, height } = getRendererDimensions();
       if (!width || !height) return;
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
       renderer.setSize(width, height);
+      updateModelLayout();
     };
 
     const handleKeyDown = (e) => {
@@ -375,6 +399,7 @@ export default {
 <style scoped>
 /* ── Scene wrapper ──────────────────────────────────────────────────────────── */
 .pack-scene {
+  --pack-canvas-bleed: 24px;
   position: relative;
   width: 100%;
   height: calc(433px - 1.5rem);
@@ -383,9 +408,11 @@ export default {
   justify-content: center;
   cursor: pointer;
   transition: none;
+  overflow: visible;
 }
 
 .pack-scene.expanded {
+  --pack-canvas-bleed: 0px;
   position: fixed;
   top: 50%;
   left: 50%;
@@ -432,19 +459,22 @@ export default {
 .pack-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.88);
-  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   z-index: 9998;
-  cursor: default;
+  cursor: zoom-out;
 }
 
 .pack-backdrop-enter-active,
 .pack-backdrop-leave-active {
-  transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 0.7s ease, backdrop-filter 0.7s ease, -webkit-backdrop-filter 0.7s ease;
 }
 .pack-backdrop-enter-from,
 .pack-backdrop-leave-to {
   opacity: 0;
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
 }
 
 .pack-scene.expanded.is-revealing-pokemon {
@@ -453,11 +483,17 @@ export default {
 }
 
 canvas {
-  width: 100% !important;
-  height: 100% !important;
   display: block;
   position: absolute;
+  inset: calc(var(--pack-canvas-bleed) * -1);
+  width: calc(100% + (var(--pack-canvas-bleed) * 2)) !important;
+  height: calc(100% + (var(--pack-canvas-bleed) * 2)) !important;
+}
+
+.pack-scene.expanded canvas {
   inset: 0;
+  width: 100% !important;
+  height: 100% !important;
 }
 
 /* ── Screen shake ───────────────────────────────────────────────────────────── */
@@ -481,19 +517,71 @@ canvas {
 .open-flash {
   position: absolute;
   inset: 0;
-  background: #fff;
   opacity: 0;
   pointer-events: none;
   z-index: 200;
-  transition: opacity 0.05s ease;
+  border-radius: inherit;
+  background:
+    radial-gradient(circle at 50% 50%,
+      rgba(255, 252, 214, 0.95) 0%,
+      rgba(255, 225, 120, 0.78) 14%,
+      rgba(132, 224, 255, 0.34) 32%,
+      rgba(255, 255, 255, 0.12) 46%,
+      rgba(255, 255, 255, 0) 68%
+    );
+  mix-blend-mode: screen;
+  filter: blur(8px) saturate(1.1);
+  transform: scale(0.78);
+  transition: opacity 0.08s ease;
 }
 .open-flash--active {
-  animation: flash-burst 0.32s ease-out forwards;
+  animation: flash-burst 0.46s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+
+.open-burst-ring {
+  position: absolute;
+  inset: 18%;
+  border-radius: 999px;
+  border: 2px solid rgba(255, 241, 178, 0.85);
+  box-shadow:
+    0 0 24px rgba(255, 226, 122, 0.55),
+    inset 0 0 24px rgba(255, 255, 255, 0.18);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 190;
+  transform: scale(0.45);
+}
+
+.open-burst-ring--active {
+  animation: burst-ring 0.52s cubic-bezier(0.12, 0.7, 0.2, 1) forwards;
 }
 @keyframes flash-burst {
-  0%   { opacity: 0;    }
-  25%  { opacity: 0.92; }
-  100% { opacity: 0;    }
+  0% {
+    opacity: 0;
+    transform: scale(0.78);
+  }
+  30% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.22);
+  }
+}
+
+@keyframes burst-ring {
+  0% {
+    opacity: 0;
+    transform: scale(0.45);
+  }
+  22% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.4);
+  }
 }
 
 /* ── Particles ──────────────────────────────────────────────────────────────── */
@@ -512,16 +600,24 @@ canvas {
   line-height: 1;
   animation: particle-shoot linear forwards;
   will-change: transform, opacity;
+  text-shadow:
+    0 0 10px currentColor,
+    0 0 22px currentColor;
+  filter: saturate(1.15);
 }
 
 @keyframes particle-shoot {
   from {
-    transform: translate(-50%, -50%) translate(0, 0) scale(1);
+    transform: translate(-50%, -50%) translate(0, 0) scale(0.45) rotate(0deg);
+    opacity: 1;
+  }
+  30% {
+    transform: translate(-50%, -50%) translate(calc(var(--tx) * 0.28), calc(var(--ty) * 0.28)) scale(1.08) rotate(90deg);
     opacity: 1;
   }
   80% { opacity: 0.7; }
   to {
-    transform: translate(-50%, -50%) translate(var(--tx), var(--ty)) scale(0.1);
+    transform: translate(-50%, -50%) translate(var(--tx), var(--ty)) scale(0.12) rotate(200deg);
     opacity: 0;
   }
 }
