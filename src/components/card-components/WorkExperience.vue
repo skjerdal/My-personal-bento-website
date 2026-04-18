@@ -28,18 +28,18 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
+import { computed } from 'vue';
 import VerticalTimeline from '../VerticalTimeline.vue';
-import { cards } from '../../data/cardContent';
+import { currentLang, initLang } from '../../stores/language';
+import { translations } from '../../i18n/translations';
 
 export default {
   components: {
     VerticalTimeline
   },
   setup() {
-    // Get data in a way that works with SSR
-    const jobs = ref(cards.find(card => card.id === 'work')?.data || []);
-
+    initLang();
+    const jobs = computed(() => translations[currentLang.value].work);
     return { jobs };
   }
 };

@@ -33,17 +33,18 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { computed } from 'vue';
 import VerticalTimeline from '../VerticalTimeline.vue';
-import { cards } from '../../data/cardContent';
+import { currentLang, initLang } from '../../stores/language';
+import { translations } from '../../i18n/translations';
 
 export default {
   components: {
     VerticalTimeline
   },
   setup() {
-    const activityItems = ref(cards.find(card => card.id === 'activities')?.data || []);
-
+    initLang();
+    const activityItems = computed(() => translations[currentLang.value].activities);
     return { activityItems };
   }
 };

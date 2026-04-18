@@ -8,26 +8,25 @@
     <div class="quote-mark" aria-hidden="true">"</div>
 
     <div class="copy">
-      <p class="para para-1">
-        I'm from a small town, I like fishing, and I get most of my project
-        ideas at times when I should <em>definitely</em> be asleep.
-      </p>
-      <p class="para para-2">
-        My brain is basically an idea generator with no off switch. The
-        downside is that I usually move on to the next "even better" idea
-        before finishing the last one.
-      </p>
-      <p class="para para-3 punchline">
-        Which makes this website kind of special. It's actual proof that,
-        occasionally, I manage to finish something.
-      </p>
+      <p class="para para-1" v-html="t.para1.replace('definitely', '<em>definitely</em>').replace('definitivt', '<em>definitivt</em>')"></p>
+      <p class="para para-2">{{ t.para2 }}</p>
+      <p class="para para-3 punchline">{{ t.para3 }}</p>
     </div>
   </div>
 </template>
 
 <script>
+import { computed } from 'vue';
+import { currentLang, initLang } from '../../stores/language';
+import { translations } from '../../i18n/translations';
+
 export default {
   name: 'AboutMe',
+  setup() {
+    initLang();
+    const t = computed(() => translations[currentLang.value].aboutMe);
+    return { t };
+  }
 }
 </script>
 

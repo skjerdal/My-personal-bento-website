@@ -3,7 +3,7 @@ import Card from './Card.vue';
 import PokemonCard from './PokemonCard.vue';
 import BoosterPackCard from './BoosterPackCard.vue';
 
-const { isUnique, title, content, componentName, position, className, style, videoPath, customStyle } = Astro.props;
+const { cardId, isUnique, title, content, componentName, position, className, style, videoPath, customStyle } = Astro.props;
 const span = position?.span || 1;
 ---
 
@@ -27,9 +27,10 @@ const span = position?.span || 1;
       content={content}
     />
   ) : (
-    <Card 
-      client:load 
-      className={className} 
+    <Card
+      client:load
+      cardId={cardId}
+      className={className}
       componentName={componentName}
       position={position}
       title={title}
