@@ -1,6 +1,6 @@
 <template>
   <div class="vertical-timeline">
-    <div class="timeline-scroll-container">
+    <div class="timeline-scroll-container" ref="scrollContainerRef">
       <div class="timeline">
         <div
           v-for="(item, index) in items"
@@ -19,6 +19,8 @@
 </template>
 
 <script>
+import { ref, onMounted, onUnmounted } from 'vue';
+
 export default {
   name: 'VerticalTimeline',
   props: {
@@ -29,7 +31,57 @@ export default {
     }
   },
   setup() {
-    return {};
+    const scrollContainerRef = ref(null);
+    let startX = 0;
+    let startY = 0;
+    let lastY = 0;
+    let isVertical = null;
+
+    const isHorizontalMode = () => window.innerWidth <= 768;
+
+    const onTouchStart = (e) => {
+      if (!isHorizontalMode()) return;
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      lastY = startY;
+      isVertical = null;
+    };
+
+    const onTouchMove = (e) => {
+      if (!isHorizontalMode() || isVertical === false) return;
+      const currentX = e.touches[0].clientX;
+      const currentY = e.touches[0].clientY;
+
+      if (isVertical === null) {
+        const dx = Math.abs(currentX - startX);
+        const dy = Math.abs(currentY - startY);
+        if (dx === 0 && dy === 0) return;
+        isVertical = dy > dx;
+      }
+
+      if (isVertical) {
+        window.scrollBy({ top: lastY - currentY, behavior: 'instant' });
+        lastY = currentY;
+      }
+    };
+
+    onMounted(() => {
+      const el = scrollContainerRef.value;
+      if (el) {
+        el.addEventListener('touchstart', onTouchStart, { passive: true });
+        el.addEventListener('touchmove', onTouchMove, { passive: true });
+      }
+    });
+
+    onUnmounted(() => {
+      const el = scrollContainerRef.value;
+      if (el) {
+        el.removeEventListener('touchstart', onTouchStart);
+        el.removeEventListener('touchmove', onTouchMove);
+      }
+    });
+
+    return { scrollContainerRef };
   }
 };
 </script>
@@ -193,13 +245,75 @@ $line-grow-duration: 0.6s;
   100% { opacity: 1; transform: translateY(0); }
 }
 
-/* Responsive adjustments */
+/* Responsive adjustments — horizontal scroll on mobile */
 @media (max-width: 768px) {
-  .timeline { width: 95%; }
-  .timeline-entry { padding-left: 30px; margin-bottom: 25px; }
-  .timeline-dot { left: 5px; 
+  .vertical-timeline { height: auto; }
+
+  .timeline-scroll-container {
+    overflow-x: auto;
+    overflow-y: hidden;
+    touch-action: pan-x;
+    padding: 0 10px 12px;
+
+    /* hide vertical top-fade */
+    &::before { display: none; }
+
+    /* horizontal scrollbar */
+    scrollbar-width: thin;
+    &::-webkit-scrollbar { height: 3px; width: auto; }
+  }
+
+  .timeline {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    width: max-content;
+    padding: 0;
+
+    /* continuous horizontal track line behind all dots */
+    &::before {
+      content: '';
+      position: absolute;
+      top: 10px; /* dot top(5px) + dot radius(5px) */
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: rgba($text-color, 0.25);
+    }
+  }
+
+  .timeline-entry {
+    display: flex;
+    flex-direction: column;
+    padding-top: 26px;
+    padding-left: 8px;
+    padding-right: 8px;
+    margin-bottom: 0;
+    margin-right: 16px;
+    min-width: 160px;
+    max-width: 230px;
+
+    &:last-child { margin-right: 0; }
+
+    &:hover .timeline-dot {
+      transform: scale(1.15);
+      opacity: 1;
+      box-shadow: 0 0 10px rgba($text-color, 0.3);
+    }
+  }
+
+  .timeline-dot {
+    /* center horizontally in entry; left: calc(50% - 5px) avoids transform conflict with scale animation */
+    top: 5px;
+    left: calc(50% - 5px);
     &::before { width: 16px; height: 16px; }
   }
-  .timeline-line { left: calc(5px + (10px / 2) - (1px / 2)); top: calc(5px + 10px + 4px); bottom: -25px; }
+
+  /* individual lines replaced by the track ::before on .timeline */
+  .timeline-line { display: none; }
+
+  .timeline-content {
+    &:hover { transform: translateY(-3px); }
+  }
 }
 </style> 

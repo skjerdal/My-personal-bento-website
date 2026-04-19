@@ -189,6 +189,42 @@ export default {
       s.setProperty('--rotate-y', `${rotateY}deg`);
     };
 
+    // --- Device orientation (mobile tilt effect) ---
+    let baseOrientationBeta = null;
+    let baseOrientationGamma = null;
+
+    const handleDeviceOrientation = (e) => {
+      if (isExpanded.value || !cardRef.value) return;
+      const { beta, gamma } = e;
+      if (beta === null || gamma === null) return;
+
+      if (baseOrientationBeta === null) {
+        baseOrientationBeta = beta;
+        baseOrientationGamma = gamma;
+        isHovered.value = true;
+      }
+
+      // Clamp deltas to ±30° range, then map to 0–1
+      const xNorm = Math.max(0, Math.min(1, (Math.max(-30, Math.min(30, gamma - baseOrientationGamma)) + 30) / 60));
+      const yNorm = Math.max(0, Math.min(1, (Math.max(-30, Math.min(30, beta  - baseOrientationBeta))  + 30) / 60));
+
+      const rect = cardRef.value.getBoundingClientRect();
+      updateCardEffects(rect.left + xNorm * rect.width, rect.top + yNorm * rect.height);
+    };
+
+    const initDeviceOrientation = () => {
+      if (typeof DeviceOrientationEvent === 'undefined') return;
+      if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+        // iOS 13+: needs a user-gesture to grant permission
+        DeviceOrientationEvent.requestPermission()
+          .then(result => { if (result === 'granted') window.addEventListener('deviceorientation', handleDeviceOrientation); })
+          .catch(() => {});
+      } else {
+        window.addEventListener('deviceorientation', handleDeviceOrientation);
+      }
+    };
+    // ------------------------------------------------
+
     const handleMouseMove = (e) => {
       if (isMobile.value) return;
       updateCardEffects(e.clientX, e.clientY);
@@ -338,6 +374,16 @@ export default {
         card.addEventListener('mouseleave', handleMouseLeave);
         isInitialized.value = true;
       } else if (card) {
+        const needsPermission =
+          typeof DeviceOrientationEvent !== 'undefined' &&
+          typeof DeviceOrientationEvent.requestPermission === 'function';
+        if (needsPermission) {
+          // iOS 13+: requestPermission() must be called from a user gesture
+          card.addEventListener('touchend', initDeviceOrientation, { once: true });
+        } else {
+          // Android / non-permission browsers: listen immediately
+          initDeviceOrientation();
+        }
         isInitialized.value = true;
       }
       window.addEventListener('keydown', handleKeyDown);
@@ -353,6 +399,9 @@ export default {
         card.removeEventListener('mousemove', handleMouseMove);
         card.removeEventListener('mouseenter', handleMouseEnter);
         card.removeEventListener('mouseleave', handleMouseLeave);
+      }
+      if (isMobile.value) {
+        window.removeEventListener('deviceorientation', handleDeviceOrientation);
       }
       window.removeEventListener('keydown', handleKeyDown);
     });
