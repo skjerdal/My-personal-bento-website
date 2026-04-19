@@ -363,7 +363,7 @@ export default {
       '--pointer-y': '50%',
       '--background-x': '50%',
       '--background-y': '50%',
-      '--card-opacity': (isHovered.value || isExpanded.value) ? 1 : 0,
+      '--card-opacity': isHovered.value ? 1 : 0,
       '--hyp': 0,
       '--rotate-x': '0deg',
       '--rotate-y': '0deg',
