@@ -22,8 +22,7 @@
     "vue": "^3.4.35"
   },
   "devDependencies": {
-    "@astrojs/sitemap": "^3.7.2",
-    "sass": "^1.77.8"
+    "@astrojs/sitemap": "^3.7.2"
   },
   "optionalDependencies": {
     "@rollup/rollup-win32-x64-msvc": "^4.46.2"

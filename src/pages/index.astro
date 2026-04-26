@@ -1,28 +1,315 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import CardWrapper from '../components/CardWrapper.astro';
-import { cards } from '../data/cardContent';
+import BoosterPackCard from '../components/BoosterPackCard.vue';
+
+const workItems = [
+  {
+    org: 'Omega 365 Solutions',
+    role: 'Developer (Part-time)',
+    period: 'Sep 2024 - Now',
+    logo: '/Omega365_Icon_Primary_RGB.png',
+  },
+  {
+    org: 'Omega 365 Solutions',
+    role: 'Summer Intern',
+    period: 'Jun - Aug 2024',
+    logo: '/Omega365_Icon_Primary_RGB.png',
+  },
+  {
+    org: "Norway's Best",
+    role: 'IT Technician (Apprentice)',
+    period: '2019 - 2023',
+    logo: '/norways%20best.jpg',
+  },
+  {
+    org: 'Skjerdal Landskapspleie',
+    role: 'Seasonal Gardener',
+    period: 'Summers 2016 - 18',
+    initials: 'SL',
+  },
+];
+
+const educationItems = [
+  {
+    org: 'NTNU - Trondheim',
+    role: 'M.Sc. Computer Science - AI',
+    period: '2025 - 2027 expected',
+    logo: '/ntnu.png',
+  },
+  {
+    org: 'HVL - Bergen',
+    role: 'B.Eng. Computer Engineering',
+    period: '2022 - 2025',
+    logo: '/hvl-logo-vert-rgb.png',
+  },
+  {
+    org: 'Sogndal VGS',
+    role: 'Computer Electronics + Apprenticeship',
+    period: '2016 - 2021',
+    initials: 'VGS',
+  },
+];
+
+const activityItems = [
+  { role: 'TA - DAT108 Programming', org: 'HVL', logo: '/hvl-logo-vert-rgb.png' },
+  { role: 'TA - DAT107 Databases', org: 'HVL', logo: '/hvl-logo-vert-rgb.png' },
+  { role: 'Web Developer', org: 'Studvest', logo: '/studvestlogo.jpg' },
+];
+
+const projects = [
+  {
+    name: 'Quizzy',
+    stack: 'Web - Vue',
+    desc: 'A quiz app with realtime multiplayer and a custom question editor.',
+    icon: 'quiz',
+  },
+  {
+    name: 'TinyTransformer',
+    stack: 'ML - PyTorch',
+    desc: 'A transformer language model built from scratch, from attention to training loop.',
+    icon: 'spark',
+  },
+  {
+    name: 'CS:GO Skin Tracker',
+    stack: 'Data - Python',
+    desc: 'Tool for tracking Counter-Strike skin price trends across markets.',
+    icon: 'chart',
+  },
+];
+
+const stack = ['Vue', 'TypeScript', 'React', 'Python', 'PyTorch', 'SQL', 'Java', 'Three.js', 'Node', 'C#'];
 ---
 
 <Layout title="Thomas Skjerdal - Personal Website">
-  <main class="container">
-    <div class="card-grid">
-      {cards.map((card) => (
-        <CardWrapper
-          cardId={card.id}
-          isUnique={card.isUnique}
-          title={card.title}
-          content={card.content}
-          componentName={card.component}
-          position={card.position}
-          className="card"
-          videoPath={card.videoPath}
-          customStyle={card.customStyle}
-        />
-      ))}
-    </div>
+  <main class="site-shell">
+    <header class="top-bar">
+      <a class="brand" href="/" aria-label="Thomas Skjerdal">
+        <span class="brand-dot"></span>
+        <span>Thomas Skjerdal</span>
+      </a>
+      <div class="meta" aria-label="Current status">
+        <span>Bergen - Norway</span>
+        <span class="live">Open to opportunities</span>
+      </div>
+    </header>
+
+    <section class="bento" aria-label="Thomas Skjerdal portfolio">
+      <article class="bento-card dark col-2 row-2 hero-card">
+        <div class="hero-top">
+          <div>
+            <p class="eyebrow">Hello, I'm</p>
+            <h1>Thomas <em>Skjerdal</em></h1>
+            <p class="hero-sub">
+              Developer from a small town in Norway. Currently chasing a
+              <strong> Master's in AI</strong> at NTNU while shipping production
+              code at Omega 365. I get most of my ideas at hours I should be asleep.
+            </p>
+          </div>
+          <img class="hero-photo" src="/profil.jpg" alt="Thomas Skjerdal" />
+        </div>
+
+        <div class="hero-bottom">
+          <div class="hero-tags" aria-label="Core skills">
+            <span class="tag">Vue - TypeScript - Python</span>
+            <span class="tag">AI / ML</span>
+            <span class="tag">Full-stack</span>
+          </div>
+          <div class="hero-now">
+            <span class="hero-now-dot"></span>
+            <span>Building and learning - Bergen</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="bento-card col-1 row-2 old-pack-slot" aria-label="Interactive booster pack">
+        <BoosterPackCard client:load />
+      </article>
+
+      <article class="bento-card ember col-1 row-1 stats-card">
+        <p class="stats-tag">Now</p>
+        <div>
+          <p class="stats-num">M.Sc.</p>
+          <p class="stats-label">AI specialization<br />NTNU - 2025-27</p>
+        </div>
+      </article>
+
+      <article class="bento-card dark col-1 row-1 stack-card">
+        <div>
+          <p class="eyebrow">Tools of the trade</p>
+          <h2>Stack</h2>
+        </div>
+        <div class="stack-grid" aria-label="Technology stack">
+          {stack.map((item) => <span class="stack-pill">{item}</span>)}
+        </div>
+      </article>
+
+      <article class="bento-card dark col-2 row-2 projects-card">
+        <div class="section-head">
+          <h2>Projects</h2>
+          <span class="eyebrow">{projects.length} side things</span>
+        </div>
+        <div class="projects-list">
+          {projects.map((project) => (
+            <a class="project-row" href="https://github.com/skjerdal" target="_blank" rel="noopener">
+              <span class={`project-icon project-icon-${project.icon}`} aria-hidden="true">
+                {project.icon === 'quiz' && (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"></path>
+                    <path d="M12 17h.01"></path>
+                  </svg>
+                )}
+                {project.icon === 'spark' && (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2v4"></path>
+                    <path d="M12 18v4"></path>
+                    <path d="m4.9 4.9 2.8 2.8"></path>
+                    <path d="m16.3 16.3 2.8 2.8"></path>
+                    <path d="M2 12h4"></path>
+                    <path d="M18 12h4"></path>
+                    <path d="m4.9 19.1 2.8-2.8"></path>
+                    <path d="m16.3 7.7 2.8-2.8"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                )}
+                {project.icon === 'chart' && (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 3v18h18"></path>
+                    <path d="m7 15 4-4 3 3 5-7"></path>
+                  </svg>
+                )}
+              </span>
+              <span class="project-info">
+                <span class="project-name">
+                  {project.name}
+                  <span>{project.stack}</span>
+                </span>
+                <span class="project-desc">{project.desc}</span>
+              </span>
+              <svg class="project-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M5 12h14"></path>
+                <path d="m12 5 7 7-7 7"></path>
+              </svg>
+            </a>
+          ))}
+        </div>
+      </article>
+
+      <article class="bento-card cream col-2 row-2 timeline-card">
+        <div class="section-head">
+          <h2>Work</h2>
+          <span class="eyebrow">{workItems.length} roles</span>
+        </div>
+        <div class="timeline-list">
+          {workItems.map((item) => (
+            <div class="tl-row">
+              <div class="tl-logo">
+                {item.logo ? <img src={item.logo} alt="" /> : <span>{item.initials}</span>}
+              </div>
+              <div class="tl-body">
+                <p class="tl-title">{item.role}</p>
+                <p class="tl-meta"><span>{item.org}</span> - {item.period}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </article>
+
+      <article class="bento-card dark col-2 row-2 timeline-card">
+        <div class="section-head">
+          <h2>Education</h2>
+          <span class="eyebrow">9 yrs of school</span>
+        </div>
+        <div class="timeline-list">
+          {educationItems.map((item) => (
+            <div class="tl-row">
+              <div class="tl-logo">
+                {item.logo ? <img src={item.logo} alt="" /> : <span>{item.initials}</span>}
+              </div>
+              <div class="tl-body">
+                <p class="tl-title">{item.role}</p>
+                <p class="tl-meta"><span>{item.org}</span> - {item.period}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </article>
+
+      <article class="bento-card dark col-2 row-2 activities-card">
+        <h2>Side<br />quests</h2>
+        <div class="activities-list">
+          {activityItems.map((item) => (
+            <div class="activity-row">
+              <div class="tl-logo"><img src={item.logo} alt="" /></div>
+              <div>
+                <p class="activity-role">{item.role}</p>
+                <p class="activity-org">{item.org}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </article>
+
+      <article class="bento-card ember col-4 row-1 contact-card">
+        <div class="orbits" aria-hidden="true"><span></span><span></span><span></span><span class="spark"></span></div>
+        <div class="contact-copy">
+          <p class="eyebrow">Get in touch</p>
+          <h2>Let's build something.</h2>
+        </div>
+        <div class="contact-actions">
+          <a class="contact-btn" id="email-link" href="mailto:thomas@skjerdal.me" data-email="thomas@skjerdal.me">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+              <path d="m3 7 9 6 9-6"></path>
+            </svg>
+            <span id="email-label">thomas@skjerdal.me</span>
+          </a>
+          <a class="contact-btn" href="https://github.com/skjerdal" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.1-1.3-.3-2.6-1.2-3.6.3-1.1.3-2.3-.1-3.4 0 0-1-.3-3.5 1.3a12.3 12.3 0 0 0-6.4 0C6.3 1.7 5.3 2 5.3 2c-.4 1.1-.4 2.3-.1 3.4A5.2 5.2 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.4.5-.7 1.2-.8 2"></path>
+              <path d="M9 18c-4.5 2-5-2-7-2"></path>
+            </svg>
+            GitHub
+          </a>
+          <a class="contact-btn" href="https://linkedin.com/in/thomas-skjerdal-8ba458283" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"></path>
+              <rect x="2" y="9" width="4" height="12"></rect>
+              <circle cx="4" cy="4" r="2"></circle>
+            </svg>
+            LinkedIn
+          </a>
+          <a class="contact-btn primary" href="/resume.pdf" download="Thomas_Skjerdal_Resume.pdf">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <path d="m7 10 5 5 5-5"></path>
+              <path d="M12 15V3"></path>
+            </svg>
+            Resume
+          </a>
+        </div>
+      </article>
+    </section>
+
+    <p class="foot">&copy; 2026 - Thomas Skjerdal - Built with too much coffee</p>
   </main>
 </Layout>
 
-<script>
+<script is:inline>
+  const emailLink = document.getElementById('email-link');
+  const emailLabel = document.getElementById('email-label');
+
+  emailLink?.addEventListener('click', (event) => {
+    const email = emailLink.dataset.email;
+    if (!email || !navigator.clipboard) return;
+
+    event.preventDefault();
+    navigator.clipboard.writeText(email).then(() => {
+      if (!emailLabel) return;
+      emailLabel.textContent = 'Copied!';
+      window.setTimeout(() => {
+        emailLabel.textContent = email;
+      }, 1800);
+    });
+  });
 </script>

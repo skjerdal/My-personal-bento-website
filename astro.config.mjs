@@ -1,7 +1,7 @@
 import { defineConfig } from 'astro/config';
 import vue from "@astrojs/vue";
 import react from "@astrojs/react";
-import vercel from "@astrojs/vercel/serverless";
+import vercel from "@astrojs/vercel";
 import sitemap from "@astrojs/sitemap";
 
 // https://astro.build/config
@@ -9,9 +9,6 @@ export default defineConfig({
   site: 'https://skjerdal.me',
   integrations: [vue(), react(), sitemap()],
   vite: {
-    server: {
-      https: true,
-    },
     ssr: {
       noExternal: ['lucide-react']
     },

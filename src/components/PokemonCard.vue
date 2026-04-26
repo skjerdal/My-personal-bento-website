@@ -127,7 +127,7 @@
 
 <script>
 import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue';
-import './component-style/PokemonCard.scss';
+import './component-style/PokemonCard.css';
 
 export default {
   inheritAttrs: false,
