@@ -8,24 +8,45 @@ const workItems = [
     role: 'Developer (Part-time)',
     period: 'Sep 2024 - Now',
     logo: '/Omega365_Icon_Primary_RGB.png',
+    desc: 'Building enterprise web features in Vue 3 and TypeScript.',
+    details: [
+      'Developing new frontend features for a large-scale ERP platform used globally',
+      'Working across Vue 3 SPA and .NET backend services',
+      'Participating in code review, sprint planning, and agile workflows',
+    ],
   },
   {
     org: 'Omega 365 Solutions',
     role: 'Summer Intern',
     period: 'Jun - Aug 2024',
     logo: '/Omega365_Icon_Primary_RGB.png',
+    desc: 'First hands-on experience in a production codebase at scale.',
+    details: [
+      'Contributed features that were shipped to production within the first weeks',
+      'Learned enterprise codebase conventions and code review processes',
+    ],
   },
   {
     org: "Norway's Best",
     role: 'IT Technician (Apprentice)',
     period: '2019 - 2023',
     logo: '/norways%20best.jpg',
+    desc: 'IT apprenticeship managing infrastructure across retail locations.',
+    details: [
+      'Responsible for hardware, networking, and software support across stores',
+      'Served as primary IT contact during a 4-year certified apprenticeship',
+      'Diagnosed and resolved technical issues in fast-paced retail environments',
+    ],
   },
   {
     org: 'Skjerdal Landskapspleie',
     role: 'Seasonal Gardener',
     period: 'Summers 2016 - 18',
     initials: 'SL',
+    desc: 'Seasonal landscaping work during high school summers.',
+    details: [
+      'Outdoor fieldwork developing discipline and physical endurance',
+    ],
   },
 ];
 
@@ -35,18 +56,35 @@ const educationItems = [
     role: 'M.Sc. Computer Science - AI',
     period: '2025 - 2027 expected',
     logo: '/ntnu.png',
+    desc: 'Specializing in machine learning and AI systems.',
+    details: [
+      'Coursework in deep learning, NLP, and AI systems design',
+      'Research-adjacent projects exploring modern ML architectures',
+      'Expected graduation 2027',
+    ],
   },
   {
     org: 'HVL - Bergen',
     role: 'B.Eng. Computer Engineering',
     period: '2022 - 2025',
     logo: '/hvl-logo-vert-rgb.png',
+    desc: 'Foundations in software, systems, and web engineering.',
+    details: [
+      'Covered algorithms, OOP, databases, operating systems, and full-stack web development',
+      'Teaching assistant for DAT108 Programming and DAT107 Databases',
+      'Built several projects including a real-time multiplayer quiz app in Vue 3',
+    ],
   },
   {
     org: 'Sogndal VGS',
     role: 'Computer Electronics + Apprenticeship',
     period: '2016 - 2021',
     initials: 'VGS',
+    desc: 'Technical high school followed by a 2-year IT apprenticeship.',
+    details: [
+      'Studied electronics, networking, and computer systems',
+      "Completed apprenticeship at Norway's Best as a certified IT technician",
+    ],
   },
 ];
 
@@ -196,42 +234,98 @@ const stack = ['Vue', 'TypeScript', 'React', 'Python', 'PyTorch', 'SQL', 'Java',
       </article>
 
       <article class="bento-card cream col-2 row-2 timeline-card">
-        <div class="section-head">
-          <h2>Work</h2>
-          <span class="eyebrow">{workItems.length} roles</span>
+        <div class="tl-main">
+          <div class="section-head">
+            <h2>Work</h2>
+            <span class="eyebrow">{workItems.length} roles</span>
+          </div>
+          <div class="tl-list">
+            {workItems.map((item, i) => (
+              <div class="tl-entry">
+                <div class="tl-rail">
+                  <div class="tl-dot"></div>
+                  {i < workItems.length - 1 && <div class="tl-line"></div>}
+                </div>
+                <div class="tl-logo">
+                  {item.logo ? <img src={item.logo} alt="" /> : <span>{item.initials}</span>}
+                </div>
+                <div class="tl-body">
+                  <p class="tl-title">{item.role}</p>
+                  <p class="tl-meta"><span>{item.org}</span> · {item.period}</p>
+                  <p class="tl-desc">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <button class="tl-more-btn">
+            More detail
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </button>
         </div>
-        <div class="timeline-list">
-          {workItems.map((item) => (
-            <div class="tl-row">
-              <div class="tl-logo">
-                {item.logo ? <img src={item.logo} alt="" /> : <span>{item.initials}</span>}
+        <div class="tl-detail-panel" aria-label="Work experience details">
+          <button class="tl-close-btn" aria-label="Close details">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            Close
+          </button>
+          <div class="tl-detail-scroll">
+            {workItems.map((item) => (
+              <div class="tl-detail-entry">
+                <p class="tl-detail-role">{item.role}</p>
+                <p class="tl-detail-org"><span>{item.org}</span> · {item.period}</p>
+                <ul class="tl-detail-bullets">
+                  {item.details.map((d) => <li>{d}</li>)}
+                </ul>
               </div>
-              <div class="tl-body">
-                <p class="tl-title">{item.role}</p>
-                <p class="tl-meta"><span>{item.org}</span> - {item.period}</p>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </article>
 
       <article class="bento-card dark col-2 row-2 timeline-card">
-        <div class="section-head">
-          <h2>Education</h2>
-          <span class="eyebrow">9 yrs of school</span>
+        <div class="tl-main">
+          <div class="section-head">
+            <h2>Education</h2>
+            <span class="eyebrow">9 yrs of school</span>
+          </div>
+          <div class="tl-list">
+            {educationItems.map((item, i) => (
+              <div class="tl-entry">
+                <div class="tl-rail">
+                  <div class="tl-dot"></div>
+                  {i < educationItems.length - 1 && <div class="tl-line"></div>}
+                </div>
+                <div class="tl-logo">
+                  {item.logo ? <img src={item.logo} alt="" /> : <span>{item.initials}</span>}
+                </div>
+                <div class="tl-body">
+                  <p class="tl-title">{item.role}</p>
+                  <p class="tl-meta"><span>{item.org}</span> · {item.period}</p>
+                  <p class="tl-desc">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <button class="tl-more-btn">
+            More detail
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </button>
         </div>
-        <div class="timeline-list">
-          {educationItems.map((item) => (
-            <div class="tl-row">
-              <div class="tl-logo">
-                {item.logo ? <img src={item.logo} alt="" /> : <span>{item.initials}</span>}
+        <div class="tl-detail-panel" aria-label="Education details">
+          <button class="tl-close-btn" aria-label="Close details">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            Close
+          </button>
+          <div class="tl-detail-scroll">
+            {educationItems.map((item) => (
+              <div class="tl-detail-entry">
+                <p class="tl-detail-role">{item.role}</p>
+                <p class="tl-detail-org"><span>{item.org}</span> · {item.period}</p>
+                <ul class="tl-detail-bullets">
+                  {item.details.map((d) => <li>{d}</li>)}
+                </ul>
               </div>
-              <div class="tl-body">
-                <p class="tl-title">{item.role}</p>
-                <p class="tl-meta"><span>{item.org}</span> - {item.period}</p>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </article>
 
@@ -291,7 +385,7 @@ const stack = ['Vue', 'TypeScript', 'React', 'Python', 'PyTorch', 'SQL', 'Java',
       </article>
     </section>
 
-    <p class="foot">&copy; 2026 - Thomas Skjerdal - Built with too much coffee</p>
+    <p class="foot">&copy; 2026 - Thomas Skjerdal - Built with too much caffeine</p>
   </main>
 </Layout>
 
@@ -310,6 +404,18 @@ const stack = ['Vue', 'TypeScript', 'React', 'Python', 'PyTorch', 'SQL', 'Java',
       window.setTimeout(() => {
         emailLabel.textContent = email;
       }, 1800);
+    });
+  });
+
+  document.querySelectorAll('.tl-more-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      btn.closest('.timeline-card').classList.add('detail-open');
+    });
+  });
+
+  document.querySelectorAll('.tl-close-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      btn.closest('.timeline-card').classList.remove('detail-open');
     });
   });
 </script>
