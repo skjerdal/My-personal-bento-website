@@ -33,7 +33,7 @@ export default {
       type: Object,
       default: () => ({
         resumeUrl: '/resume.pdf',
-        downloadName: 'Thomas_Skjerdal_Resume.pdf'
+        downloadName: '001_Thomas_Skjerdal_Resume.pdf'
       })
     }
   },
@@ -45,7 +45,7 @@ export default {
   methods: {
     downloadResume() {
       const resumeUrl = this.data?.resumeUrl || '/resume.pdf';
-      const downloadName = this.data?.downloadName || 'Thomas_Skjerdal_Resume.pdf';
+      const downloadName = this.data?.downloadName || '001_Thomas_Skjerdal_Resume.pdf';
       
       // Create a temporary link element and trigger download
       const link = document.createElement('a');

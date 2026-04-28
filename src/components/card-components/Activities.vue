@@ -1,8 +1,8 @@
 <template>
   <div class="activities">
     <VerticalTimeline :items="activityItems">
-      <template #item="{ item: activity, active }">
-        <div class="activity-item" :class="{ active }">
+      <template #item="{ item: activity, index }">
+        <div class="activity-item">
           <div class="activity-header">
             <h3>{{ activity.title }}</h3>
             <div class="organization">
@@ -19,11 +19,20 @@
             <div class="period">{{ activity.period }}</div>
           </div>
           <div class="activity-description">
-            <ul v-if="activity.highlights?.length" class="activity-highlights">
-              <li v-for="(highlight, index) in activity.highlights" :key="index">
-                {{ highlight }}
-              </li>
-            </ul>
+            <template v-if="activity.highlights?.length">
+              <p class="hook-text">{{ activity.highlights[0] }}</p>
+              <transition name="expand">
+                <ul v-if="expandedItems[index]" class="activity-highlights">
+                  <li v-for="(highlight, i) in activity.highlights.slice(1)" :key="i">
+                    {{ highlight }}
+                  </li>
+                </ul>
+              </transition>
+              <button v-if="activity.highlights.length > 1" class="read-more-btn" @click="toggleItem(index)">
+                {{ expandedItems[index] ? t.showLess : t.readMore }}
+                <span class="arrow" :class="{ rotated: expandedItems[index] }">↓</span>
+              </button>
+            </template>
             <p v-else>{{ activity.description }}</p>
           </div>
         </div>
@@ -33,7 +42,7 @@
 </template>
 
 <script>
-import { computed } from 'vue';
+import { computed, reactive } from 'vue';
 import VerticalTimeline from '../VerticalTimeline.vue';
 import { currentLang, initLang } from '../../stores/language';
 import { translations } from '../../i18n/translations';
@@ -45,7 +54,17 @@ export default {
   setup() {
     initLang();
     const activityItems = computed(() => translations[currentLang.value].activities);
-    return { activityItems };
+    const t = computed(() => ({
+      readMore: translations[currentLang.value].readMore,
+      showLess: translations[currentLang.value].showLess,
+    }));
+    const expandedItems = reactive({});
+
+    const toggleItem = (index) => {
+      expandedItems[index] = !expandedItems[index];
+    };
+
+    return { activityItems, t, expandedItems, toggleItem };
   }
 };
 </script>
@@ -60,12 +79,6 @@ export default {
     display: flex;
     flex-direction: column;
     transition: all 0.3s ease;
-
-    &.active {
-      .activity-header h3 {
-        color: var(--accent-color);
-      }
-    }
 
     .activity-header {
       margin-bottom: 4px;
@@ -96,7 +109,7 @@ export default {
     }
 
     .activity-meta {
-      margin-bottom: 8px;
+      margin-bottom: 6px;
 
       .period {
         font-size: 0.8rem;
@@ -106,15 +119,15 @@ export default {
     }
 
     .activity-description {
-      p {
-        margin: 0;
-        font-size: 0.85rem;
-        line-height: 1.4;
+      .hook-text {
+        margin: 0 0 4px;
+        font-size: 0.82rem;
+        line-height: 1.35;
         color: var(--text-secondary);
       }
 
       .activity-highlights {
-        margin: 0;
+        margin: 4px 0 0;
         padding-left: 1rem;
 
         li {
@@ -123,12 +136,44 @@ export default {
           color: var(--text-secondary);
           margin-bottom: 0.28rem;
 
-          &:last-child {
-            margin-bottom: 0;
-          }
+          &:last-child { margin-bottom: 0; }
+        }
+      }
+
+      .read-more-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        margin-top: 5px;
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        font-size: 0.75rem;
+        color: var(--text-tertiary);
+        transition: color 0.2s ease;
+
+        &:hover { color: var(--text-primary); }
+
+        .arrow {
+          display: inline-block;
+          transition: transform 0.25s ease;
+          &.rotated { transform: rotate(180deg); }
         }
       }
     }
   }
+}
+
+.expand-enter-active,
+.expand-leave-active {
+  transition: opacity 0.25s ease, max-height 0.3s ease;
+  max-height: 200px;
+  overflow: hidden;
+}
+.expand-enter-from,
+.expand-leave-to {
+  opacity: 0;
+  max-height: 0;
 }
 </style>

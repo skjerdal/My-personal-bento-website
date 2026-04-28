@@ -10,7 +10,7 @@
           <div class="timeline-dot"></div>
           <div class="timeline-line" v-if="index < items.length - 1"></div>
           <div class="timeline-content">
-            <slot name="item" :item="item"></slot>
+            <slot name="item" :item="item" :index="index"></slot>
           </div>
         </div>
       </div>

@@ -9,9 +9,6 @@ export default defineConfig({
   site: 'https://skjerdal.me',
   integrations: [vue(), react(), sitemap()],
   vite: {
-    server: {
-      https: true,
-    },
     ssr: {
       noExternal: ['lucide-react']
     },

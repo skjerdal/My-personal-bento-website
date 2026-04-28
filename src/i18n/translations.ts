@@ -29,6 +29,8 @@ export const translations = {
       description: 'Download my latest resume to learn more about my experience and skills.',
       button: 'Download Resume',
     },
+    readMore: 'Read more',
+    showLess: 'Show less',
     work: [
       {
         company: 'Omega 365 Solutions',
@@ -179,6 +181,8 @@ export const translations = {
       description: 'Last ned min nyeste CV for å lære mer om mine erfaringer og ferdigheter.',
       button: 'Last ned CV',
     },
+    readMore: 'Les mer',
+    showLess: 'Vis mindre',
     work: [
       {
         company: 'Omega 365 Solutions',

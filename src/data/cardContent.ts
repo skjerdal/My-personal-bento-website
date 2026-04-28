@@ -251,7 +251,7 @@ export const cards: Card[] = [
     position: { span: 1 },
     data: {
       resumeUrl: '/resume.pdf',
-      downloadName: 'Thomas_Skjerdal_Resume.pdf'
+      downloadName: '001_Thomas_Skjerdal_Resume.pdf'
     }
   },
 ];
