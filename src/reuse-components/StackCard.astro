@@ -1,0 +1,110 @@
+---
+interface Props {
+  stack?: string[];
+}
+
+const { stack = ['Vue', 'TypeScript', 'React', 'Python', 'PyTorch', 'SQL', 'Java', 'Three.js', 'Node', 'C#'] } = Astro.props;
+---
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+<article class="stack-card">
+  <div>
+    <p class="eyebrow">Tools of the trade</p>
+    <h2>Stack</h2>
+  </div>
+  <div class="stack-grid" aria-label="Technology stack">
+    {stack.map((item) => <span class="stack-pill">{item}</span>)}
+  </div>
+</article>
+
+<style>
+  .stack-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 22px;
+    border-radius: 24px;
+    overflow: hidden;
+    isolation: isolate;
+    background: linear-gradient(155deg, #ffffff 0%, #f8f4ef 100%);
+    border: 1px solid rgba(26, 20, 16, 0.1);
+    box-shadow:
+      0 8px 32px -8px rgba(0, 0, 0, 0.12),
+      0 4px 16px -4px rgba(0, 0, 0, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    color: #1a1410;
+    min-height: 180px;
+    box-sizing: border-box;
+    animation: rise 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .stack-card:hover {
+    transform: translateY(-4px);
+  }
+
+  .stack-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    border-radius: inherit;
+    background: linear-gradient(160deg, rgba(255, 138, 61, 0.2), rgba(255, 138, 61, 0) 40%, rgba(255, 138, 61, 0) 60%, rgba(255, 138, 61, 0.1));
+    pointer-events: none;
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+
+  .eyebrow {
+    margin: 0;
+    color: rgba(26, 20, 16, 0.58);
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  h2 {
+    margin: 8px 0 0;
+    color: #1a1410;
+    font-family: "Instrument Serif", Georgia, serif;
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 1;
+  }
+
+  .stack-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 12px;
+  }
+
+  .stack-pill {
+    padding: 6px 10px;
+    border: 1px solid rgba(26, 20, 16, 0.18);
+    border-radius: 999px;
+    background: rgba(26, 20, 16, 0.04);
+    color: #4a3f31;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px;
+    transition: transform 0.2s, border-color 0.2s, background 0.2s, color 0.2s;
+  }
+
+  .stack-pill:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255, 138, 61, 0.4);
+    background: rgba(255, 138, 61, 0.15);
+    color: #e8960a;
+  }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>

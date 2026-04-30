@@ -1,13 +1,16 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import CardWrapper from '../components/CardWrapper.astro';
+import NowCard from '../reuse-components/NowCard.astro';
+import StackCard from '../reuse-components/StackCard.astro';
+import ContactCard from '../reuse-components/ContactCard.astro';
 import { cards } from '../data/cardContent';
 ---
 
 <Layout title="Thomas Skjerdal - Personal Website">
   <main class="container">
     <div class="card-grid">
-      {cards.map((card) => (
+      {cards.slice(0, 2).map((card) => (
         <CardWrapper
           cardId={card.id}
           isUnique={card.isUnique}
@@ -20,9 +23,55 @@ import { cards } from '../data/cardContent';
           customStyle={card.customStyle}
         />
       ))}
+      <div class="card-pair">
+        <NowCard />
+        <StackCard />
+      </div>
+      {cards.slice(2).map((card) => (
+        <CardWrapper
+          cardId={card.id}
+          isUnique={card.isUnique}
+          title={card.title}
+          content={card.content}
+          componentName={card.component}
+          position={card.position}
+          className="card"
+          videoPath={card.videoPath}
+          customStyle={card.customStyle}
+        />
+      ))}
+      <div class="contact-wrapper">
+        <ContactCard />
+      </div>
     </div>
   </main>
 </Layout>
+
+<style>
+  .card-pair {
+    grid-column: span 1;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: pair-fly-in 0.4s ease-out 200ms forwards;
+  }
+
+  .contact-wrapper {
+    grid-column: 1 / -1;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: pair-fly-in 0.4s ease-out forwards;
+  }
+
+  @keyframes pair-fly-in {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
 
 <script>
 </script>

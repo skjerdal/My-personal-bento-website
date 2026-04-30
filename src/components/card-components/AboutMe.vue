@@ -2,15 +2,25 @@
   <div class="about-me">
     <span class="seo-name">Thomas Skjerdal</span>
 
-    <div class="ambient ambient-top" aria-hidden="true"></div>
-    <div class="ambient ambient-bottom" aria-hidden="true"></div>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
-    <div class="quote-mark" aria-hidden="true">"</div>
+    <div class="name-section">
+      <img class="avatar" src="/profilbilde.png" alt="Thomas Skjerdal" />
+      <p class="eyebrow">{{ t.eyebrow }}</p>
+      <h1 class="name">Thomas <em>Skjerdal</em></h1>
+    </div>
 
-    <div class="copy">
-      <p class="para para-1" v-html="t.para1.replace('definitely', '<em>definitely</em>').replace('definitivt', '<em>definitivt</em>')"></p>
-      <p class="para para-2">{{ t.para2 }}</p>
-      <p class="para para-3 punchline">{{ t.para3 }}</p>
+    <p class="bio" v-html="t.bio"></p>
+
+    <div class="tags">
+      <span class="tag" v-for="tag in tags" :key="tag">{{ tag }}</span>
+    </div>
+
+    <div class="status-line">
+      <span class="status-dot" aria-hidden="true"></span>
+      <span>{{ t.status }}</span>
     </div>
   </div>
 </template>
@@ -25,7 +35,8 @@ export default {
   setup() {
     initLang();
     const t = computed(() => translations[currentLang.value].aboutMe);
-    return { t };
+    const tags = ['Vue · TypeScript · Python', 'AI / ML', 'Full-stack'];
+    return { t, tags };
   }
 }
 </script>
@@ -34,14 +45,13 @@ export default {
 .about-me {
   height: 100%;
   width: 100%;
-  padding: 0.75rem 1.1rem 1rem 0.75rem;
+  padding: 1.4rem 1.5rem 1.3rem;
   display: flex;
   flex-direction: column;
+  gap: 1rem;
   box-sizing: border-box;
-  position: relative;
-  overflow: hidden;
+  font-family: "Geist", system-ui, sans-serif;
   color: var(--text-primary, #162033);
-  isolation: isolate;
 }
 
 .seo-name {
@@ -53,115 +63,104 @@ export default {
   white-space: nowrap;
 }
 
-.ambient {
-  position: absolute;
-  border-radius: 999px;
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.75;
-  filter: blur(12px);
+.name-section {
+  display: block;
 }
 
-.ambient-top {
-  width: 9rem;
-  height: 9rem;
-  top: -3rem;
-  right: -1.85rem;
-  background:
-    radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0) 52%),
-    radial-gradient(circle at 62% 62%, rgba(57, 99, 255, 0.24), rgba(57, 99, 255, 0) 66%);
+.avatar {
+  float: right;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0 0 0.5rem 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  box-shadow:
+    0 0 0 4px rgba(232, 131, 10, 0.15),
+    0 0 18px rgba(232, 131, 10, 0.35),
+    0 0 40px rgba(232, 131, 10, 0.18),
+    0 4px 12px rgba(0, 0, 0, 0.12);
 }
 
-.ambient-bottom {
-  width: 7rem;
-  height: 7rem;
-  bottom: 1.1rem;
-  left: -2.8rem;
-  background: radial-gradient(circle at center, rgba(99, 181, 255, 0.18), rgba(99, 181, 255, 0) 70%);
+.eyebrow {
+  margin: 0 0 0.3rem;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(22, 32, 51, 0.55);
 }
 
-.quote-mark,
-.copy {
-  position: relative;
-  z-index: 1;
-}
-
-.quote-mark {
-  font-size: 4.5rem;
-  line-height: 0.82;
-  font-family: Georgia, serif;
-  color: var(--text-secondary, #3963ff);
-  opacity: 0;
-  margin: 0 0 -1.35rem -0.15rem;
-  user-select: none;
-  text-shadow: 0 10px 24px rgba(57, 99, 255, 0.12);
-  animation: fadeIn 0.45s ease-out 0.05s forwards;
-}
-
-.copy {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-  flex: 1;
-  justify-content: center;
-}
-
-.para {
+.name {
   margin: 0;
-  color: rgba(22, 32, 51, 0.88);
-  opacity: 0;
-  font-size: 0.8rem;
-  line-height: 1.5;
+  font-family: "Instrument Serif", Georgia, serif;
+  font-size: clamp(2.6rem, 5.5vw, 3.6rem);
+  font-weight: 400;
+  line-height: 1;
   letter-spacing: -0.01em;
-  text-wrap: pretty;
+  color: var(--text-primary, #162033);
 
   em {
-    font-style: normal;
-    font-weight: 700;
-    color: var(--text-secondary, #3963ff);
+    font-style: italic;
+    color: #e8830a;
   }
-
-  &.para-1 { animation: flyInUp 0.5s ease-out 0.12s forwards; }
-  &.para-2 { animation: flyInUp 0.5s ease-out 0.24s forwards; }
-  &.para-3 { animation: flyInUp 0.5s ease-out 0.36s forwards; }
 }
 
-.punchline {
-  margin-top: 0.05rem;
-  padding: 0.7rem 0.8rem;
-  border-radius: 16px;
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.44)),
-    linear-gradient(135deg, rgba(57, 99, 255, 0.08), rgba(57, 99, 255, 0));
-  border: 1px solid rgba(255, 255, 255, 0.78);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    0 10px 24px rgba(15, 23, 42, 0.06);
-  font-weight: 600;
-  font-size: 0.76rem;
-  line-height: 1.42;
+.bio {
+  margin: 0;
+  font-family: "Geist", system-ui, sans-serif;
+  font-size: 0.84rem;
+  line-height: 1.65;
+  color: var(--text-primary, #162033);
+  opacity: 0.82;
+  text-wrap: pretty;
+  flex: 1;
+  clear: both;
+
+  :deep(strong) {
+    font-weight: 500;
+    opacity: 1;
+    color: var(--text-primary, #162033);
+  }
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag {
+  padding: 5px 11px;
+  border-radius: 999px;
+  border: 1px solid rgba(22, 32, 51, 0.18);
+  background: rgba(22, 32, 51, 0.04);
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 11px;
   color: var(--text-primary, #162033);
 }
 
-@keyframes flyInUp {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.status-line {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: "Geist", system-ui, sans-serif;
+  font-size: 0.72rem;
+  color: rgba(22, 32, 51, 0.55);
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 0.22;
-    transform: translateY(0);
-  }
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #f59e0b;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.25);
+  animation: pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.25); }
+  50%       { box-shadow: 0 0 0 5px rgba(245, 158, 11, 0.1); }
 }
 </style>

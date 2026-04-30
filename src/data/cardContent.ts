@@ -22,10 +22,10 @@ type Card = {
 export const cards: Card[] = [
   {
     id: 'about-me',
-    title: 'About Thomas Skjerdal',
+    title: '',
     content: "I'm from a small town, I like fishing, and I get most of my project ideas at times when I should definitely be asleep.",
     component: 'AboutMe',
-    position: { span: 1 },
+    position: { span: 2 },
     customStyle: {
       cssClasses: ['about-me-card'],
       cssVariables: {
@@ -47,6 +47,21 @@ export const cards: Card[] = [
     component: 'BoosterPackCard',
     position: { span: 1 },
     isUnique: true,
+  },
+  {
+    id: 'projects',
+    title: '',
+    content: '',
+    component: 'Projects',
+    position: { span: 2 },
+    customStyle: {
+      cssVariables: {
+        '--card-bg': 'linear-gradient(155deg, #f8f3ea 0%, #f9fbff 58%, #eef4ff 100%)',
+        '--box-shadow': '0 20px 44px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(15, 23, 42, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.92)',
+        '--card-border': '1px solid rgba(255, 255, 255, 0.82)',
+        '--backdrop-filter': 'blur(10px)',
+      }
+    }
   },
   {
     id: 'work',
@@ -143,44 +158,6 @@ export const cards: Card[] = [
     ]
   },
   {
-    id: 'contact',
-    title: '',
-    content: 'Connect with me on social media or send me an email.',
-    component: 'ContactSocial',
-    position: { span: 1 },
-    data: {
-      email: 'thomas@skjerdal.me',
-      availability: {
-        status: 'available', // can be 'available', 'busy', or 'away'
-        message: 'Available for opportunities'
-      },
-      social: [
-        {
-          name: 'LinkedIn',
-          url: 'https://linkedin.com/in/thomas-skjerdal-8ba458283',
-          icon: 'linkedin'
-        },
-        {
-          name: 'GitHub',
-          url: 'https://github.com/skjerdal',
-          icon: 'github'
-        }
-      ]
-    },
-    customStyle: {
-      cssVariables: {
-        '--card-bg': '#000000', // Solid black background
-        '--text-primary': '#ffffff', // White text for contrast
-        '--text-secondary': '#ffffff', // White text for secondary elements
-        '--text-tertiary': '#ffffff', // White text for tertiary elements
-        '--text-color': '#ffffff', // White text for card title
-        '--box-shadow': '0 20px 68px #00000040, 0 1px 2px #0000004d, 0 0 #000, inset 0 2px 1px #ffffff80, inset 1px 1px .25px #ffffff4d', // Complete shadow effect
-        '--card-border': '1px solid #000', // Black border
-        '--backdrop-filter': 'none' // Remove blur that might interfere
-      }
-    }
-  },
-  {
     id: 'education',
     title: 'Education',
     content: 'My academic journey in computer science and engineering',
@@ -225,33 +202,5 @@ export const cards: Card[] = [
         ]
       }
     ]
-  },
-  {
-    id: 'status',
-    title: '',
-    content: 'What you are currently working on or learning...',
-    component: 'CurrentStatus',
-    position: { span: 1 },
-    customStyle: {
-      cssVariables: {
-        '--card-bg': 'url("/wavy.png"), #0813ff',
-        '--text-primary': '#ffffff',
-        '--text-color': '#ffffff',
-        '--box-shadow': '0 20px 68px #00000040, 0 1px 2px #0000004d, 0 0 #000, inset 1px 1px .2px #ffffff9e',
-        '--card-border': '1px solid #0813ff',
-        '--backdrop-filter': 'none'
-      }
-    }
-  },
-  {
-    id: 'resume',
-    title: '',
-    content: 'Link to download your resume...',
-    component: 'DownloadResume',
-    position: { span: 1 },
-    data: {
-      resumeUrl: '/resume.pdf',
-      downloadName: '001_Thomas_Skjerdal_Resume.pdf'
-    }
   },
 ];

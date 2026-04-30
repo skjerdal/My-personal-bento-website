@@ -1,0 +1,103 @@
+---
+interface Props {
+  tag?: string;
+  num?: string;
+  label?: string;
+}
+
+const { tag = 'Now', num = 'M.Sc.', label = 'AI specialization<br />NTNU - 2025-27' } = Astro.props;
+---
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+<article class="now-card">
+  <p class="stats-tag">{tag}</p>
+  <div>
+    <p class="stats-num">{num}</p>
+    <p class="stats-label" set:html={label} />
+  </div>
+</article>
+
+<style>
+  .now-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 22px;
+    border-radius: 24px;
+    overflow: hidden;
+    isolation: isolate;
+    background:
+      radial-gradient(120% 80% at 0% 0%, rgba(255, 203, 107, 0.6), transparent 50%),
+      radial-gradient(120% 80% at 100% 100%, rgba(255, 106, 42, 0.55), transparent 50%),
+      linear-gradient(135deg, #ff8a3d 0%, #ff6a2a 100%);
+    border: 1px solid rgba(255, 220, 170, 0.4);
+    box-shadow:
+      0 8px 32px -8px rgba(0, 0, 0, 0.12),
+      0 4px 16px -4px rgba(0, 0, 0, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.8),
+      0 30px 80px -20px rgba(255, 106, 42, 0.5);
+    color: #fff;
+    min-height: 180px;
+    box-sizing: border-box;
+    animation: rise 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .now-card:hover {
+    transform: translateY(-4px);
+  }
+
+  .now-card::after {
+    content: "";
+    position: absolute;
+    right: -80px;
+    bottom: -80px;
+    width: 240px;
+    height: 240px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 138, 61, 0.4), transparent 60%);
+    filter: blur(40px);
+    pointer-events: none;
+  }
+
+  .now-card > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .stats-tag {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.85);
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .stats-num {
+    margin: 0;
+    color: white;
+    font-family: "Instrument Serif", Georgia, serif;
+    font-size: clamp(48px, 5vw, 64px);
+    font-style: italic;
+    font-weight: 400;
+    line-height: 0.9;
+  }
+
+  .stats-label {
+    margin: 4px 0 0;
+    color: rgba(255, 255, 255, 0.9);
+    font-family: "Geist", system-ui, sans-serif;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>

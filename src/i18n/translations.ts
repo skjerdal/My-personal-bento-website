@@ -1,15 +1,15 @@
 export const translations = {
   en: {
     cardTitles: {
-      'about-me': 'About Thomas Skjerdal',
+      'about-me': '',
       'work': 'Work Experience',
       'activities': 'Activities',
       'education': 'Education',
     },
     aboutMe: {
-      para1: "I'm from a small town, I like fishing, and I get most of my project ideas at times when I should definitely be asleep.",
-      para2: 'My brain is basically an idea generator with no off switch. The downside is that I usually move on to the next "even better" idea before finishing the last one.',
-      para3: "Which makes this website kind of special. It's actual proof that, occasionally, I manage to finish something.",
+      eyebrow: "Hello, I'm",
+      bio: "Developer from a small town in Norway. Currently chasing a <strong>Master's in AI</strong> at NTNU while shipping production code at Omega 365. I get most of my ideas at hours I should be asleep.",
+      status: "Building and learning · Trondheim & Bergen",
     },
     contact: {
       title: 'Contact',
@@ -153,15 +153,15 @@ export const translations = {
 
   no: {
     cardTitles: {
-      'about-me': 'Om Thomas Skjerdal',
+      'about-me': '',
       'work': 'Arbeidserfaring',
       'activities': 'Aktiviteter',
       'education': 'Utdanning',
     },
     aboutMe: {
-      para1: 'Jeg er fra en liten bygd, jeg liker å fiske, og de fleste prosjektideene mine kommer på tidspunkter jeg definitivt burde sovet.',
-      para2: 'Hjernen min er i bunn og grunn en idégenerator uten av-knapp. Ulempen er at jeg som regel er klar for den neste «enda bedre» ideen før den forrige er ferdig.',
-      para3: 'Det gjør denne nettsiden litt spesiell. Den er faktisk bevis på at jeg, av og til, klarer å fullføre noe.',
+      eyebrow: "Hei, jeg er",
+      bio: "Utvikler fra en liten bygd i Norge. Studerer <strong>Master i KI</strong> ved NTNU og jobber deltid hos Omega 365. De fleste ideene mine kommer på tidspunkter jeg burde sovet.",
+      status: "Bygger og lærer · Trondheim & Bergen",
     },
     contact: {
       title: 'Kontakt',
