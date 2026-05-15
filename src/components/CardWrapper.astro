@@ -54,6 +54,10 @@ const span = position?.span || 1;
     grid-auto-flow: dense;
     max-width: breakpoint(large);
 
+    & > * {
+      rotate: 0deg !important;
+    }
+
     @include respond-to(large) {
       grid-template-columns: repeat(3, 1fr);
       max-width: breakpoint(medium);

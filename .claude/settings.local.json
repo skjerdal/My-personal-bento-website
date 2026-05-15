@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)",
+      "Bash(grep -qE \"ready|error|Error\" \"C:\\\\\\\\Users\\\\\\\\Thoma\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\claude\\\\\\\\c--Users-Thoma-OneDrive-Documents-prosjekt-personlig-nettstad-Meg\\\\\\\\4e5e04ff-b221-4c21-b0a2-799574cca2e0\\\\\\\\tasks\\\\\\\\b5qd8yg5w.output\")",
+      "Bash(cat \"C:\\\\\\\\Users\\\\\\\\Thoma\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\claude\\\\\\\\c--Users-Thoma-OneDrive-Documents-prosjekt-personlig-nettstad-Meg\\\\\\\\4e5e04ff-b221-4c21-b0a2-799574cca2e0\\\\\\\\tasks\\\\\\\\b5qd8yg5w.output\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:4322/)"
+    ]
+  }
+}

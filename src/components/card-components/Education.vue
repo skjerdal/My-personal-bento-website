@@ -92,10 +92,17 @@ export default {
         gap: 8px;
 
         .institution-logo {
-          width: 20px;
-          height: 20px;
+          width: 26px;
+          height: 26px;
           object-fit: contain;
-          border-radius: 4px;
+          border-radius: 6px;
+          background: white;
+          padding: 2px;
+          box-shadow:
+            0 0 0 2px white,
+            0 3px 8px rgba(0, 0, 0, 0.2);
+          transform: rotate(4deg);
+          flex-shrink: 0;
         }
       }
     }

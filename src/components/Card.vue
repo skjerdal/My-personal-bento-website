@@ -107,7 +107,7 @@ export default {
 .card {
   background: var(--card-bg, $card-background);
   color: var(--text-color, inherit);
-  border-radius: 19px;
+  border-radius: 24px;
   padding: var(--card-padding, 0);
   height: calc(433px - 1.5rem);
   backdrop-filter: var(--backdrop-filter, blur(10px));
@@ -118,6 +118,7 @@ export default {
   overflow: hidden;
   box-shadow: var(--box-shadow, 0 8px 20px rgba(0, 0, 0, 0.1), 0 2px 5px rgba(0, 0, 0, 0.07));
   z-index: 10; // Ensure cards are above the airplane flight layer
+  font-family: var(--font-sans);
   
   // &.clickable-card {
   //   cursor: pointer;
@@ -161,6 +162,8 @@ export default {
 
   .card-title {
     font-size: 1.4rem;
+    font-family: var(--font-display);
+    font-weight: 700;
     margin: 0.8rem 0.5rem 0.5rem;
     margin-bottom: 0;
     line-height: 1.2;

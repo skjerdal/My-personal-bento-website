@@ -2,10 +2,6 @@
   <div class="about-me">
     <span class="seo-name">Thomas Skjerdal</span>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-
     <div class="name-section">
       <img class="avatar" src="/profilbilde.png" alt="Thomas Skjerdal" />
       <p class="eyebrow">{{ t.eyebrow }}</p>
@@ -45,12 +41,12 @@ export default {
 .about-me {
   height: 100%;
   width: 100%;
-  padding: 1.4rem 1.5rem 1.3rem;
+  padding: 1.35rem 1.25rem 1.2rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.85rem;
   box-sizing: border-box;
-  font-family: "Geist", system-ui, sans-serif;
+  font-family: var(--font-sans);
   color: var(--text-primary, #162033);
 }
 
@@ -69,8 +65,8 @@ export default {
 
 .avatar {
   float: right;
-  width: 64px;
-  height: 64px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
   object-fit: cover;
   margin: 0 0 0.5rem 1rem;
@@ -84,7 +80,7 @@ export default {
 
 .eyebrow {
   margin: 0 0 0.3rem;
-  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -93,24 +89,24 @@ export default {
 
 .name {
   margin: 0;
-  font-family: "Instrument Serif", Georgia, serif;
-  font-size: clamp(2.6rem, 5.5vw, 3.6rem);
-  font-weight: 400;
+  font-family: var(--font-display);
+  font-size: clamp(2.15rem, 4vw, 2.75rem);
+  font-weight: 700;
   line-height: 1;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
   color: var(--text-primary, #162033);
 
   em {
-    font-style: italic;
+    font-style: normal;
     color: #e8830a;
   }
 }
 
 .bio {
   margin: 0;
-  font-family: "Geist", system-ui, sans-serif;
-  font-size: 0.84rem;
-  line-height: 1.65;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  line-height: 1.55;
   color: var(--text-primary, #162033);
   opacity: 0.82;
   text-wrap: pretty;
@@ -135,8 +131,8 @@ export default {
   border-radius: 999px;
   border: 1px solid rgba(22, 32, 51, 0.18);
   background: rgba(22, 32, 51, 0.04);
-  font-family: "JetBrains Mono", ui-monospace, monospace;
-  font-size: 11px;
+  font-family: var(--font-mono);
+  font-size: 10px;
   color: var(--text-primary, #162033);
 }
 
@@ -144,7 +140,7 @@ export default {
   display: flex;
   align-items: center;
   gap: 7px;
-  font-family: "Geist", system-ui, sans-serif;
+  font-family: var(--font-sans);
   font-size: 0.72rem;
   color: rgba(22, 32, 51, 0.55);
 }

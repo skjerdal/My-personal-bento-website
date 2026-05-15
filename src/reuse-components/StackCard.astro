@@ -6,10 +6,6 @@ interface Props {
 const { stack = ['Vue', 'TypeScript', 'React', 'Python', 'PyTorch', 'SQL', 'Java', 'Three.js', 'Node', 'C#'] } = Astro.props;
 ---
 
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-
 <article class="stack-card">
   <div>
     <p class="eyebrow">Tools of the trade</p>
@@ -63,7 +59,7 @@ const { stack = ['Vue', 'TypeScript', 'React', 'Python', 'PyTorch', 'SQL', 'Java
   .eyebrow {
     margin: 0;
     color: rgba(26, 20, 16, 0.58);
-    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-family: var(--font-mono);
     font-size: 10px;
     letter-spacing: 0.2em;
     text-transform: uppercase;
@@ -72,9 +68,9 @@ const { stack = ['Vue', 'TypeScript', 'React', 'Python', 'PyTorch', 'SQL', 'Java
   h2 {
     margin: 8px 0 0;
     color: #1a1410;
-    font-family: "Instrument Serif", Georgia, serif;
+    font-family: var(--font-display);
     font-size: 24px;
-    font-weight: 400;
+    font-weight: 700;
     line-height: 1;
   }
 
@@ -91,7 +87,7 @@ const { stack = ['Vue', 'TypeScript', 'React', 'Python', 'PyTorch', 'SQL', 'Java
     border-radius: 999px;
     background: rgba(26, 20, 16, 0.04);
     color: #4a3f31;
-    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-family: var(--font-mono);
     font-size: 11px;
     transition: transform 0.2s, border-color 0.2s, background 0.2s, color 0.2s;
   }

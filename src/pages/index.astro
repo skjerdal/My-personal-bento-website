@@ -5,29 +5,39 @@ import NowCard from '../reuse-components/NowCard.astro';
 import StackCard from '../reuse-components/StackCard.astro';
 import ContactCard from '../reuse-components/ContactCard.astro';
 import { cards } from '../data/cardContent';
+
+const cardById = new Map(cards.map((card) => [card.id, card]));
+const aboutCard = cardById.get('about-me');
+const projectsCard = cardById.get('projects');
+const boosterCard = cardById.get('booster-pack');
+const timelineCard = cardById.get('timeline');
+
+const mainCards = [projectsCard, boosterCard, timelineCard].filter(
+  (card): card is NonNullable<typeof card> => Boolean(card),
+);
 ---
 
 <Layout title="Thomas Skjerdal - Personal Website">
   <main class="container">
     <div class="card-grid">
-      {cards.slice(0, 2).map((card) => (
+      {aboutCard && (
         <CardWrapper
-          cardId={card.id}
-          isUnique={card.isUnique}
-          title={card.title}
-          content={card.content}
-          componentName={card.component}
-          position={card.position}
+          cardId={aboutCard.id}
+          isUnique={aboutCard.isUnique}
+          title={aboutCard.title}
+          content={aboutCard.content}
+          componentName={aboutCard.component}
+          position={aboutCard.position}
           className="card"
-          videoPath={card.videoPath}
-          customStyle={card.customStyle}
+          videoPath={aboutCard.videoPath}
+          customStyle={aboutCard.customStyle}
         />
-      ))}
+      )}
       <div class="card-pair">
         <NowCard />
         <StackCard />
       </div>
-      {cards.slice(2).map((card) => (
+      {mainCards.map((card) => (
         <CardWrapper
           cardId={card.id}
           isUnique={card.isUnique}

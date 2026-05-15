@@ -1,19 +1,27 @@
 @import 'variables';
 @import 'mixins';
 
+:root {
+  --font-sans: 'Geist', 'Satoshi', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display: 'Syne', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+}
+
 body {
   background-color: $background-color;
   color: var(--text-primary, $text-color);
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-sans);
   line-height: 1.5;
   margin: 0;
   transition: background-color 0.3s ease, color 0.3s ease;
+  font-synthesis-weight: none;
 }
 
 // Apply text colors based on theme
 h1, h2, h3, h4, h5, h6 {
   color: var(--text-primary, $text-color);
-  font-family: 'Satoshi', 'Inter', sans-serif;
+  font-family: var(--font-display);
+  font-weight: 700;
 }
 
 p {

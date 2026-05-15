@@ -5,6 +5,7 @@ export const translations = {
       'work': 'Work Experience',
       'activities': 'Activities',
       'education': 'Education',
+      'timeline': 'Journey',
     },
     aboutMe: {
       eyebrow: "Hello, I'm",
@@ -36,6 +37,8 @@ export const translations = {
         company: 'Omega 365 Solutions',
         title: 'Developer (Part-time)',
         period: 'Sep 2024 - Present',
+        startDate: '2024-09',
+        endDate: null,
         logo: '/Omega365_Icon_Primary_RGB.png',
         highlights: [
           'Develop and maintain features for a SaaS platform used by enterprise clients, primarily within the BIM module.',
@@ -47,6 +50,8 @@ export const translations = {
         company: 'Omega 365 Solutions',
         title: 'Summer Intern',
         period: 'Jun 2024 - Aug 2024',
+        startDate: '2024-06',
+        endDate: '2024-08',
         logo: '/Omega365_Icon_Primary_RGB.png',
         highlights: [
           'Completed an intensive SQL training program focused on database design and querying.',
@@ -58,6 +63,8 @@ export const translations = {
         company: "Norway's Best",
         title: 'IT Technician (Apprentice & Seasonal Work)',
         period: 'Aug 2019 - Aug 2023',
+        startDate: '2019-08',
+        endDate: '2023-08',
         logo: '/norways best.jpg',
         highlights: [
           'Maintained and supported critical IT infrastructure across multiple locations.',
@@ -69,6 +76,8 @@ export const translations = {
         company: 'Skjerdal landskapspleie',
         title: 'Seasonal Gardener',
         period: 'Summers 2016 - 2018',
+        startDate: '2016-06',
+        endDate: '2018-08',
         highlights: [
           'Performed landscaping, street cleaning, and waste management tasks.',
           'Helped maintain safe, tidy, and well-kept outdoor environments.',
@@ -82,6 +91,8 @@ export const translations = {
         institution: 'Norwegian University of Science and Technology (NTNU)',
         location: 'Trondheim, Norway',
         period: 'Aug 2025 - Jun 2027 (expected)',
+        startDate: '2025-08',
+        endDate: '2027-06',
         logo: '/ntnu.png',
         achievements: [
           'Specializing in Artificial Intelligence',
@@ -94,6 +105,8 @@ export const translations = {
         institution: 'Western Norway University of Applied Sciences (HVL)',
         location: 'Bergen, Norway',
         period: 'Aug 2022 - Jun 2025',
+        startDate: '2022-08',
+        endDate: '2025-06',
         logo: '/hvl-logo-vert-rgb.png',
         achievements: [
           'Thesis: "Videreutvikling og analyse av B Connected – En digital samhandlingsplattform"',
@@ -106,6 +119,8 @@ export const translations = {
         institution: 'Sogndal Upper Secondary School',
         location: 'Sogndal, Norway',
         period: 'Aug 2016 - Mar 2021',
+        startDate: '2016-08',
+        endDate: '2021-03',
         logo: 'vestland_fylkeskommune.png',
         achievements: [
           'Comprehensive training in computer electronics and IT systems',
@@ -119,6 +134,8 @@ export const translations = {
         organization: 'Hogskulen pa Vestlandet (HVL)',
         title: 'Teaching Assistant',
         period: 'Jul 2024 - Des 2024',
+        startDate: '2024-07',
+        endDate: '2024-12',
         logo: '/hvl-logo-vert-rgb.png',
         highlights: [
           'Teaching assistant for DAT108 Programming and Web Applications.',
@@ -130,6 +147,8 @@ export const translations = {
         organization: 'Hogskulen pa Vestlandet (HVL)',
         title: 'Teaching Assistant',
         period: 'Jan 2024 - Jul 2024',
+        startDate: '2024-01',
+        endDate: '2024-07',
         logo: '/hvl-logo-vert-rgb.png',
         highlights: [
           'Teaching assistant for DAT107 Databases.',
@@ -141,6 +160,8 @@ export const translations = {
         organization: 'Studvest',
         title: 'Web Developer',
         period: 'Jan 2023 - Jun 2023',
+        startDate: '2023-01',
+        endDate: '2023-06',
         logo: '/studvestlogo.jpg',
         highlights: [
           'Developed interactive web-based articles for a student newspaper.',
@@ -157,6 +178,7 @@ export const translations = {
       'work': 'Arbeidserfaring',
       'activities': 'Aktiviteter',
       'education': 'Utdanning',
+      'timeline': 'Reisa',
     },
     aboutMe: {
       eyebrow: "Hei, jeg er",
@@ -188,6 +210,8 @@ export const translations = {
         company: 'Omega 365 Solutions',
         title: 'Utvikler (deltid)',
         period: 'Sep 2024 - nå',
+        startDate: '2024-09',
+        endDate: null,
         logo: '/Omega365_Icon_Primary_RGB.png',
         highlights: [
           'Utvikler og vedlikeholder funksjoner i en SaaS-plattform brukt av bedriftskunder, primært innenfor BIM-modulen.',
@@ -199,6 +223,8 @@ export const translations = {
         company: 'Omega 365 Solutions',
         title: 'Sommerpraktikant',
         period: 'Jun 2024 - Aug 2024',
+        startDate: '2024-06',
+        endDate: '2024-08',
         logo: '/Omega365_Icon_Primary_RGB.png',
         highlights: [
           'Gjennomførte et intensivt SQL-treningsprogram med fokus på databasedesign og spørringer.',
@@ -210,6 +236,8 @@ export const translations = {
         company: "Norway's Best",
         title: 'Dataelektroniker (lærling og sesongarbeid)',
         period: 'Aug 2019 - Aug 2023',
+        startDate: '2019-08',
+        endDate: '2023-08',
         logo: '/norways best.jpg',
         highlights: [
           'Vedlikeholdt og støttet kritisk IT-infrastruktur på tvers av flere lokasjoner.',
@@ -221,6 +249,8 @@ export const translations = {
         company: 'Skjerdal landskapspleie',
         title: 'Sesongarbeider, anleggsgartner',
         period: 'Somrene 2016 - 2018',
+        startDate: '2016-06',
+        endDate: '2018-08',
         highlights: [
           'Utførte anleggsgartnerarbeid, gatereining og avfallshåndtering.',
           'Bidro til å holde trygge, ryddige og velstelte utemiljøer.',
@@ -234,6 +264,8 @@ export const translations = {
         institution: 'Norges teknisk-naturvitenskapelige universitet (NTNU)',
         location: 'Trondheim, Norge',
         period: 'Aug 2025 - Jun 2027 (planlagt)',
+        startDate: '2025-08',
+        endDate: '2027-06',
         logo: '/ntnu.png',
         achievements: [
           'Spesialisering i kunstig intelligens',
@@ -246,6 +278,8 @@ export const translations = {
         institution: 'Høgskulen på Vestlandet (HVL)',
         location: 'Bergen, Norge',
         period: 'Aug 2022 - Jun 2025',
+        startDate: '2022-08',
+        endDate: '2025-06',
         logo: '/hvl-logo-vert-rgb.png',
         achievements: [
           'Bacheloroppgave: "Videreutvikling og analyse av B Connected – En digital samhandlingsplattform"',
@@ -258,6 +292,8 @@ export const translations = {
         institution: 'Sogndal vidaregåande skule',
         location: 'Sogndal, Norge',
         period: 'Aug 2016 - Mar 2021',
+        startDate: '2016-08',
+        endDate: '2021-03',
         logo: 'vestland_fylkeskommune.png',
         achievements: [
           'Grundig opplæring i dataelektronikk og IT-systemer',
@@ -271,6 +307,8 @@ export const translations = {
         organization: 'Høgskulen på Vestlandet (HVL)',
         title: 'Studentassistent',
         period: 'Jul 2024 - Des 2024',
+        startDate: '2024-07',
+        endDate: '2024-12',
         logo: '/hvl-logo-vert-rgb.png',
         highlights: [
           'Studentassistent for DAT108 Programmering og webapplikasjoner.',
@@ -282,6 +320,8 @@ export const translations = {
         organization: 'Høgskulen på Vestlandet (HVL)',
         title: 'Studentassistent',
         period: 'Jan 2024 - Jul 2024',
+        startDate: '2024-01',
+        endDate: '2024-07',
         logo: '/hvl-logo-vert-rgb.png',
         highlights: [
           'Studentassistent for DAT107 Databaser.',
@@ -293,6 +333,8 @@ export const translations = {
         organization: 'Studvest',
         title: 'Webutvikler',
         period: 'Jan 2023 - Jun 2023',
+        startDate: '2023-01',
+        endDate: '2023-06',
         logo: '/studvestlogo.jpg',
         highlights: [
           'Utviklet interaktive nettbaserte artikler for en studentavis.',

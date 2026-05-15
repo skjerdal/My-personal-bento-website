@@ -38,7 +38,7 @@
     </div>
   </Teleport>
 
-  <!-- Backdrop (same SSR-safe pattern as PokemonCard) -->
+  <!-- Backdrop -->
   <Teleport v-if="isMounted" to="body">
     <Transition name="pack-backdrop">
       <div v-if="isExpanded && !packOpen && !isCollapsing" class="pack-backdrop" @click.stop="collapse" />
@@ -119,6 +119,8 @@ export default {
       if (!model || !camera) return;
 
       model.rotation.set(deg(BASE_ROT_X), deg(BASE_ROT_Y), deg(BASE_ROT_Z));
+      model.position.set(0, 0, 0);
+      model.scale.setScalar(1);
       model.updateMatrixWorld(true);
 
       const box = new THREE.Box3().setFromObject(model);
@@ -459,26 +461,26 @@ export default {
 .pack-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
   z-index: 9998;
   cursor: zoom-out;
 }
 
 .pack-backdrop-enter-active,
 .pack-backdrop-leave-active {
-  transition: opacity 0.7s ease, backdrop-filter 0.7s ease, -webkit-backdrop-filter 0.7s ease;
+  transition: backdrop-filter 0.7s ease, -webkit-backdrop-filter 0.7s ease;
+  pointer-events: none;
 }
+
 .pack-backdrop-enter-from,
 .pack-backdrop-leave-to {
-  opacity: 0;
   backdrop-filter: blur(0px);
   -webkit-backdrop-filter: blur(0px);
 }
 
 .pack-scene.expanded.is-revealing-pokemon {
-  z-index: 990;
+  z-index: 10001;
   pointer-events: none;
 }
 

@@ -25,7 +25,7 @@ export const cards: Card[] = [
     title: '',
     content: "I'm from a small town, I like fishing, and I get most of my project ideas at times when I should definitely be asleep.",
     component: 'AboutMe',
-    position: { span: 2 },
+    position: { span: 1 },
     customStyle: {
       cssClasses: ['about-me-card'],
       cssVariables: {
@@ -63,6 +63,28 @@ export const cards: Card[] = [
       }
     }
   },
+  {
+    id: 'timeline',
+    title: 'Journey',
+    content: '',
+    component: 'Timeline',
+    position: { span: 3 },
+    customStyle: {
+      cssVariables: {
+        '--text-primary': '#162033',
+        '--text-secondary': '#3b4a63',
+        '--text-tertiary': '#6b7a91',
+        '--text-color': '#162033',
+        '--card-bg': 'linear-gradient(155deg, #f8f3ea 0%, #f9fbff 58%, #eef4ff 100%)',
+        '--card-bg-fill': '#f4f0e6',
+        '--detail-bg': 'rgba(255, 255, 255, 0.97)',
+        '--box-shadow': '0 20px 44px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(15, 23, 42, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.92)',
+        '--card-border': '1px solid rgba(255, 255, 255, 0.82)',
+        '--backdrop-filter': 'blur(10px)',
+      },
+    },
+  },
+  /*
   {
     id: 'work',
     title: 'Work Experience',
@@ -203,4 +225,5 @@ export const cards: Card[] = [
       }
     ]
   },
+  */
 ];
