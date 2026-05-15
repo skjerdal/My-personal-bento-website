@@ -49,6 +49,14 @@ export const cards: Card[] = [
     isUnique: true,
   },
   {
+    id: 'card-holder',
+    title: '',
+    content: '',
+    component: 'CardHolderCard',
+    position: { span: 1 },
+    isUnique: true,
+  },
+  {
     id: 'projects',
     title: '',
     content: '',
@@ -62,6 +70,23 @@ export const cards: Card[] = [
         '--backdrop-filter': 'blur(10px)',
       }
     }
+  },
+  {
+    id: 'norway-map',
+    title: '',
+    content: '',
+    component: 'NorwayMap',
+    position: { span: 1 },
+    customStyle: {
+      cssVariables: {
+        '--text-primary': '#162033',
+        '--text-tertiary': '#66758c',
+        '--card-bg': 'linear-gradient(155deg, #f0f7ff 0%, #f9fbff 58%, #eef4ff 100%)',
+        '--box-shadow': '0 20px 44px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(15, 23, 42, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.92)',
+        '--card-border': '1px solid rgba(255, 255, 255, 0.82)',
+        '--backdrop-filter': 'blur(10px)',
+      },
+    },
   },
   {
     id: 'timeline',

@@ -6,6 +6,13 @@ interface Props {
 }
 
 const { tag = 'Now', num = 'M.Sc.', label = 'AI specialization<br />NTNU - 2025-27' } = Astro.props;
+
+const startDate = new Date('2025-08-01');
+const endDate   = new Date('2027-06-30');
+const now       = new Date();
+const total     = endDate.getTime() - startDate.getTime();
+const elapsed   = Math.max(0, Math.min(now.getTime() - startDate.getTime(), total));
+const progress  = Math.round((elapsed / total) * 100);
 ---
 
 <article class="now-card">
@@ -13,6 +20,16 @@ const { tag = 'Now', num = 'M.Sc.', label = 'AI specialization<br />NTNU - 2025-
   <div>
     <p class="stats-num">{num}</p>
     <p class="stats-label" set:html={label} />
+  </div>
+  <div class="progress-section">
+    <div class="progress-header">
+      <span class="progress-label">Progress to degree</span>
+      <span class="progress-pct">{progress}%</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" style={`width: ${progress}%`}></div>
+    </div>
+    <p class="progress-end">Jun 2027</p>
   </div>
 </article>
 
@@ -89,6 +106,57 @@ const { tag = 'Now', num = 'M.Sc.', label = 'AI specialization<br />NTNU - 2025-
     font-family: var(--font-sans);
     font-size: 12px;
     line-height: 1.4;
+  }
+
+  .progress-section {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 12px;
+  }
+
+  .progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  .progress-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.75);
+  }
+
+  .progress-pct {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.95);
+  }
+
+  .progress-track {
+    height: 5px;
+    border-radius: 99px;
+    background: rgba(255, 255, 255, 0.22);
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    border-radius: 99px;
+    background: rgba(255, 255, 255, 0.9);
+    transition: width 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .progress-end {
+    margin: 0;
+    text-align: right;
+    font-family: var(--font-mono);
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    color: rgba(255, 255, 255, 0.55);
   }
 
   @keyframes rise {

@@ -4,7 +4,19 @@
       "WebFetch(domain:github.com)",
       "Bash(grep -qE \"ready|error|Error\" \"C:\\\\\\\\Users\\\\\\\\Thoma\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\claude\\\\\\\\c--Users-Thoma-OneDrive-Documents-prosjekt-personlig-nettstad-Meg\\\\\\\\4e5e04ff-b221-4c21-b0a2-799574cca2e0\\\\\\\\tasks\\\\\\\\b5qd8yg5w.output\")",
       "Bash(cat \"C:\\\\\\\\Users\\\\\\\\Thoma\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\claude\\\\\\\\c--Users-Thoma-OneDrive-Documents-prosjekt-personlig-nettstad-Meg\\\\\\\\4e5e04ff-b221-4c21-b0a2-799574cca2e0\\\\\\\\tasks\\\\\\\\b5qd8yg5w.output\")",
-      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:4322/)"
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:4322/)",
+      "Bash(npm run *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:4322/)",
+      "Bash(npx playwright *)",
+      "Read(//private/tmp/**)",
+      "Bash(curl -s http://localhost:4322/)",
+      "Bash(pkill -f \"astro dev\")",
+      "Bash(curl -s http://localhost:4322/cardholder.png -o /dev/null -w \"%{http_code}\\\\n\")",
+      "Bash(curl -s http://localhost:4322/card_holder_nmap.png -o /dev/null -w \"%{http_code}\\\\n\")",
+      "Bash(curl -s http://localhost:4322)",
+      "Bash(npm install *)",
+      "Bash(curl -s http://localhost:4323/)",
+      "Bash(pkill -f \"vite\\\\|astro\")"
     ]
   }
 }

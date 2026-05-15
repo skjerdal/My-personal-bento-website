@@ -2,6 +2,7 @@
 import Card from './Card.vue';
 import PokemonCard from './PokemonCard.vue';
 import BoosterPackCard from './BoosterPackCard.vue';
+import CardHolderCard from './CardHolderCard.vue';
 
 const { cardId, isUnique, title, content, componentName, position, className, style, videoPath, customStyle } = Astro.props;
 const span = position?.span || 1;
@@ -20,6 +21,14 @@ const span = position?.span || 1;
     />
   ) : isUnique && componentName === 'BoosterPackCard' ? (
     <BoosterPackCard
+      client:load
+      componentName={componentName}
+      position={position}
+      title={title}
+      content={content}
+    />
+  ) : isUnique && componentName === 'CardHolderCard' ? (
+    <CardHolderCard
       client:load
       componentName={componentName}
       position={position}

@@ -10,9 +10,11 @@ const cardById = new Map(cards.map((card) => [card.id, card]));
 const aboutCard = cardById.get('about-me');
 const projectsCard = cardById.get('projects');
 const boosterCard = cardById.get('booster-pack');
+const cardHolderCard = cardById.get('card-holder');
+const norwayMapCard = cardById.get('norway-map');
 const timelineCard = cardById.get('timeline');
 
-const mainCards = [projectsCard, boosterCard, timelineCard].filter(
+const mainCards = [projectsCard, boosterCard, cardHolderCard, norwayMapCard, timelineCard].filter(
   (card): card is NonNullable<typeof card> => Boolean(card),
 );
 ---
