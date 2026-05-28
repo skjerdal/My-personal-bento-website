@@ -1,0 +1,860 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const backgrounds = [
+  'v-bg-cream',
+  'v-bg-ink',
+  'v-bg-rust',
+  'v-bg-blue',
+  'v-bg-mint',
+  'v-bg-sky',
+  'v-bg-grid',
+  'v-bg-dots',
+  'v-bg-stripes',
+  'v-bg-houndstooth',
+];
+
+const stickers = [
+  { label: 'TypeScript', kind: 'logo', value: '/logos/typescript.svg' },
+  { label: 'Vue', kind: 'logo', value: '/logos/vuejs.svg' },
+  { label: 'React', kind: 'logo', value: '/logos/react.svg' },
+  { label: 'Python', kind: 'logo', value: '/logos/python.svg' },
+  { label: 'Node', kind: 'logo', value: '/logos/nodejs.svg' },
+  { label: 'Postgres', kind: 'logo', value: '/logos/postgresql.svg' },
+  { label: 'Docker', kind: 'logo', value: '/logos/docker.svg', square: true },
+  { label: 'Git', kind: 'logo', value: '/logos/git.svg', square: true },
+  { label: 'AI', kind: 'text', value: 'AI' },
+  { label: 'TS', kind: 'text', value: 'TS' },
+  { label: 'OK', kind: 'text', value: 'OK' },
+  { label: 'WEB', kind: 'text', value: 'WEB' },
+];
+---
+
+<Layout
+  title="Make a Visitor Card - Thomas Skjerdal"
+  description="Create a small visitor card for Thomas Skjerdal's personal site."
+>
+    <main class="compose-page" transition:animate="fade">
+      <header class="c-topbar">
+        <a class="c-back" href="/visitors">&larr; Back to gallery</a>
+        <div class="c-pagename"><strong>03 /</strong> Card composer</div>
+      </header>
+
+      <section class="c-header">
+        <div>
+          <h1>Make your <span>card</span>,<br />drop it in the holder.</h1>
+        </div>
+        <p>
+          Pick a paper, sign your name, drop a sticker, and save it to your
+          local visitor wall.
+        </p>
+      </section>
+
+      <div class="c-layout">
+        <section class="c-canvas" aria-label="Live visitor card preview">
+          <span class="stage-label">Live preview</span>
+          <div class="c-card-preview v-bg-cream v-sig-caveat" id="preview">
+            <div class="v-content">
+              <div>
+                <span class="v-meta">visitor / #143</span>
+                <div class="v-name" id="prevName">Your name</div>
+              </div>
+              <p class="v-msg" id="prevMsg">stopped by, said hi.</p>
+            </div>
+          </div>
+          <p class="c-stage-foot">Click a sticker, then click the card to place it.</p>
+        </section>
+
+        <section class="c-controls" aria-label="Visitor card controls">
+          <div class="c-section">
+            <h2>Sign in</h2>
+            <p class="hint">Step 01 / who's stopping by</p>
+
+            <label class="c-field">
+              <span>Your name</span>
+              <input id="nameInput" class="c-input" type="text" placeholder="e.g. Mari L." value="Your name" maxlength="24" />
+            </label>
+
+            <label class="c-field">
+              <span>A short note</span>
+              <textarea id="msgInput" class="c-input" maxlength="120" placeholder="say something nice">stopped by, said hi.</textarea>
+            </label>
+
+            <div class="c-field">
+              <span>Signature style</span>
+              <div class="c-sig-grid" id="sigGrid">
+                <button class="c-sig-opt active" type="button" data-sig="v-sig-caveat" style="font-family:'Caveat',cursive;">Mari L.<small>Caveat</small></button>
+                <button class="c-sig-opt" type="button" data-sig="v-sig-dancing" style="font-family:'Dancing Script',cursive;">Mari L.<small>Dancing</small></button>
+                <button class="c-sig-opt" type="button" data-sig="v-sig-display" style="font-family:var(--f-display);">Mari L.<small>Editorial</small></button>
+              </div>
+            </div>
+          </div>
+
+          <div class="c-section">
+            <h2>Pick your paper</h2>
+            <p class="hint">Step 02 / choose a background</p>
+            <div class="c-bg-grid" id="bgGrid">
+              {
+                backgrounds.map((bg, index) => (
+                  <button
+                    class={`c-bg ${bg} ${index === 0 ? 'active' : ''}`}
+                    type="button"
+                    data-bg={bg}
+                    aria-label={`Use background ${index + 1}`}
+                  />
+                ))
+              }
+            </div>
+          </div>
+
+          <div class="c-section">
+            <h2>Sticker drawer</h2>
+            <p class="hint">Step 03 / optional decoration</p>
+            <div class="c-stickers" id="stickerGrid">
+              {
+                stickers.map((sticker) => (
+                  <button
+                    class={`c-sticker-opt ${sticker.kind === 'text' ? 'text' : ''} ${sticker.square ? 'square' : ''}`}
+                    type="button"
+                    data-kind={sticker.kind}
+                    data-value={sticker.value}
+                    data-square={sticker.square ? 'true' : 'false'}
+                    aria-label={`Place ${sticker.label} sticker`}
+                  >
+                    {sticker.kind === 'logo' ? <img src={sticker.value} alt="" /> : sticker.value}
+                  </button>
+                ))
+              }
+            </div>
+          </div>
+
+          <div class="c-actions">
+            <a class="c-btn ghost" href="/visitors">Cancel</a>
+            <button class="c-btn primary" type="button" id="saveBtn">Drop in the holder &rarr;</button>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script is:inline data-astro-rerun>
+      (() => {
+      const STORAGE_KEY = 'skjerdalVisitorCards';
+      const preview = document.getElementById('preview');
+      const nameInput = document.getElementById('nameInput');
+      const msgInput = document.getElementById('msgInput');
+      const prevName = document.getElementById('prevName');
+      const prevMsg = document.getElementById('prevMsg');
+      const toast = document.getElementById('toast');
+      const allowedBg = new Set([
+        'v-bg-cream',
+        'v-bg-ink',
+        'v-bg-rust',
+        'v-bg-blue',
+        'v-bg-mint',
+        'v-bg-sky',
+        'v-bg-grid',
+        'v-bg-dots',
+        'v-bg-stripes',
+        'v-bg-houndstooth',
+      ]);
+      const allowedSig = new Set(['v-sig-caveat', 'v-sig-dancing', 'v-sig-display']);
+      let activeSticker = null;
+      let selectedBg = 'v-bg-cream';
+      let selectedSig = 'v-sig-caveat';
+      const placedStickers = [];
+
+      const readCards = () => {
+        try {
+          return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        } catch {
+          return [];
+        }
+      };
+
+      const writeCards = (cards) => {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(cards.slice(0, 50)));
+      };
+
+      const setToast = (message) => {
+        toast.textContent = message;
+        toast.classList.add('show');
+      };
+
+      nameInput.addEventListener('input', () => {
+        prevName.textContent = nameInput.value.trim() || 'Your name';
+      });
+
+      msgInput.addEventListener('input', () => {
+        prevMsg.textContent = msgInput.value.trim() || '';
+      });
+
+      document.getElementById('bgGrid').addEventListener('click', (event) => {
+        const button = event.target.closest('.c-bg');
+        if (!button) return;
+        selectedBg = allowedBg.has(button.dataset.bg) ? button.dataset.bg : 'v-bg-cream';
+        document.querySelectorAll('.c-bg').forEach((item) => item.classList.remove('active'));
+        button.classList.add('active');
+        preview.classList.forEach((className) => {
+          if (className.startsWith('v-bg-')) preview.classList.remove(className);
+        });
+        preview.classList.add(selectedBg);
+      });
+
+      document.getElementById('sigGrid').addEventListener('click', (event) => {
+        const button = event.target.closest('.c-sig-opt');
+        if (!button) return;
+        selectedSig = allowedSig.has(button.dataset.sig) ? button.dataset.sig : 'v-sig-caveat';
+        document.querySelectorAll('.c-sig-opt').forEach((item) => item.classList.remove('active'));
+        button.classList.add('active');
+        preview.classList.forEach((className) => {
+          if (className.startsWith('v-sig-')) preview.classList.remove(className);
+        });
+        preview.classList.add(selectedSig);
+      });
+
+      document.getElementById('stickerGrid').addEventListener('click', (event) => {
+        const button = event.target.closest('.c-sticker-opt');
+        if (!button) return;
+        if (activeSticker === button) {
+          activeSticker.classList.remove('armed');
+          activeSticker = null;
+          preview.classList.remove('placing');
+          return;
+        }
+        document.querySelectorAll('.c-sticker-opt.armed').forEach((item) => item.classList.remove('armed'));
+        activeSticker = button;
+        activeSticker.classList.add('armed');
+        preview.classList.add('placing');
+      });
+
+      const placeStickerElement = (data) => {
+        const sticker = document.createElement('button');
+        sticker.type = 'button';
+        sticker.className = 'c-sticker';
+        sticker.style.left = `${data.x}%`;
+        sticker.style.top = `${data.y}%`;
+        sticker.style.setProperty('--sr', `${Math.round(Math.random() * 30 - 15)}deg`);
+        if (data.square) sticker.classList.add('square');
+        if (data.kind === 'logo') {
+          const img = document.createElement('img');
+          img.src = data.value;
+          img.alt = '';
+          sticker.appendChild(img);
+        } else {
+          sticker.classList.add('text');
+          sticker.textContent = data.value.slice(0, 4);
+        }
+        sticker.addEventListener('click', (event) => {
+          event.stopPropagation();
+          const index = placedStickers.indexOf(data);
+          if (index >= 0) placedStickers.splice(index, 1);
+          sticker.remove();
+        });
+        preview.appendChild(sticker);
+      };
+
+      preview.addEventListener('click', (event) => {
+        if (!activeSticker) return;
+        const rect = preview.getBoundingClientRect();
+        const data = {
+          kind: activeSticker.dataset.kind,
+          value: activeSticker.dataset.value,
+          square: activeSticker.dataset.square === 'true',
+          x: Math.round(((event.clientX - rect.left) / rect.width) * 100),
+          y: Math.round(((event.clientY - rect.top) / rect.height) * 100),
+        };
+        placedStickers.push(data);
+        placeStickerElement(data);
+        activeSticker.classList.remove('armed');
+        activeSticker = null;
+        preview.classList.remove('placing');
+      });
+
+      document.getElementById('saveBtn').addEventListener('click', () => {
+        const cards = readCards();
+        const card = {
+          id: Date.now(),
+          number: 143 + cards.length,
+          name: nameInput.value.trim().slice(0, 24) || 'visitor',
+          message: msgInput.value.trim().slice(0, 120) || 'stopped by, said hi.',
+          bg: selectedBg,
+          sig: selectedSig,
+          stickers: placedStickers.slice(0, 6),
+          createdAt: Date.now(),
+        };
+        writeCards([card, ...cards]);
+        setToast('Saved - card added to the holder');
+        setTimeout(() => {
+          window.location.href = '/visitors';
+        }, 900);
+      });
+      })();
+    </script>
+</Layout>
+
+<style is:global>
+  .compose-page {
+    --paper: #f1e8d4;
+    --paper-deep: #e8dcc1;
+    --paper-card: #faf5e8;
+    --ink: #1a1410;
+    --ink-soft: #4a3f31;
+    --ink-faint: #8b7e6a;
+    --ink-line: rgba(26, 20, 16, 0.1);
+    --ink-line-2: rgba(26, 20, 16, 0.18);
+    --rust: #e8590c;
+    --rust-deep: #c2410c;
+    --radius: 22px;
+    --f-display: "Instrument Serif", Georgia, serif;
+    --f-sans: "Geist", system-ui, sans-serif;
+    --f-mono: "JetBrains Mono", Consolas, monospace;
+    --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.9) inset,
+      0 -1px 0 rgba(26, 20, 16, 0.04) inset,
+      0 1px 2px rgba(26, 20, 16, 0.04),
+      0 8px 22px -10px rgba(26, 20, 16, 0.18),
+      0 22px 50px -28px rgba(26, 20, 16, 0.22);
+    --shadow-soft: 0 1px 2px rgba(26, 20, 16, 0.05), 0 10px 30px -16px rgba(26, 20, 16, 0.16);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  .compose-page a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .compose-page button,
+  .compose-page input,
+  .compose-page textarea {
+    font: inherit;
+  }
+
+  .compose-page button {
+    border: 0;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  .compose-page {
+    position: relative;
+    z-index: 1;
+    width: min(1240px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: 32px 0 80px;
+  }
+
+  .c-topbar,
+  .c-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .c-topbar {
+    margin-bottom: 22px;
+  }
+
+  .c-back,
+  .c-pagename,
+  .stage-label,
+  .hint,
+  .c-field > span,
+  .v-meta,
+  .c-stage-foot {
+    font-family: var(--f-mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .c-back,
+  .hint,
+  .c-field > span,
+  .c-stage-foot,
+  .stage-label,
+  .v-meta {
+    color: var(--ink-faint);
+  }
+
+  .c-back {
+    transition: color 0.2s, transform 0.2s;
+  }
+
+  .c-back:hover {
+    color: var(--rust);
+    transform: translateX(-3px);
+  }
+
+  .c-pagename strong {
+    color: var(--rust);
+  }
+
+  .c-header {
+    align-items: end;
+    padding-bottom: 24px;
+    margin-bottom: 28px;
+    border-bottom: 1px dashed var(--ink-line-2);
+  }
+
+  .c-header h1 {
+    margin: 0;
+    font-family: var(--f-display);
+    font-size: clamp(44px, 5.5vw, 72px);
+    font-style: italic;
+    font-weight: 400;
+    line-height: 0.95;
+  }
+
+  .c-header h1 span {
+    color: var(--rust);
+  }
+
+  .c-header p {
+    width: min(380px, 100%);
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .c-layout {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+
+  .c-canvas,
+  .c-section {
+    border: 1px solid var(--ink-line);
+    border-radius: var(--radius);
+    background: var(--paper-card);
+    box-shadow: var(--shadow-card);
+  }
+
+  .c-canvas {
+    position: sticky;
+    top: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 22px;
+    padding: 48px 24px;
+  }
+
+  .c-card-preview {
+    position: relative;
+    isolation: isolate;
+    width: 100%;
+    max-width: 460px;
+    aspect-ratio: 1.6 / 1;
+    overflow: hidden;
+    padding: 32px;
+    border-radius: 14px;
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.4) inset,
+      0 -1px 0 rgba(0, 0, 0, 0.1) inset,
+      0 6px 14px rgba(26, 20, 16, 0.12),
+      0 36px 60px -22px rgba(26, 20, 16, 0.42);
+    transform: rotate(-1.5deg);
+    cursor: crosshair;
+  }
+
+  .c-card-preview.placing {
+    outline: 2px dashed var(--rust);
+    outline-offset: -8px;
+  }
+
+  .c-card-preview::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+    background: linear-gradient(115deg, rgba(255, 255, 255, 0.18), transparent 30%, transparent 70%, rgba(255, 255, 255, 0.06));
+  }
+
+  .v-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .v-name {
+    margin-top: 8px;
+    font-family: var(--sig, "Caveat", cursive);
+    font-size: clamp(38px, 7vw, 56px);
+    font-style: italic;
+    font-weight: 600;
+    line-height: 1;
+    overflow-wrap: anywhere;
+  }
+
+  .v-msg {
+    max-width: 66%;
+    margin: 0;
+    color: currentColor;
+    font-size: 14px;
+    line-height: 1.4;
+    opacity: 0.85;
+  }
+
+  .c-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  .c-section {
+    padding: 22px 24px;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .c-section h2 {
+    margin: 0 0 4px;
+    font-family: var(--f-display);
+    font-size: 24px;
+    font-style: italic;
+    font-weight: 400;
+    line-height: 1;
+  }
+
+  .hint {
+    margin: 0 0 14px;
+  }
+
+  .c-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 12px;
+  }
+
+  .c-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--ink-line-2);
+    border-radius: 10px;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 14px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .c-input:focus {
+    outline: none;
+    border-color: var(--rust);
+    background: #fff;
+  }
+
+  textarea.c-input {
+    min-height: 62px;
+    resize: vertical;
+  }
+
+  .c-bg-grid,
+  .c-sig-grid,
+  .c-stickers {
+    display: grid;
+    gap: 8px;
+  }
+
+  .c-bg-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  .c-sig-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .c-stickers {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  .c-bg {
+    position: relative;
+    aspect-ratio: 1.6 / 1;
+    overflow: hidden;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s, border-color 0.2s;
+  }
+
+  .c-bg:hover {
+    transform: translateY(-2px);
+  }
+
+  .c-bg.active,
+  .c-sig-opt.active,
+  .c-sticker-opt.armed {
+    border-color: var(--ink);
+  }
+
+  .c-sig-opt {
+    min-height: 76px;
+    padding: 10px 12px;
+    border: 1px solid var(--ink-line-2);
+    border-radius: 10px;
+    background: var(--paper);
+    color: var(--ink);
+    text-align: left;
+    font-size: 28px;
+    font-style: italic;
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  .c-sig-opt small {
+    display: block;
+    margin-top: 6px;
+    color: var(--ink-faint);
+    font-family: var(--f-mono);
+    font-size: 9px;
+    font-style: normal;
+    font-weight: 400;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .c-sticker-opt {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 1;
+    padding: 22%;
+    border: 2px solid transparent;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 0 2px #fff, 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+  }
+
+  .c-sticker-opt.square {
+    border-radius: 10px;
+  }
+
+  .c-sticker-opt.text {
+    padding: 0;
+    background: #fff8ee;
+    color: var(--rust);
+    font: 700 13px var(--f-mono);
+    letter-spacing: 0.04em;
+  }
+
+  .c-sticker-opt:hover,
+  .c-sticker-opt.armed {
+    transform: scale(1.08);
+  }
+
+  .c-sticker-opt img,
+  .c-sticker img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .c-sticker {
+    position: absolute;
+    z-index: 3;
+    width: 60px;
+    height: 60px;
+    padding: 10px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 0 3px #fff, 0 4px 10px rgba(0, 0, 0, 0.22);
+    transform: translate(-50%, -50%) rotate(var(--sr, 0deg));
+  }
+
+  .c-sticker.square {
+    border-radius: 10px;
+  }
+
+  .c-sticker.text {
+    display: grid;
+    place-items: center;
+    padding: 0;
+    background: #fff8ee;
+    color: var(--rust);
+    font: 700 16px var(--f-mono);
+    letter-spacing: 0.05em;
+  }
+
+  .c-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+  }
+
+  .c-btn {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 22px;
+    border-radius: 99px;
+    font-size: 13px;
+    font-weight: 600;
+    transition: transform 0.2s, background 0.2s;
+  }
+
+  .c-btn.ghost {
+    border: 1px solid var(--ink-line-2);
+    color: var(--ink-soft);
+  }
+
+  .c-btn.primary {
+    border: 1px solid var(--ink);
+    background: var(--ink);
+    color: var(--paper-card);
+  }
+
+  .c-btn:hover {
+    transform: translateY(-1px);
+  }
+
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: 30px;
+    z-index: 10;
+    padding: 12px 18px;
+    border-radius: 99px;
+    background: var(--ink);
+    color: var(--paper-card);
+    box-shadow: 0 14px 34px -8px rgba(0, 0, 0, 0.4);
+    font-size: 13px;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-50%) translateY(20px);
+    transition: opacity 0.3s, transform 0.3s;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .v-bg-cream {
+    background: linear-gradient(155deg, #faf5e8 0%, #ece2c7 100%);
+  }
+
+  .v-bg-ink {
+    background: linear-gradient(155deg, #2a201a 0%, #1a1410 100%);
+    color: #fff8ee;
+  }
+
+  .v-bg-rust {
+    background: linear-gradient(135deg, #ff8a3d 0%, #c2410c 100%);
+    color: #fff;
+  }
+
+  .v-bg-blue {
+    background: linear-gradient(135deg, #6b8eff 0%, #1e3a8a 100%);
+    color: #fff;
+  }
+
+  .v-bg-mint {
+    background: linear-gradient(155deg, #d8f0d4 0%, #9bcb8f 100%);
+    color: #1a3014;
+  }
+
+  .v-bg-sky {
+    background: linear-gradient(180deg, #c7d7f0 0%, #f3e8cf 70%, #ead9b3 100%);
+  }
+
+  .v-bg-grid {
+    background-color: #faf5e8;
+    background-image:
+      linear-gradient(rgba(26, 20, 16, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(26, 20, 16, 0.05) 1px, transparent 1px);
+    background-size: 14px 14px;
+  }
+
+  .v-bg-dots {
+    background-color: #fde9d5;
+    background-image: radial-gradient(rgba(232, 89, 12, 0.18) 1.2px, transparent 1.4px);
+    background-size: 12px 12px;
+    color: #5a2a0e;
+  }
+
+  .v-bg-stripes {
+    background:
+      repeating-linear-gradient(45deg, rgba(26, 20, 16, 0.04) 0 6px, transparent 6px 14px),
+      linear-gradient(155deg, #faf5e8 0%, #ece2c7 100%);
+  }
+
+  .v-bg-houndstooth {
+    background-color: #faf5e8;
+    background-image: url("/houndstooth.svg");
+    background-size: 60px 60px;
+  }
+
+  .v-sig-caveat {
+    --sig: "Caveat", cursive;
+  }
+
+  .v-sig-dancing {
+    --sig: "Dancing Script", cursive;
+  }
+
+  .v-sig-display {
+    --sig: var(--f-display);
+  }
+
+  @media (max-width: 920px) {
+    .c-layout,
+    .c-header {
+      grid-template-columns: 1fr;
+    }
+
+    .c-layout {
+      display: grid;
+    }
+
+    .c-header {
+      display: grid;
+    }
+
+    .c-canvas {
+      position: relative;
+      top: auto;
+    }
+  }
+
+  @media (max-width: 620px) {
+    .compose-page {
+      width: min(100% - 24px, 1240px);
+      padding-top: 20px;
+    }
+
+    .c-topbar,
+    .c-actions {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .c-bg-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .c-sig-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .c-stickers {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .c-card-preview {
+      padding: 24px;
+    }
+  }
+</style>

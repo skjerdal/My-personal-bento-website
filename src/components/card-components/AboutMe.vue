@@ -46,7 +46,7 @@ export default {
   flex-direction: column;
   gap: 0.85rem;
   box-sizing: border-box;
-  font-family: var(--font-sans);
+  font-family: var(--type-font-body);
   color: var(--text-primary, #162033);
 }
 
@@ -80,20 +80,23 @@ export default {
 
 .eyebrow {
   margin: 0 0 0.3rem;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.18em;
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-label-weight);
+  letter-spacing: var(--type-label-tracking);
+  line-height: var(--type-label-line);
   text-transform: uppercase;
   color: rgba(22, 32, 51, 0.55);
 }
 
 .name {
   margin: 0;
-  font-family: var(--font-display);
-  font-size: clamp(2.15rem, 4vw, 2.75rem);
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: -0.02em;
+  font-family: var(--type-font-heading);
+  font-size: var(--type-section-title-size);
+  font-style: var(--type-heading-style);
+  font-weight: var(--type-section-title-weight);
+  line-height: var(--type-section-title-line);
+  letter-spacing: 0;
   color: var(--text-primary, #162033);
 
   em {
@@ -104,9 +107,9 @@ export default {
 
 .bio {
   margin: 0;
-  font-family: var(--font-sans);
-  font-size: 0.8rem;
-  line-height: 1.55;
+  font-family: var(--type-font-body);
+  font-size: var(--type-small-size);
+  line-height: var(--type-small-line);
   color: var(--text-primary, #162033);
   opacity: 0.82;
   text-wrap: pretty;
@@ -114,7 +117,7 @@ export default {
   clear: both;
 
   :deep(strong) {
-    font-weight: 500;
+    font-weight: var(--type-weight-medium);
     opacity: 1;
     color: var(--text-primary, #162033);
   }
@@ -131,8 +134,9 @@ export default {
   border-radius: 999px;
   border: 1px solid rgba(22, 32, 51, 0.18);
   background: rgba(22, 32, 51, 0.04);
-  font-family: var(--font-mono);
-  font-size: 10px;
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
+  line-height: var(--type-label-line);
   color: var(--text-primary, #162033);
 }
 
@@ -140,8 +144,9 @@ export default {
   display: flex;
   align-items: center;
   gap: 7px;
-  font-family: var(--font-sans);
-  font-size: 0.72rem;
+  font-family: var(--type-font-body);
+  font-size: var(--type-caption-size);
+  line-height: var(--type-caption-line);
   color: rgba(22, 32, 51, 0.55);
 }
 

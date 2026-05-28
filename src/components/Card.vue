@@ -47,6 +47,7 @@ export default {
     const cardElement = ref(null);
 
     const translatedTitle = computed(() => {
+      if (props.title === '') return '';
       if (!props.cardId) return props.title;
       const t = translations[currentLang.value];
       return t.cardTitles[props.cardId] ?? props.title;
@@ -118,7 +119,7 @@ export default {
   overflow: hidden;
   box-shadow: var(--box-shadow, 0 8px 20px rgba(0, 0, 0, 0.1), 0 2px 5px rgba(0, 0, 0, 0.07));
   z-index: 10; // Ensure cards are above the airplane flight layer
-  font-family: var(--font-sans);
+  font-family: var(--type-font-body);
   
   // &.clickable-card {
   //   cursor: pointer;
@@ -161,12 +162,14 @@ export default {
   */
 
   .card-title {
-    font-size: 1.4rem;
-    font-family: var(--font-display);
-    font-weight: 700;
+    font-family: var(--type-font-heading);
+    font-size: var(--type-card-title-size);
+    font-style: var(--type-heading-style);
+    font-weight: var(--type-card-title-weight);
+    letter-spacing: 0;
+    line-height: var(--type-card-title-line);
     margin: 0.8rem 0.5rem 0.5rem;
     margin-bottom: 0;
-    line-height: 1.2;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -200,8 +203,8 @@ export default {
   }
 
   .card-content {
-    font-size: 1rem;
-    line-height: 1.4;
+    font-size: var(--type-body-size);
+    line-height: var(--type-body-line);
     flex-grow: 1;
     overflow: auto;
     margin-bottom: 1rem;
@@ -240,6 +243,12 @@ export default {
       padding-right: 0;
       margin-top: -0.35rem;
       padding-top: 0.35rem;
+    }
+  }
+
+  &.on-the-shelf-card {
+    .dynamic-component-wrapper {
+      padding: 0;
     }
   }
 

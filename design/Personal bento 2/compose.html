@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Compose your card · Thomas Skjerdal</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Caveat:wght@500;600;700&family=Homemade+Apple&family=Dancing+Script:wght@500;700&family=Shadows+Into+Light&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="styles.css" />
+
+<style>
+  .c-page {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 32px 32px 80px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .c-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 22px;
+  }
+  .c-back {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--f-mono); font-size: 10px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-soft);
+    transition: color 0.2s, gap 0.2s;
+  }
+  .c-back:hover { color: var(--rust); gap: 10px; }
+  .c-pagename { font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.22em; color: var(--ink); }
+  .c-pagename strong { color: var(--rust); }
+
+  .c-header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 24px;
+    padding-bottom: 24px;
+    margin-bottom: 28px;
+    border-bottom: 1px dashed var(--ink-line-2);
+  }
+  .c-header h1 {
+    margin: 0;
+    font-family: var(--f-display); font-style: italic; font-weight: 400;
+    font-size: clamp(44px, 5.5vw, 72px);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+  }
+  .c-header h1 .accent { color: var(--rust); }
+  .c-header p {
+    margin: 0; max-width: 380px;
+    font-size: 14px; line-height: 1.5; color: var(--ink-soft);
+  }
+
+  .c-layout {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+  @media (max-width: 920px) {
+    .c-layout { grid-template-columns: 1fr; }
+  }
+
+  /* ----- preview canvas (left) ----- */
+  .c-canvas {
+    position: sticky;
+    top: 32px;
+    padding: 48px 24px;
+    background: var(--paper-card);
+    border: 1px solid var(--ink-line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+  .c-canvas .stage-label {
+    font-family: var(--f-mono); font-size: 10px;
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-faint);
+  }
+  .c-card-preview {
+    position: relative;
+    width: 100%;
+    max-width: 460px;
+    aspect-ratio: 1.6 / 1;
+    border-radius: 14px;
+    padding: 32px;
+    overflow: hidden;
+    transform: rotate(-1.5deg);
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.4) inset,
+      0 -1px 0 rgba(0,0,0,0.1) inset,
+      0 6px 14px rgba(26,20,16,0.12),
+      0 36px 60px -22px rgba(26,20,16,0.42);
+    cursor: crosshair;
+    isolation: isolate;
+    font-family: var(--f-sans);
+  }
+  .c-card-preview.placing { outline: 2px dashed var(--rust); outline-offset: -8px; }
+  .c-card-preview::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(115deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0) 30%, rgba(255,255,255,0) 70%, rgba(255,255,255,0.06) 100%);
+    pointer-events: none;
+    z-index: 4;
+  }
+
+  .c-card-preview .v-content {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .c-card-preview .v-meta {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.65;
+  }
+  .c-card-preview .v-name {
+    font-family: var(--sig, 'Caveat', cursive);
+    font-style: italic;
+    font-size: 56px;
+    line-height: 1;
+    font-weight: 600;
+    margin-top: 8px;
+    word-break: break-word;
+  }
+  .c-card-preview .v-msg {
+    font-family: var(--f-sans);
+    font-size: 14px;
+    line-height: 1.4;
+    max-width: 65%;
+    opacity: 0.85;
+  }
+
+  /* sticker positioned by % on card */
+  .c-sticker {
+    position: absolute;
+    z-index: 3;
+    width: 60px; height: 60px;
+    background: #fff;
+    border-radius: 50%;
+    padding: 16%;
+    box-shadow: 0 0 0 3px #fff, 0 4px 10px rgba(0,0,0,0.22);
+    transform: translate(-50%, -50%) rotate(var(--sr, 0deg));
+    cursor: pointer;
+  }
+  .c-sticker.square { border-radius: 10px; }
+  .c-sticker.emoji {
+    background: #fff8ee;
+    box-shadow: 0 0 0 3px #fff8ee, 0 4px 10px rgba(0,0,0,0.18);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+    padding: 0;
+  }
+  .c-sticker img { width: 100%; height: 100%; object-fit: contain; }
+  .c-sticker .x {
+    position: absolute;
+    top: -8px; right: -8px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--ink); color: #fff;
+    font-size: 12px; line-height: 1;
+    display: none; align-items: center; justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    z-index: 5;
+  }
+  .c-sticker:hover .x { display: flex; }
+
+  .c-stage-foot {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    font-family: var(--f-mono);
+    font-size: 11px;
+    color: var(--ink-faint);
+    letter-spacing: 0.1em;
+  }
+  .c-stage-foot kbd {
+    background: rgba(26,20,16,0.08);
+    border: 1px solid var(--ink-line-2);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: var(--f-mono);
+    font-size: 10px;
+  }
+
+  /* ----- controls (right) ----- */
+  .c-controls { display: flex; flex-direction: column; gap: 22px; }
+  .c-section {
+    background: var(--paper-card);
+    border: 1px solid var(--ink-line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+    padding: 22px 24px;
+  }
+  .c-section h3 {
+    margin: 0 0 4px;
+    font-family: var(--f-display); font-style: italic; font-weight: 400;
+    font-size: 22px;
+    line-height: 1;
+  }
+  .c-section .hint {
+    font-family: var(--f-mono); font-size: 10px;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-faint);
+    margin: 0 0 14px;
+  }
+
+  /* fields */
+  .c-field {
+    display: flex; flex-direction: column; gap: 6px;
+    margin-top: 12px;
+  }
+  .c-field label { font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-faint); }
+  .c-input {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: var(--paper);
+    border: 1px solid var(--ink-line-2);
+    font: 14px var(--f-sans);
+    color: var(--ink);
+    transition: border-color 0.2s, background 0.2s;
+    box-sizing: border-box;
+  }
+  .c-input:focus { outline: none; border-color: var(--rust); background: #fff; }
+  textarea.c-input { resize: vertical; min-height: 56px; }
+
+  /* swatches grid */
+  .c-bg-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .c-bg {
+    aspect-ratio: 1.6 / 1;
+    border-radius: 8px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    transition: transform 0.2s, border-color 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .c-bg:hover { transform: translateY(-2px); }
+  .c-bg.active { border-color: var(--ink); }
+  .c-bg.active::after {
+    content: "✓";
+    position: absolute;
+    top: 4px; right: 6px;
+    color: white;
+    font-size: 11px;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+  }
+
+  /* sig fonts */
+  .c-sig-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .c-sig-opt {
+    border: 1px solid var(--ink-line-2);
+    border-radius: 10px;
+    padding: 10px 14px;
+    background: var(--paper);
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.2s, background 0.2s;
+    font-size: 28px;
+    line-height: 1;
+    font-weight: 600;
+    font-style: italic;
+    color: var(--ink);
+  }
+  .c-sig-opt small {
+    display: block;
+    margin-top: 4px;
+    font-family: var(--f-mono);
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-style: normal;
+    font-weight: 400;
+  }
+  .c-sig-opt:hover { border-color: var(--rust); }
+  .c-sig-opt.active { border-color: var(--ink); background: #fff; }
+
+  /* stickers palette */
+  .c-stickers {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .c-sticker-opt {
+    position: relative;
+    aspect-ratio: 1;
+    background: #fff;
+    border-radius: 50%;
+    padding: 22%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: grab;
+    transition: transform 0.2s;
+    box-shadow: 0 0 0 2px #fff, 0 2px 4px rgba(0,0,0,0.1);
+    border: 2px solid transparent;
+  }
+  .c-sticker-opt.square { border-radius: 10px; padding: 20%; }
+  .c-sticker-opt.emoji { background: #fff8ee; box-shadow: 0 0 0 2px #fff8ee, 0 2px 4px rgba(0,0,0,0.1); padding: 0; font-size: 22px; }
+  .c-sticker-opt img { width: 100%; height: 100%; object-fit: contain; }
+  .c-sticker-opt:hover { transform: scale(1.08); }
+  .c-sticker-opt.armed { border-color: var(--rust); transform: scale(1.08); }
+
+  /* footer actions */
+  .c-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: flex-end;
+    padding-top: 6px;
+  }
+  .c-btn {
+    padding: 12px 22px;
+    border-radius: 99px;
+    font: 500 13px var(--f-sans);
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+  }
+  .c-btn.ghost {
+    background: transparent;
+    border: 1px solid var(--ink-line-2);
+    color: var(--ink-soft);
+  }
+  .c-btn.ghost:hover { border-color: var(--ink); color: var(--ink); }
+  .c-btn.primary {
+    background: var(--ink);
+    color: var(--paper-card);
+    border: 1px solid var(--ink);
+  }
+  .c-btn.primary:hover { background: #000; transform: translateY(-1px); }
+
+  /* toast */
+  .toast {
+    position: fixed;
+    left: 50%; bottom: 30px;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--ink);
+    color: var(--paper-card);
+    padding: 12px 18px;
+    border-radius: 99px;
+    font-size: 13px;
+    box-shadow: 0 14px 34px -8px rgba(0,0,0,0.4);
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    z-index: 9999;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="c-page" data-screen-label="03 Card composer">
+
+  <header class="c-topbar">
+    <a class="c-back" href="visitors.html">← Back to gallery</a>
+    <div class="c-pagename"><strong>03 ·</strong> Card composer</div>
+  </header>
+
+  <section class="c-header">
+    <div>
+      <h1>Make your <span class="accent">card</span>,<br/>drop it in the holder.</h1>
+    </div>
+    <p>
+      Pick a paper. Sign your name. Drop a sticker. Press save —
+      yours joins the wall.
+    </p>
+  </section>
+
+  <div class="c-layout">
+
+    <!-- ===== PREVIEW STAGE ===== -->
+    <div class="c-canvas">
+      <span class="stage-label">Live preview</span>
+      <div class="c-card-preview v-bg-cream v-sig-caveat" id="preview">
+        <div class="v-content">
+          <div>
+            <span class="v-meta">visitor · #143</span>
+            <div class="v-name" id="prevName">Your name</div>
+          </div>
+          <p class="v-msg" id="prevMsg">stopped by, said hi.</p>
+        </div>
+        <!-- stickers go here -->
+      </div>
+      <div class="c-stage-foot">
+        <span>Click a sticker, then click on the card to place it.</span>
+      </div>
+    </div>
+
+    <!-- ===== CONTROLS ===== -->
+    <div class="c-controls">
+
+      <!-- 1. SIGN -->
+      <div class="c-section">
+        <h3>Sign in</h3>
+        <p class="hint">Step 01 · who's stopping by</p>
+
+        <div class="c-field">
+          <label for="nameInput">Your name</label>
+          <input id="nameInput" class="c-input" type="text" placeholder="e.g. Mari L." value="Your name" maxlength="24" />
+        </div>
+        <div class="c-field">
+          <label for="msgInput">A short note (optional)</label>
+          <textarea id="msgInput" class="c-input" maxlength="120" placeholder="say something nice / leave a recommendation">stopped by, said hi.</textarea>
+        </div>
+
+        <div class="c-field">
+          <label>Signature style</label>
+          <div class="c-sig-grid" id="sigGrid">
+            <button class="c-sig-opt active" data-sig="v-sig-caveat" style="font-family:'Caveat',cursive;">Mari L.<small>Caveat — casual</small></button>
+            <button class="c-sig-opt" data-sig="v-sig-homemade" style="font-family:'Homemade Apple',cursive;font-size:22px;">Mari L.<small>Homemade — handwritten</small></button>
+            <button class="c-sig-opt" data-sig="v-sig-dancing" style="font-family:'Dancing Script',cursive;">Mari L.<small>Dancing — flowing</small></button>
+            <button class="c-sig-opt" data-sig="v-sig-shadows" style="font-family:'Shadows Into Light',cursive;">Mari L.<small>Shadows — playful</small></button>
+            <button class="c-sig-opt" data-sig="v-sig-display" style="font-family:var(--f-display);font-style:italic;">Mari L.<small>Editorial — serif</small></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. BACKGROUND -->
+      <div class="c-section">
+        <h3>Pick your paper</h3>
+        <p class="hint">Step 02 · choose a background</p>
+        <div class="c-bg-grid" id="bgGrid">
+          <button class="c-bg v-bg-cream active"      data-bg="v-bg-cream"></button>
+          <button class="c-bg v-bg-ink"               data-bg="v-bg-ink"></button>
+          <button class="c-bg v-bg-rust"              data-bg="v-bg-rust"></button>
+          <button class="c-bg v-bg-blue"              data-bg="v-bg-blue"></button>
+          <button class="c-bg v-bg-mint"              data-bg="v-bg-mint"></button>
+          <button class="c-bg v-bg-sky"               data-bg="v-bg-sky"></button>
+          <button class="c-bg v-bg-grid"              data-bg="v-bg-grid"></button>
+          <button class="c-bg v-bg-dots"              data-bg="v-bg-dots"></button>
+          <button class="c-bg v-bg-stripes"           data-bg="v-bg-stripes"></button>
+          <button class="c-bg v-bg-houndstooth"       data-bg="v-bg-houndstooth"></button>
+        </div>
+      </div>
+
+      <!-- 3. STICKERS -->
+      <div class="c-section">
+        <h3>Sticker drawer</h3>
+        <p class="hint">Step 03 · slap something on (optional) — click then click card</p>
+        <div class="c-stickers" id="stickerGrid">
+          <button class="c-sticker-opt"        data-kind="logo" data-img="assets/logos/typescript.svg"></button>
+          <button class="c-sticker-opt"        data-kind="logo" data-img="assets/logos/vuejs.svg"></button>
+          <button class="c-sticker-opt"        data-kind="logo" data-img="assets/logos/react.svg"></button>
+          <button class="c-sticker-opt"        data-kind="logo" data-img="assets/logos/python.svg"></button>
+          <button class="c-sticker-opt"        data-kind="logo" data-img="assets/logos/nodejs.svg"></button>
+          <button class="c-sticker-opt"        data-kind="logo" data-img="assets/logos/postgresql.svg"></button>
+          <button class="c-sticker-opt square" data-kind="logo" data-img="assets/logos/docker.svg"></button>
+          <button class="c-sticker-opt square" data-kind="logo" data-img="assets/logos/git.svg"></button>
+          <button class="c-sticker-opt emoji"  data-kind="emoji" data-emoji="⚡"></button>
+          <button class="c-sticker-opt emoji"  data-kind="emoji" data-emoji="🌲"></button>
+          <button class="c-sticker-opt emoji"  data-kind="emoji" data-emoji="🎮"></button>
+          <button class="c-sticker-opt emoji"  data-kind="emoji" data-emoji="⭐"></button>
+          <button class="c-sticker-opt emoji"  data-kind="emoji" data-emoji="☕"></button>
+          <button class="c-sticker-opt emoji"  data-kind="emoji" data-emoji="🤘"></button>
+          <button class="c-sticker-opt emoji"  data-kind="emoji" data-emoji="💌"></button>
+          <button class="c-sticker-opt emoji"  data-kind="emoji" data-emoji="🛰"></button>
+          <button class="c-sticker-opt emoji"  data-kind="emoji" data-emoji="🐟"></button>
+          <button class="c-sticker-opt emoji"  data-kind="emoji" data-emoji="🌒"></button>
+        </div>
+      </div>
+
+      <!-- 4. ACTIONS -->
+      <div class="c-actions">
+        <a href="visitors.html" class="c-btn ghost">Cancel</a>
+        <button class="c-btn primary" id="saveBtn">Drop in the holder →</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer" style="margin-top: 60px;">
+    <span>© 2026 Thomas Skjerdal · <a href="index.html">Back to bento ↗</a></span>
+    <span>Your card stays here forever (or until I redesign again)</span>
+  </footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const preview = document.getElementById('preview');
+  const nameInput = document.getElementById('nameInput');
+  const msgInput = document.getElementById('msgInput');
+  const prevName = document.getElementById('prevName');
+  const prevMsg  = document.getElementById('prevMsg');
+
+  // ---- Name + message live binding
+  nameInput.addEventListener('input', () => {
+    prevName.textContent = nameInput.value || 'Your name';
+  });
+  msgInput.addEventListener('input', () => {
+    prevMsg.textContent = msgInput.value || '';
+  });
+
+  // ---- Background selection
+  document.getElementById('bgGrid').addEventListener('click', e => {
+    const btn = e.target.closest('.c-bg');
+    if (!btn) return;
+    document.querySelectorAll('.c-bg').forEach(x => x.classList.remove('active'));
+    btn.classList.add('active');
+    // swap class
+    preview.classList.forEach(c => {
+      if (c.startsWith('v-bg-')) preview.classList.remove(c);
+    });
+    preview.classList.add(btn.dataset.bg);
+  });
+
+  // ---- Signature selection
+  document.getElementById('sigGrid').addEventListener('click', e => {
+    const btn = e.target.closest('.c-sig-opt');
+    if (!btn) return;
+    document.querySelectorAll('.c-sig-opt').forEach(x => x.classList.remove('active'));
+    btn.classList.add('active');
+    preview.classList.forEach(c => {
+      if (c.startsWith('v-sig-')) preview.classList.remove(c);
+    });
+    preview.classList.add(btn.dataset.sig);
+  });
+
+  // ---- Stickers: click in palette to arm, click on card to place
+  let armed = null;
+  document.getElementById('stickerGrid').addEventListener('click', e => {
+    const btn = e.target.closest('.c-sticker-opt');
+    if (!btn) return;
+    if (armed === btn) {
+      armed.classList.remove('armed');
+      armed = null;
+      preview.classList.remove('placing');
+      return;
+    }
+    document.querySelectorAll('.c-sticker-opt.armed').forEach(x => x.classList.remove('armed'));
+    btn.classList.add('armed');
+    armed = btn;
+    preview.classList.add('placing');
+  });
+
+  // populate the sticker palette previews after DOM ready
+  document.querySelectorAll('.c-sticker-opt').forEach(btn => {
+    if (btn.dataset.kind === 'logo') {
+      const img = document.createElement('img');
+      img.src = btn.dataset.img;
+      btn.appendChild(img);
+    } else if (btn.dataset.kind === 'emoji') {
+      btn.textContent = btn.dataset.emoji;
+    }
+  });
+
+  // place sticker on click in card
+  preview.addEventListener('click', e => {
+    if (!armed) return;
+    const rect = preview.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+
+    const s = document.createElement('div');
+    s.className = 'c-sticker';
+    s.style.left = x + '%';
+    s.style.top = y + '%';
+    s.style.setProperty('--sr', (Math.random() * 30 - 15).toFixed(0) + 'deg');
+    if (armed.classList.contains('square')) s.classList.add('square');
+    if (armed.classList.contains('emoji'))  {
+      s.classList.add('emoji');
+      s.textContent = armed.dataset.emoji;
+    } else {
+      const img = document.createElement('img');
+      img.src = armed.dataset.img;
+      s.appendChild(img);
+    }
+    const close = document.createElement('span');
+    close.className = 'x';
+    close.textContent = '×';
+    close.addEventListener('click', ev => { ev.stopPropagation(); s.remove(); });
+    s.appendChild(close);
+
+    preview.appendChild(s);
+
+    // disarm after placing
+    armed.classList.remove('armed');
+    armed = null;
+    preview.classList.remove('placing');
+  });
+
+  // ---- save / drop in holder (mockup)
+  const toast = document.getElementById('toast');
+  document.getElementById('saveBtn').addEventListener('click', () => {
+    toast.textContent = 'Saved · card #143 → gallery';
+    toast.classList.add('show');
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => { window.location.href = 'visitors.html'; }, 400);
+    }, 1200);
+  });
+</script>
+
+</body>
+</html>

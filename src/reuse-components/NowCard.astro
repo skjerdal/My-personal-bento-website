@@ -35,6 +35,10 @@ const progress  = Math.round((elapsed / total) * 100);
 
 <style>
   .now-card {
+    --card-orange: #e8590c;
+    --card-orange-deep: #c2410c;
+    --card-cream-ink: #fff8ee;
+
     position: relative;
     display: flex;
     flex-direction: column;
@@ -46,14 +50,14 @@ const progress  = Math.round((elapsed / total) * 100);
     background:
       radial-gradient(120% 80% at 0% 0%, rgba(255, 203, 107, 0.6), transparent 50%),
       radial-gradient(120% 80% at 100% 100%, rgba(255, 106, 42, 0.55), transparent 50%),
-      linear-gradient(135deg, #ff8a3d 0%, #ff6a2a 100%);
+      linear-gradient(135deg, var(--card-orange) 0%, var(--card-orange-deep) 100%);
     border: 1px solid rgba(255, 220, 170, 0.4);
     box-shadow:
-      0 8px 32px -8px rgba(0, 0, 0, 0.12),
-      0 4px 16px -4px rgba(0, 0, 0, 0.08),
-      inset 0 1px 0 rgba(255, 255, 255, 0.8),
-      0 30px 80px -20px rgba(255, 106, 42, 0.5);
-    color: #fff;
+      0 1px 0 rgba(255, 255, 255, 0.4) inset,
+      0 10px 30px -14px rgba(232, 89, 12, 0.55),
+      0 8px 32px -8px rgba(26, 20, 16, 0.12),
+      0 22px 50px -28px rgba(26, 20, 16, 0.22);
+    color: var(--card-cream-ink);
     min-height: 180px;
     box-sizing: border-box;
     animation: rise 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
@@ -72,7 +76,7 @@ const progress  = Math.round((elapsed / total) * 100);
     width: 240px;
     height: 240px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(255, 138, 61, 0.4), transparent 60%);
+    background: radial-gradient(circle, rgba(255, 203, 107, 0.34), transparent 60%);
     filter: blur(40px);
     pointer-events: none;
   }
@@ -85,27 +89,31 @@ const progress  = Math.round((elapsed / total) * 100);
   .stats-tag {
     margin: 0;
     color: rgba(255, 255, 255, 0.85);
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 0.15em;
+    font-family: var(--type-font-label);
+    font-size: var(--type-label-size);
+    font-weight: var(--type-label-weight);
+    letter-spacing: var(--type-label-tracking);
+    line-height: var(--type-label-line);
     text-transform: uppercase;
   }
 
   .stats-num {
     margin: 0;
     color: white;
-    font-family: var(--font-display);
-    font-size: clamp(48px, 5vw, 64px);
-    font-weight: 800;
-    line-height: 0.9;
+    font-family: var(--type-font-display);
+    font-size: var(--type-stat-size);
+    font-style: var(--type-display-style);
+    font-weight: var(--type-stat-weight);
+    letter-spacing: 0;
+    line-height: var(--type-stat-line);
   }
 
   .stats-label {
     margin: 4px 0 0;
     color: rgba(255, 255, 255, 0.9);
-    font-family: var(--font-sans);
-    font-size: 12px;
-    line-height: 1.4;
+    font-family: var(--type-font-body);
+    font-size: var(--type-caption-size);
+    line-height: var(--type-caption-line);
   }
 
   .progress-section {
@@ -122,40 +130,51 @@ const progress  = Math.round((elapsed / total) * 100);
   }
 
   .progress-label {
-    font-family: var(--font-mono);
-    font-size: 9px;
-    letter-spacing: 0.12em;
+    font-family: var(--type-font-label);
+    font-size: calc(var(--type-label-size) * 0.9);
+    letter-spacing: var(--type-label-tracking);
     text-transform: uppercase;
     color: rgba(255, 255, 255, 0.75);
   }
 
   .progress-pct {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    font-weight: 700;
+    font-family: var(--type-font-label);
+    font-size: var(--type-label-size);
+    font-weight: var(--type-weight-bold);
     color: rgba(255, 255, 255, 0.95);
   }
 
   .progress-track {
     height: 5px;
     border-radius: 99px;
-    background: rgba(255, 255, 255, 0.22);
+    background: rgba(0, 0, 0, 0.18);
     overflow: hidden;
+    position: relative;
+  }
+
+  .progress-track::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.05) 0 6px, transparent 6px 12px);
   }
 
   .progress-fill {
     height: 100%;
     border-radius: 99px;
-    background: rgba(255, 255, 255, 0.9);
+    background: linear-gradient(90deg, #fff7e6, #ffd9a8);
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+    position: relative;
+    z-index: 1;
     transition: width 1s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
   .progress-end {
     margin: 0;
     text-align: right;
-    font-family: var(--font-mono);
-    font-size: 8px;
-    letter-spacing: 0.1em;
+    font-family: var(--type-font-label);
+    font-size: calc(var(--type-label-size) * 0.8);
+    letter-spacing: var(--type-label-tracking);
     color: rgba(255, 255, 255, 0.55);
   }
 

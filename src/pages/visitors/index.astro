@@ -1,0 +1,676 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const sampleCards = [
+  {
+    number: 142,
+    name: 'Mari L.',
+    message: 'caught the M.Sc. bug too. heia HVL!',
+    bg: 'v-bg-rust',
+    sig: 'v-sig-caveat',
+    rotate: '-2deg',
+    stickers: [{ kind: 'text', value: 'AI', x: 86, y: 20 }],
+  },
+  {
+    number: 141,
+    name: 'jonas',
+    message: 'that booster pack animation is a crime',
+    bg: 'v-bg-cream',
+    sig: 'v-sig-display',
+    rotate: '1deg',
+    stickers: [{ kind: 'logo', value: '/logos/vuejs.svg', x: 86, y: 78 }],
+  },
+  {
+    number: 140,
+    name: 'Ada',
+    message: 'love the journey graph - git for life choices',
+    bg: 'v-bg-ink',
+    sig: 'v-sig-dancing',
+    rotate: '2deg',
+    stickers: [{ kind: 'text', value: 'OK', x: 84, y: 22 }],
+  },
+  {
+    number: 139,
+    name: 'Sondre',
+    message: 'stopping by from Trondheim',
+    bg: 'v-bg-grid',
+    sig: 'v-sig-display',
+    rotate: '-1deg',
+    stickers: [],
+  },
+  {
+    number: 138,
+    name: 'Ingrid Aa.',
+    message: 'arrival is so good, glad to find a kindred',
+    bg: 'v-bg-mint',
+    sig: 'v-sig-caveat',
+    rotate: '3deg',
+    stickers: [{ kind: 'logo', value: '/logos/python.svg', x: 84, y: 78, square: true }],
+  },
+  {
+    number: 137,
+    name: 'eirik',
+    message: 'do more bento sites pls',
+    bg: 'v-bg-blue',
+    sig: 'v-sig-display',
+    rotate: '-3deg',
+    stickers: [{ kind: 'logo', value: '/logos/react.svg', x: 84, y: 22 }],
+  },
+  {
+    number: 136,
+    name: 'M. Berg',
+    message: "recruiter from oslo. let's talk.",
+    bg: 'v-bg-houndstooth',
+    sig: 'v-sig-display',
+    rotate: '1deg',
+    stickers: [{ kind: 'text', value: 'CV', x: 84, y: 78 }],
+  },
+  {
+    number: 135,
+    name: 'snorre',
+    message: 'fellow aurlending. high up the fjord :)',
+    bg: 'v-bg-sky',
+    sig: 'v-sig-caveat',
+    rotate: '-2deg',
+    stickers: [],
+  },
+];
+---
+
+<Layout
+  title="Visitor Cards - Thomas Skjerdal"
+  description="A small interactive visitor card gallery for Thomas Skjerdal's personal site."
+>
+    <main class="visitors-page" transition:animate="fade">
+      <header class="v-topbar">
+        <a class="v-back" href="/">&larr; Back to bento</a>
+        <div class="v-pagename"><strong>02 /</strong> Visitor gallery</div>
+      </header>
+
+      <section class="v-header">
+        <div>
+          <h1>The <span>guestbook</span>,<br />but make it a card holder.</h1>
+        </div>
+        <p>
+          Every visitor gets to leave a card. Pick a background, sign your name,
+          drop on a sticker or two, and leave it here for the next person.
+        </p>
+      </section>
+
+      <a class="v-cta" href="/visitors/compose">
+        <div>
+          <span class="eyebrow">Step into the holder</span>
+          <h2>Make your own card.</h2>
+          <p>Backgrounds, signatures, stickers, and a little note.</p>
+        </div>
+        <span aria-hidden="true">Open composer &rarr;</span>
+      </a>
+
+      <div class="v-shelf-head">
+        <h3>All visitors</h3>
+        <div class="meta">
+          <span id="cardCount">142 cards</span>
+          <div class="seg" aria-label="Filter visitor cards">
+            <button class="active" type="button" data-filter="all">All</button>
+            <button type="button" data-filter="stickers">With stickers</button>
+            <button type="button" data-filter="recent">This week</button>
+          </div>
+        </div>
+      </div>
+
+      <section class="v-grid" id="visitorGrid" aria-label="Visitor cards">
+        <a class="v-add-card" href="/visitors/compose">
+          <span class="plus">+</span>
+          <span class="lbl">Add your card</span>
+        </a>
+
+        {
+          sampleCards.map((card) => (
+            <article
+              class={`v-card ${card.bg} ${card.sig}`}
+              style={`--r:${card.rotate}`}
+              data-sample="true"
+              data-has-stickers={card.stickers.length > 0 ? 'true' : 'false'}
+            >
+              <div class="v-content">
+                <div>
+                  <span class="v-meta">visitor / #{card.number}</span>
+                  <div class="v-name">{card.name}</div>
+                </div>
+                <p class="v-msg">{card.message}</p>
+              </div>
+              {card.stickers.map((sticker) => (
+                <span
+                  class={`v-sticker ${sticker.kind === 'text' ? 'text' : ''} ${sticker.square ? 'square' : ''}`}
+                  style={`left:${sticker.x}%;top:${sticker.y}%`}
+                >
+                  {sticker.kind === 'logo' ? <img src={sticker.value} alt="" /> : sticker.value}
+                </span>
+              ))}
+            </article>
+          ))
+        }
+      </section>
+    </main>
+
+    <script is:inline data-astro-rerun>
+      (() => {
+      const STORAGE_KEY = 'skjerdalVisitorCards';
+      const grid = document.getElementById('visitorGrid');
+      const count = document.getElementById('cardCount');
+      const bgClasses = new Set([
+        'v-bg-cream',
+        'v-bg-ink',
+        'v-bg-rust',
+        'v-bg-blue',
+        'v-bg-mint',
+        'v-bg-sky',
+        'v-bg-grid',
+        'v-bg-dots',
+        'v-bg-stripes',
+        'v-bg-houndstooth',
+      ]);
+      const sigClasses = new Set(['v-sig-caveat', 'v-sig-dancing', 'v-sig-display']);
+
+      const readCards = () => {
+        try {
+          return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        } catch {
+          return [];
+        }
+      };
+
+      const text = (value, fallback = '') => String(value || fallback).slice(0, 140);
+
+      const createSticker = (sticker) => {
+        const el = document.createElement('span');
+        el.className = 'v-sticker';
+        el.style.left = `${Number(sticker.x) || 82}%`;
+        el.style.top = `${Number(sticker.y) || 22}%`;
+        if (sticker.square) el.classList.add('square');
+        if (sticker.kind === 'logo') {
+          const img = document.createElement('img');
+          img.src = text(sticker.value);
+          img.alt = '';
+          el.appendChild(img);
+        } else {
+          el.classList.add('text');
+          el.textContent = text(sticker.value, 'TS').slice(0, 4);
+        }
+        return el;
+      };
+
+      const createCard = (card, index) => {
+        const article = document.createElement('article');
+        const bg = bgClasses.has(card.bg) ? card.bg : 'v-bg-cream';
+        const sig = sigClasses.has(card.sig) ? card.sig : 'v-sig-caveat';
+        article.className = `v-card ${bg} ${sig}`;
+        article.style.setProperty('--r', `${index % 2 === 0 ? '-1.5deg' : '1.5deg'}`);
+        article.dataset.hasStickers = card.stickers?.length ? 'true' : 'false';
+        article.dataset.createdAt = card.createdAt || '';
+
+        const content = document.createElement('div');
+        content.className = 'v-content';
+        content.innerHTML = '<div><span class="v-meta"></span><div class="v-name"></div></div><p class="v-msg"></p>';
+        content.querySelector('.v-meta').textContent = `visitor / #${Number(card.number) || 143}`;
+        content.querySelector('.v-name').textContent = text(card.name, 'visitor').slice(0, 28);
+        content.querySelector('.v-msg').textContent = text(card.message, 'stopped by, said hi.');
+        article.appendChild(content);
+
+        (card.stickers || []).slice(0, 6).forEach((sticker) => {
+          article.appendChild(createSticker(sticker));
+        });
+
+        return article;
+      };
+
+      const localCards = readCards();
+      localCards.forEach((card, index) => {
+        grid.insertBefore(createCard(card, index), grid.children[1]);
+      });
+      count.textContent = `${142 + localCards.length} cards`;
+
+      const isRecent = (el) => {
+        if (el.dataset.sample === 'true') return false;
+        const created = Number(el.dataset.createdAt);
+        if (!created) return false;
+        return Date.now() - created < 7 * 24 * 60 * 60 * 1000;
+      };
+
+      document.querySelectorAll('.seg button').forEach((button) => {
+        button.addEventListener('click', () => {
+          document.querySelectorAll('.seg button').forEach((item) => item.classList.remove('active'));
+          button.classList.add('active');
+          const filter = button.dataset.filter;
+          grid.querySelectorAll('.v-card').forEach((card) => {
+            const show =
+              filter === 'all' ||
+              (filter === 'stickers' && card.dataset.hasStickers === 'true') ||
+              (filter === 'recent' && isRecent(card));
+            card.hidden = !show;
+          });
+        });
+      });
+      })();
+    </script>
+</Layout>
+
+<style is:global>
+  .visitors-page {
+    --paper: #f1e8d4;
+    --paper-deep: #e8dcc1;
+    --paper-card: #faf5e8;
+    --paper-card-2: #f6efde;
+    --ink: #1a1410;
+    --ink-soft: #4a3f31;
+    --ink-faint: #8b7e6a;
+    --ink-line: rgba(26, 20, 16, 0.1);
+    --ink-line-2: rgba(26, 20, 16, 0.18);
+    --rust: #e8590c;
+    --rust-deep: #c2410c;
+    --blue: #2e5cf2;
+    --blue-deep: #1e3a8a;
+    --radius: 22px;
+    --f-display: "Instrument Serif", Georgia, serif;
+    --f-sans: "Geist", system-ui, sans-serif;
+    --f-mono: "JetBrains Mono", Consolas, monospace;
+    --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.9) inset,
+      0 -1px 0 rgba(26, 20, 16, 0.04) inset,
+      0 1px 2px rgba(26, 20, 16, 0.04),
+      0 8px 22px -10px rgba(26, 20, 16, 0.18),
+      0 22px 50px -28px rgba(26, 20, 16, 0.22);
+    --shadow-deep: 0 4px 8px rgba(26, 20, 16, 0.08),
+      0 30px 80px -30px rgba(26, 20, 16, 0.4);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  .visitors-page a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .visitors-page button {
+    border: 0;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .visitors-page {
+    position: relative;
+    z-index: 1;
+    width: min(1240px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: 32px 0 80px;
+  }
+
+  .v-topbar,
+  .v-header,
+  .v-shelf-head,
+  .meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+  }
+
+  .v-topbar {
+    margin-bottom: 20px;
+  }
+
+  .v-back,
+  .v-pagename,
+  .eyebrow,
+  .meta,
+  .v-meta,
+  .lbl {
+    font-family: var(--f-mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .v-back,
+  .meta,
+  .v-meta {
+    color: var(--ink-faint);
+  }
+
+  .v-back {
+    transition: color 0.2s, transform 0.2s;
+  }
+
+  .v-back:hover {
+    color: var(--rust);
+    transform: translateX(-3px);
+  }
+
+  .v-pagename strong {
+    color: var(--rust);
+  }
+
+  .v-header {
+    align-items: end;
+    padding-bottom: 26px;
+    margin-bottom: 28px;
+    border-bottom: 1px dashed var(--ink-line-2);
+  }
+
+  .v-header h1 {
+    margin: 0;
+    font-family: var(--f-display);
+    font-size: clamp(48px, 6vw, 80px);
+    font-style: italic;
+    font-weight: 400;
+    line-height: 0.95;
+  }
+
+  .v-header h1 span {
+    color: var(--rust);
+  }
+
+  .v-header p {
+    width: min(380px, 100%);
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .v-cta {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 36px;
+    padding: 24px 28px;
+    border: 1px solid rgba(255, 220, 170, 0.4);
+    border-radius: var(--radius);
+    background:
+      radial-gradient(120% 80% at 0% 0%, rgba(255, 203, 107, 0.56), transparent 50%),
+      linear-gradient(135deg, var(--rust) 0%, var(--rust-deep) 100%);
+    box-shadow: var(--shadow-card), 0 30px 80px -30px rgba(232, 89, 12, 0.5);
+    color: #fff8ee;
+  }
+
+  .v-cta h2 {
+    margin: 4px 0;
+    font-family: var(--f-display);
+    font-size: 38px;
+    font-style: italic;
+    font-weight: 400;
+    line-height: 1;
+  }
+
+  .v-cta p {
+    margin: 0;
+    color: rgba(255, 248, 230, 0.85);
+    font-size: 13.5px;
+  }
+
+  .v-cta > span {
+    padding: 14px 22px;
+    border-radius: 99px;
+    background: rgba(20, 16, 13, 0.92);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .v-shelf-head {
+    align-items: baseline;
+    margin-bottom: 18px;
+  }
+
+  .v-shelf-head h3 {
+    margin: 0;
+    font-family: var(--f-display);
+    font-size: 32px;
+    font-style: italic;
+    font-weight: 400;
+  }
+
+  .seg {
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    border-radius: 99px;
+    background: rgba(26, 20, 16, 0.05);
+  }
+
+  .seg button {
+    padding: 6px 12px;
+    border-radius: 99px;
+    background: transparent;
+    color: var(--ink-faint);
+    font-family: var(--f-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .seg button.active {
+    background: var(--paper-card);
+    color: var(--ink);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset, 0 1px 4px rgba(26, 20, 16, 0.1);
+  }
+
+  .v-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 22px;
+  }
+
+  .v-card,
+  .v-add-card {
+    aspect-ratio: 1.6 / 1;
+    border-radius: 10px;
+  }
+
+  .v-card {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: 22px;
+    color: #1a1410;
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.4) inset,
+      0 -1px 0 rgba(0, 0, 0, 0.1) inset,
+      0 4px 10px rgba(26, 20, 16, 0.08),
+      0 22px 40px -20px rgba(26, 20, 16, 0.3);
+    transform: rotate(var(--r, 0deg));
+    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s;
+  }
+
+  .v-card:hover {
+    z-index: 2;
+    transform: rotate(0deg) translateY(-6px) scale(1.03);
+    box-shadow: var(--shadow-deep);
+  }
+
+  .v-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+    background: linear-gradient(115deg, rgba(255, 255, 255, 0.18), transparent 30%, transparent 70%, rgba(255, 255, 255, 0.06));
+  }
+
+  .v-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .v-name {
+    margin-top: 6px;
+    font-family: var(--sig, var(--f-display));
+    font-size: 30px;
+    font-style: italic;
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  .v-msg {
+    max-width: 64%;
+    margin: 0;
+    color: currentColor;
+    font-size: 12px;
+    line-height: 1.4;
+    opacity: 0.85;
+  }
+
+  .v-sticker {
+    position: absolute;
+    z-index: 3;
+    width: 48px;
+    height: 48px;
+    padding: 8px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 0 2px #fff, 0 4px 8px rgba(0, 0, 0, 0.18);
+    transform: translate(-50%, -50%) rotate(-8deg);
+  }
+
+  .v-sticker.square {
+    border-radius: 8px;
+  }
+
+  .v-sticker.text {
+    display: grid;
+    place-items: center;
+    padding: 0;
+    background: #fff8ee;
+    color: var(--rust);
+    font: 700 14px var(--f-mono);
+    letter-spacing: 0.05em;
+  }
+
+  .v-sticker img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .v-add-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 2px dashed var(--ink-line-2);
+    color: var(--ink-faint);
+    text-align: center;
+    transition: border-color 0.2s, color 0.2s, transform 0.3s;
+  }
+
+  .v-add-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--rust);
+    color: var(--rust);
+  }
+
+  .plus {
+    font-family: var(--f-display);
+    font-size: 34px;
+    font-style: italic;
+    line-height: 1;
+  }
+
+  .v-bg-cream {
+    background: linear-gradient(155deg, #faf5e8 0%, #ece2c7 100%);
+  }
+
+  .v-bg-ink {
+    background: linear-gradient(155deg, #2a201a 0%, #1a1410 100%);
+    color: #fff8ee;
+  }
+
+  .v-bg-rust {
+    background: linear-gradient(135deg, #ff8a3d 0%, #c2410c 100%);
+    color: #fff;
+  }
+
+  .v-bg-blue {
+    background: linear-gradient(135deg, #6b8eff 0%, #1e3a8a 100%);
+    color: #fff;
+  }
+
+  .v-bg-mint {
+    background: linear-gradient(155deg, #d8f0d4 0%, #9bcb8f 100%);
+    color: #1a3014;
+  }
+
+  .v-bg-sky {
+    background: linear-gradient(180deg, #c7d7f0 0%, #f3e8cf 70%, #ead9b3 100%);
+  }
+
+  .v-bg-grid {
+    background-color: #faf5e8;
+    background-image:
+      linear-gradient(rgba(26, 20, 16, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(26, 20, 16, 0.05) 1px, transparent 1px);
+    background-size: 14px 14px;
+  }
+
+  .v-bg-dots {
+    background-color: #fde9d5;
+    background-image: radial-gradient(rgba(232, 89, 12, 0.18) 1.2px, transparent 1.4px);
+    background-size: 12px 12px;
+    color: #5a2a0e;
+  }
+
+  .v-bg-stripes {
+    background:
+      repeating-linear-gradient(45deg, rgba(26, 20, 16, 0.04) 0 6px, transparent 6px 14px),
+      linear-gradient(155deg, #faf5e8 0%, #ece2c7 100%);
+  }
+
+  .v-bg-houndstooth {
+    background-color: #faf5e8;
+    background-image: url("/houndstooth.svg");
+    background-size: 60px 60px;
+  }
+
+  .v-sig-caveat {
+    --sig: "Caveat", cursive;
+  }
+
+  .v-sig-dancing {
+    --sig: "Dancing Script", cursive;
+  }
+
+  .v-sig-display {
+    --sig: var(--f-display);
+  }
+
+  @media (max-width: 720px) {
+    .visitors-page {
+      width: min(100% - 24px, 1240px);
+      padding-top: 20px;
+    }
+
+    .v-header,
+    .v-cta,
+    .v-shelf-head {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+
+    .v-cta > span {
+      justify-self: start;
+    }
+
+    .meta {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+</style>

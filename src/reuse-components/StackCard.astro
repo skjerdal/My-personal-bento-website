@@ -59,19 +59,23 @@ const { stack = ['Vue', 'TypeScript', 'React', 'Python', 'PyTorch', 'SQL', 'Java
   .eyebrow {
     margin: 0;
     color: rgba(26, 20, 16, 0.58);
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 0.2em;
+    font-family: var(--type-font-label);
+    font-size: var(--type-label-size);
+    font-weight: var(--type-label-weight);
+    letter-spacing: var(--type-label-tracking);
+    line-height: var(--type-label-line);
     text-transform: uppercase;
   }
 
   h2 {
     margin: 8px 0 0;
     color: #1a1410;
-    font-family: var(--font-display);
-    font-size: 24px;
-    font-weight: 700;
-    line-height: 1;
+    font-family: var(--type-font-heading);
+    font-size: var(--type-card-title-size);
+    font-style: var(--type-heading-style);
+    font-weight: var(--type-card-title-weight);
+    letter-spacing: 0;
+    line-height: var(--type-card-title-line);
   }
 
   .stack-grid {
@@ -87,8 +91,9 @@ const { stack = ['Vue', 'TypeScript', 'React', 'Python', 'PyTorch', 'SQL', 'Java
     border-radius: 999px;
     background: rgba(26, 20, 16, 0.04);
     color: #4a3f31;
-    font-family: var(--font-mono);
-    font-size: 11px;
+    font-family: var(--type-font-label);
+    font-size: var(--type-label-size);
+    line-height: var(--type-label-line);
     transition: transform 0.2s, border-color 0.2s, background 0.2s, color 0.2s;
   }
 

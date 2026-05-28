@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Visitors · Thomas Skjerdal</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Caveat:wght@500;600;700&family=Homemade+Apple&family=Dancing+Script:wght@500;700&family=Shadows+Into+Light&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="styles.css" />
+
+<style>
+  /* ---- visitors-specific ---- */
+  .visitors-page { max-width: 1240px; margin: 0 auto; padding: 32px 32px 80px; position: relative; z-index: 2; }
+
+  .v-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+  }
+  .v-back {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--f-mono); font-size: 10px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-soft);
+    transition: color 0.2s, gap 0.2s;
+  }
+  .v-back:hover { color: var(--rust); gap: 10px; }
+  .v-pagename {
+    font-family: var(--f-mono); font-size: 10px;
+    letter-spacing: 0.22em; color: var(--ink);
+  }
+  .v-pagename strong { color: var(--rust); }
+
+  .v-header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 24px;
+    padding-bottom: 26px;
+    margin-bottom: 28px;
+    border-bottom: 1px dashed var(--ink-line-2);
+  }
+  .v-header h1 {
+    margin: 0;
+    font-family: var(--f-display); font-style: italic; font-weight: 400;
+    font-size: clamp(48px, 6vw, 80px);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+  }
+  .v-header h1 .accent { color: var(--rust); }
+  .v-header p {
+    margin: 0;
+    max-width: 380px;
+    color: var(--ink-soft);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* CTA — design-your-card hero */
+  .v-cta {
+    background:
+      radial-gradient(120% 80% at 0% 0%, rgba(255, 203, 107, 0.6), transparent 50%),
+      linear-gradient(135deg, var(--rust) 0%, var(--rust-deep) 100%);
+    color: #fff8ee;
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 36px;
+    box-shadow: var(--shadow-card), 0 30px 80px -30px rgba(232, 89, 12, 0.5);
+    border: 1px solid rgba(255,220,170,0.4);
+  }
+  .v-cta .eyebrow { color: rgba(255,255,255,0.78); }
+  .v-cta h2 {
+    margin: 4px 0 4px;
+    font-family: var(--f-display); font-style: italic; font-weight: 400;
+    font-size: 38px;
+    line-height: 1;
+  }
+  .v-cta p { margin: 0; font-size: 13.5px; color: rgba(255,248,230,0.85); }
+  .v-cta a {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 22px;
+    border-radius: 99px;
+    background: rgba(20,16,13,0.92);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .v-cta a:hover { background: #1a1410; }
+
+  /* shelf headline */
+  .v-shelf-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 18px;
+  }
+  .v-shelf-head h3 {
+    margin: 0;
+    font-family: var(--f-display); font-style: italic; font-weight: 400;
+    font-size: 32px;
+  }
+  .v-shelf-head .meta {
+    display: flex; gap: 14px;
+    font-family: var(--f-mono); font-size: 10px;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .v-shelf-head .seg {
+    display: flex; gap: 4px;
+    background: rgba(26,20,16,0.05);
+    padding: 4px;
+    border-radius: 99px;
+  }
+  .v-shelf-head .seg button {
+    padding: 6px 14px;
+    border-radius: 99px;
+    font-family: var(--f-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .v-shelf-head .seg button.active {
+    background: var(--paper-card);
+    color: var(--ink);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.8) inset, 0 1px 4px rgba(26,20,16,0.1);
+  }
+
+  /* gallery grid */
+  .v-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 22px;
+  }
+
+  /* visitor card — looks like a real business card */
+  .v-card {
+    position: relative;
+    aspect-ratio: 1.6 / 1;
+    border-radius: 10px;
+    padding: 22px;
+    overflow: hidden;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.4) inset,
+      0 -1px 0 rgba(0,0,0,0.1) inset,
+      0 4px 10px rgba(26,20,16,0.08),
+      0 22px 40px -20px rgba(26,20,16,0.3);
+    transform: rotate(var(--r, 0deg));
+    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s;
+    cursor: pointer;
+    isolation: isolate;
+    font-family: var(--f-sans);
+    color: #1a1410;
+  }
+  .v-card:hover {
+    transform: rotate(0deg) translateY(-6px) scale(1.03);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.4) inset,
+      0 -1px 0 rgba(0,0,0,0.1) inset,
+      0 6px 14px rgba(26,20,16,0.12),
+      0 36px 60px -22px rgba(26,20,16,0.42);
+    z-index: 2;
+  }
+  .v-card::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(115deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0) 30%, rgba(255,255,255,0) 70%, rgba(255,255,255,0.06) 100%);
+    pointer-events: none;
+    z-index: 4;
+  }
+  .v-card .v-content {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .v-card .v-name {
+    font-family: var(--sig, var(--f-display));
+    font-style: italic;
+    font-size: 30px;
+    line-height: 1;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .v-card .v-meta {
+    font-family: var(--f-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+  .v-card .v-msg {
+    font-family: var(--f-sans);
+    font-size: 12px;
+    line-height: 1.4;
+    max-width: 60%;
+    opacity: 0.85;
+  }
+  /* sticker on visitor card */
+  .v-card .v-sticker {
+    position: absolute;
+    z-index: 3;
+    background: #fff;
+    border-radius: 50%;
+    padding: 16%;
+    width: 48px; height: 48px;
+    box-shadow: 0 0 0 2px #fff, 0 4px 8px rgba(0,0,0,0.2);
+    transform: rotate(var(--sr, 0deg));
+  }
+  .v-card .v-sticker.square { border-radius: 8px; padding: 14%; }
+  .v-card .v-sticker img { width: 100%; height: 100%; object-fit: contain; }
+  .v-card .v-sticker.emoji {
+    background: #fff8ee;
+    font-size: 24px;
+    display: flex; align-items: center; justify-content: center;
+    padding: 0;
+    box-shadow: 0 0 0 2px #fff8ee, 0 4px 8px rgba(0,0,0,0.18);
+  }
+
+  /* card background patterns */
+  .v-bg-cream { background: linear-gradient(155deg, #faf5e8 0%, #ece2c7 100%); color: #1a1410; }
+  .v-bg-ink   { background: linear-gradient(155deg, #2a201a 0%, #1a1410 100%); color: #fff8ee; }
+  .v-bg-rust  { background: linear-gradient(135deg, #ff8a3d 0%, #c2410c 100%); color: #fff; }
+  .v-bg-blue  { background: linear-gradient(135deg, #6b8eff 0%, #1e3a8a 100%); color: #fff; }
+  .v-bg-mint  { background: linear-gradient(155deg, #d8f0d4 0%, #9bcb8f 100%); color: #1a3014; }
+  .v-bg-sky   { background: linear-gradient(180deg, #c7d7f0 0%, #f3e8cf 70%, #ead9b3 100%); color: #1a1410; }
+  .v-bg-grid  {
+    background-color: #faf5e8;
+    background-image:
+      linear-gradient(rgba(26,20,16,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(26,20,16,0.05) 1px, transparent 1px);
+    background-size: 14px 14px;
+    color: #1a1410;
+  }
+  .v-bg-dots {
+    background-color: #fde9d5;
+    background-image: radial-gradient(rgba(232,89,12,0.18) 1.2px, transparent 1.4px);
+    background-size: 12px 12px;
+    color: #5a2a0e;
+  }
+  .v-bg-stripes {
+    background:
+      repeating-linear-gradient(45deg, rgba(26,20,16,0.04) 0 6px, transparent 6px 14px),
+      linear-gradient(155deg, #faf5e8 0%, #ece2c7 100%);
+    color: #1a1410;
+  }
+  .v-bg-houndstooth {
+    background-color: #faf5e8;
+    background-image: url('assets/houndstooth.svg');
+    background-size: 60px 60px;
+    color: #1a1410;
+  }
+
+  /* signature fonts (applied via --sig) */
+  .v-sig-caveat   { --sig: 'Caveat', cursive; }
+  .v-sig-homemade { --sig: 'Homemade Apple', cursive; }
+  .v-sig-dancing  { --sig: 'Dancing Script', cursive; }
+  .v-sig-shadows  { --sig: 'Shadows Into Light', cursive; }
+  .v-sig-display  { --sig: var(--f-display); }
+
+  /* "your card" placeholder */
+  .v-add-card {
+    border: 2px dashed var(--ink-line-2);
+    border-radius: 10px;
+    aspect-ratio: 1.6 / 1;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 8px;
+    color: var(--ink-faint);
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s, transform 0.3s;
+  }
+  .v-add-card:hover { border-color: var(--rust); color: var(--rust); transform: translateY(-4px); }
+  .v-add-card .plus { font-size: 28px; line-height: 1; font-family: var(--f-display); font-style: italic; }
+  .v-add-card .lbl { font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; }
+</style>
+</head>
+<body>
+
+<div class="visitors-page" data-screen-label="02 Visitors gallery">
+
+  <header class="v-topbar">
+    <a class="v-back" href="index.html">← Back to bento</a>
+    <div class="v-pagename"><strong>02 ·</strong> Visitor gallery</div>
+  </header>
+
+  <section class="v-header">
+    <div>
+      <h1>The <span class="accent">guestbook</span>,<br/>but make it a card holder.</h1>
+    </div>
+    <p>
+      Every visitor gets to leave a card. Pick a background, scrawl your name,
+      slap on a sticker or two. Stays here for everyone after you to see.
+    </p>
+  </section>
+
+  <a class="v-cta" href="compose.html">
+    <div>
+      <span class="eyebrow">Step into the holder</span>
+      <h2>Make your own card.</h2>
+      <p>Takes 30 seconds. Backgrounds, signatures, stickers — the lot.</p>
+    </div>
+    <span aria-hidden="true">Open composer →</span>
+  </a>
+
+  <div class="v-shelf-head">
+    <h3>All visitors</h3>
+    <div class="meta">
+      <span>142 cards · sorted by recent</span>
+      <div class="seg">
+        <button class="active" data-filter="all">All</button>
+        <button data-filter="stickers">With stickers</button>
+        <button data-filter="recent">This week</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="v-grid">
+
+    <!-- Add yours placeholder always first -->
+    <a class="v-add-card" href="compose.html">
+      <span class="plus">＋</span>
+      <span class="lbl">Add your card</span>
+    </a>
+
+    <!-- visitor cards (sample) -->
+    <div class="v-card v-bg-rust v-sig-caveat" style="--r:-2deg">
+      <div class="v-content">
+        <div>
+          <span class="v-meta">visitor · #142</span>
+          <div class="v-name" style="margin-top:6px;">Mari L.</div>
+        </div>
+        <p class="v-msg">caught the M.Sc. bug too. heia HVL!</p>
+      </div>
+      <div class="v-sticker emoji" style="top:14px;right:14px;--sr:12deg">⚡</div>
+    </div>
+
+    <div class="v-card v-bg-cream v-sig-homemade" style="--r:1deg">
+      <div class="v-content">
+        <div>
+          <span class="v-meta">visitor · #141</span>
+          <div class="v-name" style="margin-top:6px;">jonas</div>
+        </div>
+        <p class="v-msg">that booster pack animation is a crime ☺</p>
+      </div>
+      <div class="v-sticker" style="bottom:14px;right:14px;--sr:-8deg"><img src="assets/logos/vuejs.svg" alt="" /></div>
+    </div>
+
+    <div class="v-card v-bg-ink v-sig-dancing" style="--r:2deg">
+      <div class="v-content">
+        <div>
+          <span class="v-meta" style="color:rgba(255,248,230,0.6)">visitor · #140</span>
+          <div class="v-name" style="margin-top:6px;color:#ffd87a;">Ada</div>
+        </div>
+        <p class="v-msg" style="color:rgba(255,248,230,0.8)">love the journey graph — git for life choices</p>
+      </div>
+      <div class="v-sticker emoji" style="top:14px;right:14px;--sr:-15deg">🌲</div>
+    </div>
+
+    <div class="v-card v-bg-grid v-sig-display" style="--r:-1deg">
+      <div class="v-content">
+        <div>
+          <span class="v-meta">visitor · #139</span>
+          <div class="v-name" style="margin-top:6px;">Sondre</div>
+        </div>
+        <p class="v-msg">stopping by from Trondheim 🤝</p>
+      </div>
+    </div>
+
+    <div class="v-card v-bg-mint v-sig-caveat" style="--r:3deg">
+      <div class="v-content">
+        <div>
+          <span class="v-meta">visitor · #138</span>
+          <div class="v-name" style="margin-top:6px;">Ingrid Aa.</div>
+        </div>
+        <p class="v-msg">arrival is so good, glad to find a kindred</p>
+      </div>
+      <div class="v-sticker square" style="bottom:14px;right:14px;--sr:6deg"><img src="assets/logos/python.svg" alt="" /></div>
+    </div>
+
+    <div class="v-card v-bg-blue v-sig-shadows" style="--r:-3deg">
+      <div class="v-content">
+        <div>
+          <span class="v-meta" style="color:rgba(255,255,255,0.7)">visitor · #137</span>
+          <div class="v-name" style="margin-top:6px;color:#fff;">eirik</div>
+        </div>
+        <p class="v-msg" style="color:rgba(255,255,255,0.85)">do more bento sites pls</p>
+      </div>
+      <div class="v-sticker" style="top:14px;right:14px;--sr:15deg"><img src="assets/logos/react.svg" alt="" /></div>
+    </div>
+
+    <div class="v-card v-bg-houndstooth v-sig-display" style="--r:1deg">
+      <div class="v-content">
+        <div>
+          <span class="v-meta">visitor · #136</span>
+          <div class="v-name" style="margin-top:6px;">M. Berg</div>
+        </div>
+        <p class="v-msg">recruiter from oslo. let's talk.</p>
+      </div>
+      <div class="v-sticker emoji" style="bottom:14px;right:14px;--sr:-12deg">💌</div>
+    </div>
+
+    <div class="v-card v-bg-sky v-sig-homemade" style="--r:-2deg">
+      <div class="v-content">
+        <div>
+          <span class="v-meta">visitor · #135</span>
+          <div class="v-name" style="margin-top:6px;">snorre</div>
+        </div>
+        <p class="v-msg">fellow aurlending. høgt&nbsp;på fjellet :)</p>
+      </div>
+    </div>
+
+    <div class="v-card v-bg-dots v-sig-caveat" style="--r:2deg">
+      <div class="v-content">
+        <div>
+          <span class="v-meta">visitor · #134</span>
+          <div class="v-name" style="margin-top:6px;">tk</div>
+        </div>
+        <p class="v-msg">the favorites shelf got me. fallout NV forever.</p>
+      </div>
+      <div class="v-sticker emoji" style="top:14px;right:14px;--sr:8deg">🎮</div>
+    </div>
+
+    <div class="v-card v-bg-stripes v-sig-dancing" style="--r:-1deg">
+      <div class="v-content">
+        <div>
+          <span class="v-meta">visitor · #133</span>
+          <div class="v-name" style="margin-top:6px;">Lise H.</div>
+        </div>
+        <p class="v-msg">studvest alum here, hello!</p>
+      </div>
+      <div class="v-sticker square" style="bottom:14px;right:14px;--sr:-6deg"><img src="assets/logos/typescript.svg" alt="" /></div>
+    </div>
+
+    <div class="v-card v-bg-cream v-sig-shadows" style="--r:3deg">
+      <div class="v-content">
+        <div>
+          <span class="v-meta">visitor · #132</span>
+          <div class="v-name" style="margin-top:6px;">Per Ø.</div>
+        </div>
+        <p class="v-msg">solid work, mate.</p>
+      </div>
+      <div class="v-sticker emoji" style="top:14px;right:14px;--sr:20deg">⭐</div>
+    </div>
+
+    <div class="v-card v-bg-rust v-sig-caveat" style="--r:-2deg">
+      <div class="v-content">
+        <div>
+          <span class="v-meta">visitor · #131</span>
+          <div class="v-name" style="margin-top:6px;">heidi.</div>
+        </div>
+        <p class="v-msg">stickers idea = chef's kiss</p>
+      </div>
+    </div>
+
+    <div class="v-card v-bg-ink v-sig-homemade" style="--r:1deg">
+      <div class="v-content">
+        <div>
+          <span class="v-meta" style="color:rgba(255,248,230,0.6)">visitor · #130</span>
+          <div class="v-name" style="margin-top:6px;color:#ffd87a;">k. njerve</div>
+        </div>
+        <p class="v-msg" style="color:rgba(255,248,230,0.8)">passing through. nice card.</p>
+      </div>
+      <div class="v-sticker" style="bottom:14px;right:14px;--sr:10deg"><img src="assets/logos/docker.svg" alt="" /></div>
+    </div>
+
+    <div class="v-card v-bg-mint v-sig-display" style="--r:-3deg">
+      <div class="v-content">
+        <div>
+          <span class="v-meta">visitor · #129</span>
+          <div class="v-name" style="margin-top:6px;">A. Stølen</div>
+        </div>
+        <p class="v-msg">your CV is a html file. legend.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="footer" style="margin-top: 60px;">
+    <span>© 2026 Thomas Skjerdal · <a href="index.html">Back to bento ↗</a></span>
+    <span>142 cards and counting</span>
+  </footer>
+</div>
+
+<script>
+  // simple filter buttons (visual only on mockup)
+  document.querySelectorAll('.v-shelf-head .seg button').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.v-shelf-head .seg button').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>

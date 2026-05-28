@@ -165,7 +165,7 @@ export default {
   flex-direction: column;
   gap: 1rem;
   box-sizing: border-box;
-  font-family: var(--font-sans);
+  font-family: var(--type-font-body);
   color: var(--text-primary, #162033);
 }
 
@@ -178,17 +178,21 @@ export default {
 
 .title {
   margin: 0;
-  font-family: var(--font-display);
-  font-size: 1.75rem;
-  font-weight: 700;
-  line-height: 1;
+  font-family: var(--type-font-heading);
+  font-size: var(--type-card-title-size);
+  font-style: var(--type-heading-style);
+  font-weight: var(--type-card-title-weight);
+  letter-spacing: 0;
+  line-height: var(--type-card-title-line);
   color: var(--text-primary, #162033);
 }
 
 .count {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.15em;
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-label-weight);
+  letter-spacing: var(--type-label-tracking);
+  line-height: var(--type-label-line);
   text-transform: uppercase;
   color: rgba(22, 32, 51, 0.45);
   white-space: nowrap;
@@ -270,17 +274,19 @@ export default {
 }
 
 .name {
-  font-family: var(--font-sans);
-  font-size: 0.88rem;
-  font-weight: 600;
+  font-family: var(--type-font-body);
+  font-size: var(--type-small-size);
+  font-weight: var(--type-weight-semibold);
   color: var(--text-primary, #162033);
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
+  line-height: var(--type-small-line);
 }
 
 .tag {
-  font-family: var(--font-mono);
-  font-size: 9.5px;
+  font-family: var(--type-font-label);
+  font-size: calc(var(--type-label-size) * 0.95);
   letter-spacing: 0.08em;
+  line-height: var(--type-label-line);
   padding: 2px 7px;
   border-radius: 999px;
   background: rgba(232, 131, 10, 0.12);
@@ -290,8 +296,8 @@ export default {
 
 .desc {
   margin: 0;
-  font-size: 0.75rem;
-  line-height: 1.5;
+  font-size: var(--type-caption-size);
+  line-height: var(--type-caption-line);
   color: rgba(22, 32, 51, 0.55);
 }
 
@@ -337,7 +343,7 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
-  font-family: var(--font-sans);
+  font-family: var(--type-font-body);
   color: #162033;
 }
 
@@ -397,10 +403,12 @@ export default {
 
 .modal-title {
   margin: 0 0 6px;
-  font-family: var(--font-display);
-  font-size: 1.4rem;
-  font-weight: 700;
-  line-height: 1;
+  font-family: var(--type-font-heading);
+  font-size: var(--type-card-title-size);
+  font-style: var(--type-heading-style);
+  font-weight: var(--type-card-title-weight);
+  letter-spacing: 0;
+  line-height: var(--type-card-title-line);
 }
 
 .modal-tags {
@@ -411,8 +419,8 @@ export default {
 
 .modal-desc {
   margin: 0;
-  font-size: 0.85rem;
-  line-height: 1.65;
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line);
   color: rgba(22, 32, 51, 0.7);
 }
 
@@ -424,9 +432,11 @@ export default {
 
 .modal-section-title {
   margin: 0;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.15em;
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-label-weight);
+  letter-spacing: var(--type-label-tracking);
+  line-height: var(--type-label-line);
   text-transform: uppercase;
   color: rgba(22, 32, 51, 0.45);
 }
@@ -439,8 +449,8 @@ export default {
   gap: 4px;
 
   li {
-    font-size: 0.82rem;
-    line-height: 1.55;
+    font-size: var(--type-small-size);
+    line-height: var(--type-small-line);
     color: rgba(22, 32, 51, 0.75);
   }
 }
@@ -452,8 +462,9 @@ export default {
 }
 
 .stack-chip {
-  font-family: var(--font-mono);
-  font-size: 11px;
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
+  line-height: var(--type-label-line);
   padding: 4px 10px;
   border-radius: 999px;
   background: rgba(22, 32, 51, 0.06);
@@ -470,8 +481,9 @@ export default {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.82rem;
-  font-weight: 600;
+  font-size: var(--type-small-size);
+  font-weight: var(--type-weight-semibold);
+  line-height: var(--type-small-line);
   color: #162033;
   text-decoration: none;
   padding: 8px 16px;

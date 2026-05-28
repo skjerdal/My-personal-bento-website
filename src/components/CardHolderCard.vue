@@ -1,7 +1,9 @@
 <template>
-  <div class="cardholder-scene" ref="containerRef">
-    <canvas ref="canvasRef"></canvas>
-  </div>
+  <a class="cardholder-link" href="/visitors" aria-label="Open the visitor card holder">
+    <div class="cardholder-scene" ref="containerRef">
+      <canvas ref="canvasRef"></canvas>
+    </div>
+  </a>
 </template>
 
 <script>
@@ -175,6 +177,14 @@ export default {
 </script>
 
 <style scoped>
+.cardholder-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
 .cardholder-scene {
   width: 100%;
   height: 100%;
@@ -183,7 +193,7 @@ export default {
   will-change: transform;
   border-radius: 10px;
   overflow: hidden;
-  cursor: default;
+  cursor: pointer;
 }
 
 .cardholder-scene canvas {

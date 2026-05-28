@@ -25,41 +25,47 @@ const labelId = `email-label-${uid}`;
     <span></span>
     <span class="spark"></span>
   </div>
-  <div class="contact-copy">
-    <p class="eyebrow">Get in touch</p>
-    <h2>Let's build something.</h2>
-  </div>
-  <div class="contact-actions">
-    <a class="contact-btn" id={emailId} href={`mailto:${email}`} data-email={email}>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-        <rect x="3" y="5" width="18" height="14" rx="2"></rect>
-        <path d="m3 7 9 6 9-6"></path>
-      </svg>
-      <span id={labelId}>{email}</span>
-    </a>
-    <a class="contact-btn" href={github} target="_blank" rel="noopener">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-        <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.1-1.3-.3-2.6-1.2-3.6.3-1.1.3-2.3-.1-3.4 0 0-1-.3-3.5 1.3a12.3 12.3 0 0 0-6.4 0C6.3 1.7 5.3 2 5.3 2c-.4 1.1-.4 2.3-.1 3.4A5.2 5.2 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.4.5-.7 1.2-.8 2"></path>
-        <path d="M9 18c-4.5 2-5-2-7-2"></path>
-      </svg>
-      GitHub
-    </a>
-    <a class="contact-btn" href={linkedin} target="_blank" rel="noopener">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"></path>
-        <rect x="2" y="9" width="4" height="12"></rect>
-        <circle cx="4" cy="4" r="2"></circle>
-      </svg>
-      LinkedIn
-    </a>
-    <a class="contact-btn primary" href={resumeUrl} download="Thomas_Skjerdal_Resume.pdf">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-        <path d="m7 10 5 5 5-5"></path>
-        <path d="M12 15V3"></path>
-      </svg>
-      Resume
-    </a>
+  <div class="contact-body">
+    <div class="contact-copy">
+      <p class="eyebrow">Get in touch</p>
+      <h2>Let's build something.</h2>
+      <p class="blurb">
+        I'm always up for a coffee, a long email about a strange idea, or a chat about
+        ML, web tooling, or Norwegian fjords.
+      </p>
+    </div>
+    <div class="contact-actions">
+      <a class="contact-btn" id={emailId} href={`mailto:${email}`} data-email={email}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+          <path d="m3 7 9 6 9-6"></path>
+        </svg>
+        <span id={labelId}>{email}</span>
+      </a>
+      <a class="contact-btn" href={github} target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.1-1.3-.3-2.6-1.2-3.6.3-1.1.3-2.3-.1-3.4 0 0-1-.3-3.5 1.3a12.3 12.3 0 0 0-6.4 0C6.3 1.7 5.3 2 5.3 2c-.4 1.1-.4 2.3-.1 3.4A5.2 5.2 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.4.5-.7 1.2-.8 2"></path>
+          <path d="M9 18c-4.5 2-5-2-7-2"></path>
+        </svg>
+        GitHub
+      </a>
+      <a class="contact-btn" href={linkedin} target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"></path>
+          <rect x="2" y="9" width="4" height="12"></rect>
+          <circle cx="4" cy="4" r="2"></circle>
+        </svg>
+        LinkedIn
+      </a>
+      <a class="contact-btn primary" href={resumeUrl} download="Thomas_Skjerdal_Resume.pdf">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <path d="m7 10 5 5 5-5"></path>
+          <path d="M12 15V3"></path>
+        </svg>
+        Resume
+      </a>
+    </div>
   </div>
 </article>
 
@@ -80,31 +86,32 @@ const labelId = `email-label-${uid}`;
 
 <style>
   .contact-card {
+    --card-orange: #e8590c;
+    --card-orange-deep: #c2410c;
+    --card-cream-ink: #fff8ee;
+
     position: relative;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 20px;
-    padding: 22px;
+    display: block;
+    padding: 0;
     border-radius: 24px;
     overflow: hidden;
     isolation: isolate;
     background:
       radial-gradient(120% 80% at 0% 0%, rgba(255, 203, 107, 0.6), transparent 50%),
       radial-gradient(120% 80% at 100% 100%, rgba(255, 106, 42, 0.55), transparent 50%),
-      linear-gradient(135deg, #ff8a3d 0%, #ff6a2a 100%);
+      linear-gradient(135deg, var(--card-orange) 0%, var(--card-orange-deep) 100%);
     border: 1px solid rgba(255, 220, 170, 0.4);
     box-shadow:
-      0 8px 32px -8px rgba(0, 0, 0, 0.12),
-      0 4px 16px -4px rgba(0, 0, 0, 0.08),
-      inset 0 1px 0 rgba(255, 255, 255, 0.8),
-      0 30px 80px -20px rgba(255, 106, 42, 0.5);
-    color: #fff;
+      0 1px 0 rgba(255, 255, 255, 0.4) inset,
+      0 10px 30px -14px rgba(232, 89, 12, 0.55),
+      0 8px 32px -8px rgba(26, 20, 16, 0.12),
+      0 22px 50px -28px rgba(26, 20, 16, 0.22);
+    color: var(--card-cream-ink);
     min-height: 180px;
     box-sizing: border-box;
     animation: rise 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
     transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-    font-family: var(--font-sans);
+    font-family: var(--type-font-body);
     -webkit-tap-highlight-color: transparent;
   }
 
@@ -112,51 +119,78 @@ const labelId = `email-label-${uid}`;
     transform: translateY(-4px);
   }
 
-  .contact-copy,
-  .contact-actions {
+  .contact-card .contact-copy,
+  .contact-card .contact-actions {
     position: relative;
     z-index: 2;
   }
 
-  .eyebrow {
+  .contact-card .contact-body {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: minmax(430px, 1fr) minmax(430px, 0.9fr);
+    align-items: center;
+    gap: 48px;
+    min-height: 220px;
+    padding: 36px 36px 36px 38px;
+    box-sizing: border-box;
+  }
+
+  .contact-card .eyebrow {
     margin: 0;
-    color: rgba(255, 255, 255, 0.72);
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 0.2em;
+    color: rgba(255, 255, 255, 0.78);
+    font-family: var(--type-font-label);
+    font-size: var(--type-label-size);
+    font-weight: var(--type-label-weight);
+    letter-spacing: var(--type-label-tracking);
+    line-height: var(--type-label-line);
     text-transform: uppercase;
   }
 
-  h2 {
-    margin: 8px 0 0;
-    color: white;
-    font-family: var(--font-display);
-    font-size: 26px;
-    font-weight: 700;
-    line-height: 1;
+  .contact-card h2 {
+    margin: 8px 0 6px;
+    color: var(--card-cream-ink);
+    font-family: var(--type-font-heading);
+    font-size: clamp(3.4rem, 5.4vw, 4.25rem);
+    font-style: var(--type-heading-style);
+    font-weight: var(--type-card-title-weight);
+    letter-spacing: 0;
+    line-height: 0.95;
   }
 
-  .contact-actions {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-end;
+  .contact-card .blurb {
+    max-width: 540px;
+    margin: 0;
+    color: rgba(255, 248, 230, 0.9);
+    font-family: var(--type-font-body);
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .contact-card .contact-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px;
-    margin-left: auto;
+    margin-left: 0;
+    align-self: center;
   }
 
-  .contact-btn {
+  .contact-card .contact-btn {
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    min-height: 40px;
-    padding: 10px 14px;
+    min-height: 48px;
+    min-width: 0;
+    padding: 12px 18px;
     border: 1px solid rgba(255, 255, 255, 0.25);
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.18);
-    color: white;
-    font-family: var(--font-sans);
-    font-size: 13px;
-    font-weight: 500;
+    background: rgba(255, 255, 255, 0.16);
+    color: #fff;
+    font-family: var(--type-font-body);
+    font-size: 0.9rem;
+    font-weight: var(--type-weight-semibold);
+    line-height: 1.2;
     text-decoration: none;
     backdrop-filter: blur(10px);
     transition: transform 0.2s, background 0.2s;
@@ -164,21 +198,28 @@ const labelId = `email-label-${uid}`;
     -webkit-tap-highlight-color: transparent;
   }
 
-  .contact-btn:hover {
+  .contact-card .contact-btn span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .contact-card .contact-btn:hover {
     transform: translateY(-1px);
     background: rgba(255, 255, 255, 0.28);
   }
 
-  .contact-btn.primary {
-    border-color: rgba(20, 16, 13, 0.9);
-    background: rgba(20, 16, 13, 0.9);
+  .contact-card .contact-btn.primary {
+    border-color: rgba(20, 16, 13, 0.92);
+    background: rgba(20, 16, 13, 0.92);
   }
 
-  .contact-btn.primary:hover {
+  .contact-card .contact-btn.primary:hover {
     background: #1a1410;
   }
 
-  .contact-btn svg {
+  .contact-card .contact-btn svg {
     width: 14px;
     height: 14px;
     flex: 0 0 14px;
@@ -215,15 +256,26 @@ const labelId = `email-label-${uid}`;
     animation: orbit 6s linear infinite;
   }
 
-  @media (max-width: 600px) {
-    .contact-card {
-      align-items: flex-start;
-      flex-direction: column;
+  @media (max-width: 720px) {
+    .contact-card .contact-body {
+      grid-template-columns: 1fr;
+      padding: 24px;
+      gap: 22px;
     }
 
-    .contact-actions {
-      justify-content: flex-start;
-      margin-left: 0;
+    .contact-card .contact-actions {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 980px) {
+    .contact-card .contact-body {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    .contact-card .contact-actions {
+      max-width: 520px;
     }
   }
 
